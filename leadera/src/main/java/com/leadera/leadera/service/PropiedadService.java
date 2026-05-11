@@ -1,9 +1,12 @@
 package com.leadera.leadera.service;
 
-import com.leadera.leadera.model.EstadoPropiedad;
-import com.leadera.leadera.model.EventoPropiedad;
-import com.leadera.leadera.model.Propiedad;
-import com.leadera.leadera.model.Lead;
+import com.leadera.leadera.entity.EventoPropiedad;
+import com.leadera.leadera.entity.Lead;
+import com.leadera.leadera.entity.Propiedad;
+import com.leadera.leadera.enums.EstadoPropiedad;
+import com.leadera.leadera.exception.BadRequestException;
+import com.leadera.leadera.exception.ResourceNotFoundException;
+import com.leadera.leadera.exception.UnauthorizedActionException;
 import com.leadera.leadera.repository.EventoPropiedadRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.PropiedadRepository;
@@ -29,10 +32,10 @@ public class PropiedadService {
 
     public Propiedad agregarPropiedad(Long leadId, Propiedad propiedad, String emailAgente) {
         Lead lead = leadRepository.findById(leadId)
-                .orElseThrow(() -> new RuntimeException("Lead no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
         if (!lead.getAgente().getEmail().equals(emailAgente)) {
-            throw new RuntimeException("No tenés permiso para modificar este lead.");
+            throw new UnauthorizedActionException("No tenés permiso para modificar este lead.");
         }
 
         propiedad.setLead(lead);
@@ -45,9 +48,8 @@ public class PropiedadService {
 
     public EventoPropiedad registrarEvento(Long propiedadId, EventoPropiedad evento) {
         Propiedad propiedad = propiedadRepository.findById(propiedadId)
-                .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
-        long numeroSiguiente = eventoRepository.countByPropiedadId(propiedadId) + 1;
         evento.setFecha(LocalDateTime.now());
         evento.setPropiedad(propiedad);
 
@@ -56,20 +58,24 @@ public class PropiedadService {
 
     public List<EventoPropiedad> obtenerEventos(Long propiedadId) {
         Propiedad propiedad = propiedadRepository.findById(propiedadId)
-                .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
         return propiedad.getEventos();
     }
 
     public Propiedad actualizarEstado(Long id, String estado) {
         Propiedad propiedad = propiedadRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
-        propiedad.setEstado(EstadoPropiedad.valueOf(estado));
+                .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
+        try {
+            propiedad.setEstado(EstadoPropiedad.valueOf(estado));
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException("Estado de propiedad inválido: " + estado);
+        }
         return propiedadRepository.save(propiedad);
     }
 
     public Propiedad obtenerPorId(Long id) {
         return propiedadRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
     }
 
 }

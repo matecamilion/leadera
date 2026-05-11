@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -22,18 +22,53 @@ export class PropiedadDetalle implements OnInit {
   nuevoEvento: Partial<EventoPropiedad> = {};
   mostrarFormEvento = false;
 
+  @Input('propiedad') set propiedadInput(value: Propiedad | null) {
+    if (value) {
+      this.propiedad.set(value);
+
+      if (value.id) {
+        this.cargarEventos(value.id);
+      }
+    }
+  }
+
+  @Output() cerrar = new EventEmitter<void>();
+  @Output() estadoActualizado = new EventEmitter<void>();
+
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const idParam = this.route.snapshot.paramMap.get('id');
+
+    if (!idParam) {
+      return;
+    }
+
+    const id = Number(idParam);
+
+    if (!id || Number.isNaN(id)) {
+      return;
+    }
+
     this.propiedadService.obtenerPorId(id).subscribe({
       next: (p) => this.propiedad.set(p)
     });
+
+    this.cargarEventos(id);
+  }
+
+  cargarEventos(id: number) {
     this.propiedadService.obtenerEventos(id).subscribe({
       next: (e) => this.eventos.set(e)
     });
   }
 
   registrarEvento() {
-    this.propiedadService.registrarEvento(this.propiedad()!.id, this.nuevoEvento).subscribe({
+    const propiedadActual = this.propiedad();
+
+    if (!propiedadActual) {
+      return;
+    }
+
+    this.propiedadService.registrarEvento(propiedadActual.id, this.nuevoEvento).subscribe({
       next: (e) => {
         this.eventos.update(list => [...list, e]);
         this.nuevoEvento = {};
@@ -43,8 +78,17 @@ export class PropiedadDetalle implements OnInit {
   }
 
   cambiarEstado(estado: string) {
-    this.propiedadService.actualizarEstado(this.propiedad()!.id, estado).subscribe({
-      next: () => this.propiedad.update(p => ({ ...p!, estado: estado as any }))
+    const propiedadActual = this.propiedad();
+
+    if (!propiedadActual) {
+      return;
+    }
+
+    this.propiedadService.actualizarEstado(propiedadActual.id, estado).subscribe({
+      next: () => {
+        this.propiedad.update(p => ({ ...p!, estado: estado as any }));
+        this.estadoActualizado.emit();
+      }
     });
   }
 }

@@ -1,8 +1,10 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.leadera.leadera.enums.EstadoPropiedad;
+import com.leadera.leadera.enums.TipoVivienda;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

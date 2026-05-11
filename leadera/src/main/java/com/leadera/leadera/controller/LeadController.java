@@ -1,6 +1,11 @@
 package com.leadera.leadera.controller;
 
-import com.leadera.leadera.model.*;
+import com.leadera.leadera.dto.AgenteDashboardDTO;
+import com.leadera.leadera.dto.LeadResumenDTO;
+import com.leadera.leadera.dto.LeadsHoyResponse;
+import com.leadera.leadera.entity.Interaccion;
+import com.leadera.leadera.entity.Lead;
+import com.leadera.leadera.enums.EstadoLead;
 import com.leadera.leadera.service.LeadService;
 import lombok.Getter;
 import org.apache.coyote.Response;
@@ -81,15 +86,7 @@ public class LeadController {
 
     @PatchMapping("/{id}/estado")
     public ResponseEntity<Lead> establecerLeadInactivo(@PathVariable Long id) {
-        try{
-            Lead lead = leadService.establecerLeadInactivo(id);
-            return ResponseEntity.ok(lead);
-        }  catch (Exception e) {
-            // Esto va a imprimir el error real en la consola de IntelliJ/Spring
-            e.printStackTrace();
-            // Cambiamos temporalmente a 500 para saber que el problema es del servidor y no de la URL
-            return ResponseEntity.internalServerError().build();
-        }
+        return ResponseEntity.ok(leadService.establecerLeadInactivo(id));
     }
 
     @GetMapping("/agente/{id}/stats")
@@ -98,15 +95,9 @@ public class LeadController {
     }
 
     @PutMapping("/{id}/editar-contacto")
-    public ResponseEntity<Lead>  editarContacto(@PathVariable Long id, @RequestBody Lead nuevosDatos, Authentication authentication) {
-        try{
-            Lead leadActualizado = leadService.editarInfoContacto(id, nuevosDatos.getTelefono(), nuevosDatos.getEmail(), authentication.getName());
-            return ResponseEntity.ok(leadActualizado);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
+    public ResponseEntity<Lead> editarContacto(@PathVariable Long id, @RequestBody Lead nuevosDatos, Authentication authentication) {
+        Lead leadActualizado = leadService.editarInfoContacto(id, nuevosDatos.getTelefono(), nuevosDatos.getEmail(), authentication.getName());
+        return ResponseEntity.ok(leadActualizado);
     }
 
 

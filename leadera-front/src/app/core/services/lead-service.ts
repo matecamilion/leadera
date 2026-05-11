@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { LeadsHoyResponse } from '../models/leads-hoy-response';
 import { Lead } from '../models/lead';
 import { LeadResumen } from '../models/lead-resumen';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LeadService {
-  private apiUrl = 'http://localhost:8080/leads';
+  private apiUrl = `${environment.apiUrl}/leads`;
 
   constructor(private http: HttpClient) {}
 

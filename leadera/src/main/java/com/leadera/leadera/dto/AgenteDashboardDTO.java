@@ -1,4 +1,4 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface CrearInteraccionRequest {
   detalle: string;
@@ -11,7 +12,7 @@ export interface CrearInteraccionRequest {
   providedIn: 'root',
 })
 export class InteraccionService {
-  private apiUrl = 'http://localhost:8080/leads';
+  private apiUrl = `${environment.apiUrl}/leads`;
 
   constructor(private http: HttpClient) {}
 

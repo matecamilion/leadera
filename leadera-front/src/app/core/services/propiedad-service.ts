@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Propiedad } from '../models/propiedad';
 import { EventoPropiedad } from '../models/evento-propiedad';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class PropiedadService {
   private http = inject(HttpClient);
-  private base = 'http://localhost:8080/propiedades';
+  private base = `${environment.apiUrl}/propiedades`;
 
   obtenerPorLead(leadId: number): Observable<Propiedad[]> {
     return this.http.get<Propiedad[]>(`${this.base}/lead/${leadId}`);

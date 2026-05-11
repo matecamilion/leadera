@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Propiedad } from '../models/propiedad';
 import { Busqueda } from '../models/busqueda';
+import { environment } from '../../../environments/environment';
 
 export type TipoOperacion = 'VENTA' | 'COMPRA' | 'ALQUILER';
 export type EstadoOperacion = 'ABIERTA' | 'EN_GESTION' | 'RESERVADA' | 'CERRADA_GANADA' | 'CANCELADA';
@@ -32,7 +33,7 @@ export interface CrearOperacionRequest {
   providedIn: 'root',
 })
 export class OperacionService {
-  private apiUrl = 'http://localhost:8080';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

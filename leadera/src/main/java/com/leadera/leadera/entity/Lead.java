@@ -1,7 +1,8 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.leadera.leadera.enums.EstadoLead;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,4 +51,3 @@ public class Lead {
 
 
 }
-

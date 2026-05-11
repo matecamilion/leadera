@@ -1,6 +1,6 @@
 package com.leadera.leadera.controller;
 
-import com.leadera.leadera.model.Interaccion;
+import com.leadera.leadera.entity.Interaccion;
 import com.leadera.leadera.service.InteraccionService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

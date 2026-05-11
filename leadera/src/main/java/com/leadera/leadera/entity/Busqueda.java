@@ -1,8 +1,7 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.leadera.leadera.enums.TipoVivienda;
 import jakarta.persistence.*;
-import jakarta.persistence.Access;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-
 public class Busqueda {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -28,9 +26,9 @@ public class Busqueda {
     private Integer metrosTotales;
     private Integer metrosCubiertos;
     private Integer metrosDescubiertos;
+
     private TipoVivienda tipoVivienda;
+
     private String zona;
     private String observaciones;
-
-
 }

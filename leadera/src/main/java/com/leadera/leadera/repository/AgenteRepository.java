@@ -1,6 +1,6 @@
 package com.leadera.leadera.repository;
 
-import com.leadera.leadera.model.Agente;
+import com.leadera.leadera.entity.Agente;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

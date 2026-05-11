@@ -1,9 +1,9 @@
 package com.leadera.leadera.repository;
 
 
-import com.leadera.leadera.model.EstadoOperacion;
-import com.leadera.leadera.model.Operacion;
-import com.leadera.leadera.model.TipoOperacion;
+import com.leadera.leadera.entity.Operacion;
+import com.leadera.leadera.enums.EstadoOperacion;
+import com.leadera.leadera.enums.TipoOperacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,9 +1,12 @@
 package com.leadera.leadera.service;
 
-import com.leadera.leadera.model.Agente;
-import com.leadera.leadera.model.LoginResponse;
+import com.leadera.leadera.dto.LoginResponse;
+import com.leadera.leadera.entity.Agente;
+import com.leadera.leadera.exception.DuplicateResourceException;
+import com.leadera.leadera.exception.ResourceNotFoundException;
 import com.leadera.leadera.repository.AgenteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +27,7 @@ public class AuthService {
         );
 
         Agente agente = agenteRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Agente no encontrado con email: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("Agente no encontrado"));
 
         String token = jwtService.generarToken(agente, agente.getId());
 
@@ -37,10 +40,16 @@ public class AuthService {
     }
 
     public String registrar(Agente agente) {
-        //Encriptamos contraseña antes de guardar
+        if (agente.getEmail() != null && agenteRepository.findByEmail(agente.getEmail()).isPresent()) {
+            throw new DuplicateResourceException("Ya existe un agente con ese email");
+        }
         agente.setPassword(passwordEncoder.encode(agente.getPassword()));
-        agenteRepository.save(agente);
-        return "Agente registrado con exito";
+        try {
+            agenteRepository.save(agente);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DuplicateResourceException("Ya existe un agente con ese email");
+        }
+        return "Agente registrado con éxito";
     }
 
 

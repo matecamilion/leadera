@@ -1,19 +1,25 @@
 package com.leadera.leadera.service;
 
-import com.leadera.leadera.model.*;
+import com.leadera.leadera.dto.AgenteDashboardDTO;
+import com.leadera.leadera.dto.LeadResumenDTO;
+import com.leadera.leadera.dto.LeadsHoyResponse;
+import com.leadera.leadera.entity.Agente;
+import com.leadera.leadera.entity.Interaccion;
+import com.leadera.leadera.entity.Lead;
+import com.leadera.leadera.enums.EstadoLead;
+import com.leadera.leadera.enums.TipoOperacion;
+import com.leadera.leadera.exception.DuplicateResourceException;
+import com.leadera.leadera.exception.ResourceNotFoundException;
+import com.leadera.leadera.exception.UnauthorizedActionException;
 import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.temporal.ChronoUnit;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LeadService {
@@ -33,15 +39,10 @@ public class LeadService {
     public Lead crearLead(Lead lead, String email) {
 
         Agente agente = agenteRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Agente no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agente no encontrado"));
 
-        // Validación email duplicado
         if (lead.getEmail() != null && leadRepository.existsByEmail(lead.getEmail())) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Ya existe un lead con ese email",
-                    null
-            );
+            throw new DuplicateResourceException("Ya existe un lead con ese email");
         }
 
         lead.setAgente(agente);
@@ -80,12 +81,10 @@ public class LeadService {
 
     public Lead obtenerLeadsPorId(Long id, String email) {
         Lead lead = leadRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No existe el lead con el id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con el id: " + id));
 
-        // VALIDACIÓN DE SEGURIDAD:
-        // Si el email del agente del lead no coincide con el del que está logueado, rebotamos.
         if (!lead.getAgente().getEmail().equals(email)) {
-            throw new RuntimeException("No tenés permiso para ver este lead.");
+            throw new UnauthorizedActionException("No tenés permiso para ver este lead.");
         }
 
         return lead;
@@ -100,19 +99,17 @@ public class LeadService {
     public List<Interaccion> obtenerHistorialInteracciones(Long leadId) {
 
             Lead lead = leadRepository.findById(leadId)
-                    .orElseThrow(() -> new RuntimeException("No existe el lead con el id: " + leadId));
+                    .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con el id: " + leadId));
 
         return lead.getInteracciones();
     }
 
 
 
-    public Lead cambiarEstado(Long id,EstadoLead nuevoEstado) {
-        //Busca el lead por ID. Si no lo encuentra tira excepcion
+    public Lead cambiarEstado(Long id, EstadoLead nuevoEstado) {
         Lead lead = leadRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Lead no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
-        //Cambia el estado del lead en caso de que lo haya encontrado
         lead.setEstado(nuevoEstado);
         return leadRepository.save(lead);
     }
@@ -144,7 +141,7 @@ public class LeadService {
 
     public Lead establecerLeadInactivo(Long id) {
         Lead lead = leadRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Lead no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
          lead.setEstado(EstadoLead.INACTIVO);
          return leadRepository.save(lead);
@@ -186,22 +183,20 @@ public class LeadService {
 
     public Lead editarInfoContacto(Long leadId, String nuevoTelefono, String nuevoEmail, String emailAgente) {
         Lead lead = leadRepository.findById(leadId)
-                .orElseThrow(() -> new RuntimeException("Lead no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
         if (!lead.getAgente().getEmail().equals(emailAgente)) {
-            throw new RuntimeException("No tenés permiso para editar este lead.");
+            throw new UnauthorizedActionException("No tenés permiso para editar este lead.");
         }
 
-        // Verificar teléfono duplicado
         boolean telefonoDuplicado = leadRepository.existsByAgenteEmailAndTelefonoAndIdNot(emailAgente, nuevoTelefono, leadId);
         if (telefonoDuplicado) {
-            throw new RuntimeException("Ya tenés un lead con ese teléfono.");
+            throw new DuplicateResourceException("Ya tenés un lead con ese teléfono.");
         }
 
-        // Verificar email duplicado
         boolean emailDuplicado = leadRepository.existsByAgenteEmailAndEmailAndIdNot(emailAgente, nuevoEmail, leadId);
         if (emailDuplicado) {
-            throw new RuntimeException("Ya tenés un lead con ese email.");
+            throw new DuplicateResourceException("Ya tenés un lead con ese email.");
         }
 
         lead.setTelefono(nuevoTelefono);

@@ -1,4 +1,4 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

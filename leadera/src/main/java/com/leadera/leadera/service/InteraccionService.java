@@ -1,9 +1,10 @@
 package com.leadera.leadera.service;
 
 
-import com.leadera.leadera.model.Interaccion;
-import com.leadera.leadera.model.Lead;
-import com.leadera.leadera.model.TipoInteraccion;
+import com.leadera.leadera.entity.Interaccion;
+import com.leadera.leadera.entity.Lead;
+import com.leadera.leadera.enums.TipoInteraccion;
+import com.leadera.leadera.exception.ResourceNotFoundException;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,8 @@ public class InteraccionService {
     }
 
     public Interaccion crearInteraccion(Long leadId, Interaccion interaccion, LocalDateTime fechaProximoContacto) {
-        System.out.println("Fecha próximo contacto recibida: " + fechaProximoContacto);
-
         Lead lead = leadRepository.findById(leadId)
-                .orElseThrow(() -> new RuntimeException("No existe el lead con el id: " + leadId));
+                .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con el id: " + leadId));
 
         interaccion.setLead(lead);
         if(interaccion.getFechaInteraccion() == null) {

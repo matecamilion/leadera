@@ -1,7 +1,6 @@
 package com.leadera.leadera.repository;
 
-import com.leadera.leadera.model.EstadoPropiedad;
-import com.leadera.leadera.model.Propiedad;
+import com.leadera.leadera.entity.Propiedad;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

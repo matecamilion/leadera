@@ -1,6 +1,7 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.leadera.leadera.enums.TipoEvento;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

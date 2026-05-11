@@ -1,7 +1,7 @@
 package com.leadera.leadera.controller;
 
-import com.leadera.leadera.model.EstadoOperacion;
-import com.leadera.leadera.model.Operacion;
+import com.leadera.leadera.entity.Operacion;
+import com.leadera.leadera.enums.EstadoOperacion;
 import com.leadera.leadera.service.OperacionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

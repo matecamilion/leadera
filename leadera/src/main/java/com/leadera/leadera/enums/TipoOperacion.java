@@ -1,4 +1,4 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.enums;
 
 public enum TipoOperacion {
     VENTA,

@@ -5,6 +5,8 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import localeEs from '@angular/common/locales/es';
 import { authInterceptor } from './interceptors/auth-interceptor';
+import { errorInterceptor } from './interceptors/error-interceptor';
+import { loadingInterceptor } from './interceptors/loading-interceptor';
 
 // Registramos el español
 registerLocaleData(localeEs);
@@ -16,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     { provide: LOCALE_ID, useValue: 'es-AR' }, // 'es-AR' para Argentina
     provideHttpClient(
-      withInterceptors([authInterceptor]) 
+      withInterceptors([authInterceptor, errorInterceptor, loadingInterceptor])
     )
   ]
 };

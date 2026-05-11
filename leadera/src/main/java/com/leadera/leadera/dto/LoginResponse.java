@@ -1,4 +1,4 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,6 @@ public class LoginResponse {
     private String apellido;
     private String email;
 
-    // Constructor, Getters y Setters
     public LoginResponse(String token, String nombre, String apellido, String email) {
         this.token = token;
         this.nombre = nombre;

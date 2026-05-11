@@ -1,5 +1,6 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.dto;
 
+import com.leadera.leadera.entity.Lead;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class LeadsHoyResponse {
 
     private List<Lead> nuevosSinContacto;
@@ -18,7 +18,6 @@ public class LeadsHoyResponse {
 
     private List<Lead> contactadosHoy;
 
-    // ESTO ES LO QUE FALTA:
     private int totalTareasDelDia;
     private int tareasCompletadasDelDia;
 

@@ -6,13 +6,13 @@ import { FormsModule } from '@angular/forms';
 import { PropiedadService } from '../../core/services/propiedad-service';
 import { Propiedad } from '../../core/models/propiedad';
 import { Busqueda } from '../../core/models/busqueda';
-import { DetallePropiedadComponent } from '../detalle-propiedad/detalle-propiedad';
+import { PropiedadDetalle } from '../propiedad-detalle/propiedad-detalle';
 import { OperacionService, Operacion, CrearOperacionRequest } from '../../core/services/operacion-service';
 
 @Component({
   selector: 'app-detalle-lead',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, DetallePropiedadComponent],
+  imports: [CommonModule, RouterModule, FormsModule, PropiedadDetalle],
   templateUrl: './detalle-lead.html',
   styleUrl: './detalle-lead.css'
 })

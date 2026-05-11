@@ -1,9 +1,9 @@
 package com.leadera.leadera.repository;
 
-import com.leadera.leadera.model.Agente;
-import com.leadera.leadera.model.EstadoLead;
-import com.leadera.leadera.model.Interaccion;
-import com.leadera.leadera.model.Lead;
+import com.leadera.leadera.entity.Agente;
+import com.leadera.leadera.entity.Interaccion;
+import com.leadera.leadera.entity.Lead;
+import com.leadera.leadera.enums.EstadoLead;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

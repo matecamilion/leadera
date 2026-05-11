@@ -1,9 +1,10 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.leadera.leadera.enums.TipoInteraccion;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.time.LocalDateTime;
 

@@ -1,8 +1,8 @@
 package com.leadera.leadera.controller;
 
 import java.util.Map;
-import com.leadera.leadera.model.Agente;
-import com.leadera.leadera.model.LoginResponse;
+import com.leadera.leadera.entity.Agente;
+import com.leadera.leadera.dto.LoginResponse;
 import com.leadera.leadera.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,28 +18,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registrar(@RequestBody Agente agente) {
-        try {
-            String respuesta = authService.registrar(agente);
-
-            return ResponseEntity.ok(Map.of(
-                    "mensaje", respuesta
-            ));
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "error", "Error al registrar: " + e.getMessage()
-            ));
-        }
+    public ResponseEntity<Map<String, String>> registrar(@RequestBody Agente agente) {
+        String respuesta = authService.registrar(agente);
+        return ResponseEntity.ok(Map.of("mensaje", respuesta));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Agente agente) {
-        try {
-            LoginResponse response = authService.login(agente.getEmail(), agente.getPassword());
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(401).body("Credenciales inválidas");
-        }
+    public ResponseEntity<LoginResponse> login(@RequestBody Agente agente) {
+        LoginResponse response = authService.login(agente.getEmail(), agente.getPassword());
+        return ResponseEntity.ok(response);
     }
 }

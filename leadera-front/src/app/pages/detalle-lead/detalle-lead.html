@@ -352,12 +352,12 @@
     <!-- Modal: Detalle Propiedad -->
     <dialog #modalDetalleProp class="modal-leadera modal-wide">
       @if (propiedadSeleccionada()) {
-        <app-detalle-propiedad
+        <app-propiedad-detalle
           [propiedad]="propiedadSeleccionada()!"
           (cerrar)="modalDetalleProp.close()"
           (estadoActualizado)="cargarPropiedades()"
         >
-        </app-detalle-propiedad>
+        </app-propiedad-detalle>
       }
     </dialog>
 

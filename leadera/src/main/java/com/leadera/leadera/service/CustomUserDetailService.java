@@ -1,6 +1,6 @@
 package com.leadera.leadera.service;
 
-import com.leadera.leadera.model.Agente;
+import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.repository.AgenteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

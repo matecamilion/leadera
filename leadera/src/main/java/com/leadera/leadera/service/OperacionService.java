@@ -1,6 +1,14 @@
 package com.leadera.leadera.service;
 
-import com.leadera.leadera.model.*;
+import com.leadera.leadera.entity.Busqueda;
+import com.leadera.leadera.entity.Lead;
+import com.leadera.leadera.entity.Operacion;
+import com.leadera.leadera.entity.Propiedad;
+import com.leadera.leadera.enums.EstadoOperacion;
+import com.leadera.leadera.enums.TipoOperacion;
+import com.leadera.leadera.exception.BadRequestException;
+import com.leadera.leadera.exception.ResourceNotFoundException;
+import com.leadera.leadera.exception.UnauthorizedActionException;
 import com.leadera.leadera.repository.BusquedaRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
@@ -35,10 +43,10 @@ public class OperacionService {
 
     public Operacion crearOperacion(Long leadId, Operacion operacionRequest, String emailAgente) {
         Lead lead = leadRepository.findById(leadId)
-                .orElseThrow(() -> new RuntimeException("No existe el lead con id: " + leadId));
+                .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con id: " + leadId));
 
         if (lead.getAgente() == null || !lead.getAgente().getEmail().equals(emailAgente)) {
-            throw new RuntimeException("No tenés permiso para crear operaciones en este lead");
+            throw new UnauthorizedActionException("No tenés permiso para crear operaciones en este lead");
         }
 
         Operacion operacion = new Operacion();
@@ -64,16 +72,16 @@ public class OperacionService {
 
     private void asociarPropiedadAVenta(Operacion operacion, Operacion operacionRequest, Long leadId) {
         if (operacionRequest.getPropiedad() == null || operacionRequest.getPropiedad().getId() == 0) {
-            throw new RuntimeException("Una operación de venta debe tener una propiedad asociada");
+            throw new BadRequestException("Una operación de venta debe tener una propiedad asociada");
         }
 
         Long propiedadId = operacionRequest.getPropiedad().getId();
 
         Propiedad propiedad = propiedadRepository.findById(propiedadId)
-                .orElseThrow(() -> new RuntimeException("No existe la propiedad con id: " + propiedadId));
+                .orElseThrow(() -> new ResourceNotFoundException("No existe la propiedad con id: " + propiedadId));
 
         if (propiedad.getLead() == null || !propiedad.getLead().getId().equals(leadId)) {
-            throw new RuntimeException("La propiedad no pertenece a este lead");
+            throw new BadRequestException("La propiedad no pertenece a este lead");
         }
 
         operacion.setPropiedad(propiedad);
@@ -82,7 +90,7 @@ public class OperacionService {
 
     private void asociarBusquedaACompra(Operacion operacion, Operacion operacionRequest) {
         if (operacionRequest.getBusqueda() == null) {
-            throw new RuntimeException("Una operación de compra debe tener una búsqueda asociada");
+            throw new BadRequestException("Una operación de compra debe tener una búsqueda asociada");
         }
 
         Busqueda busqueda = operacionRequest.getBusqueda();
@@ -110,7 +118,7 @@ public class OperacionService {
 
     public Operacion obtenerOperacionPorId(Long leadId, Long operacionId, String emailAgente) {
         return operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailAgente)
-                .orElseThrow(() -> new RuntimeException("No existe la operación o no tenés permiso para verla"));
+                .orElseThrow(() -> new ResourceNotFoundException("No existe la operación o no tenés permiso para verla"));
     }
 
 
@@ -124,10 +132,10 @@ public class OperacionService {
                 operacionId,
                 leadId,
                 emailAgente
-        ).orElseThrow(() -> new RuntimeException("No existe la operación o no tenés permiso para modificarla"));
+        ).orElseThrow(() -> new ResourceNotFoundException("No existe la operación o no tenés permiso para modificarla"));
 
         if (nuevoEstado == null) {
-            throw new RuntimeException("El estado de la operación no puede ser nulo");
+            throw new BadRequestException("El estado de la operación no puede ser nulo");
         }
 
         operacion.setEstadoOperacion(nuevoEstado);

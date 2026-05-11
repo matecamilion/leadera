@@ -1,7 +1,9 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.leadera.leadera.enums.EstadoOperacion;
+import com.leadera.leadera.enums.TipoOperacion;
 import jakarta.persistence.*;
 import lombok.*;
 

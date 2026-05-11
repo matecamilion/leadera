@@ -1,5 +1,6 @@
-package com.leadera.leadera.model;
+package com.leadera.leadera.dto;
 
+import com.leadera.leadera.enums.EstadoLead;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -18,5 +19,5 @@ public class LeadResumenDTO {
     private long operacionesVenta;
     private long operacionesCompra;
     private long cantidadInteracciones;
-    private String ultimaInteraccion; // detalle de la última
+    private String ultimaInteraccion;
 }
