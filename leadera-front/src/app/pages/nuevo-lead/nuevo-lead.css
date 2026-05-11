@@ -1,0 +1,173 @@
+/* ==========================================================
+   MODAL / FORMULARIO RESPONSIVE LEADERA
+   ========================================================== */
+
+.contenedor-modal {
+  background: white;
+  border-radius: 24px;
+  padding: 24px; /* Bajamos un poco el padding para ganar aire en celu */
+  max-width: 800px;
+  width: 95%; /* Clave: En celu ocupa el 95% del ancho */
+  margin: 20px auto; /* Menos margen arriba para que no se pierda abajo */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  position: relative;
+  padding-right: 40px; /* Espacio para que el texto no pise la X */
+}
+
+.icono-container {
+  background: #f0f7ff;
+  color: #2563eb;
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Evita que el icono se achique */
+}
+
+.titulo-header h2 {
+  font-size: clamp(1.1rem, 4vw, 1.5rem); /* Título fluido */
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.titulo-header p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 4px 0 0 0;
+}
+
+.btn-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* 1. GRID INTELIGENTE: 2 col en PC, 1 col en Celu */
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 650px) {
+  .grid-layout {
+    grid-template-columns: 1fr; /* Una sola columna en móvil */
+    gap: 16px;
+  }
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Inputs más altos para uso táctil */
+.campo input, 
+.select-custom select {
+  padding: 14px 16px; 
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 1rem; /* 16px evita el zoom automático en iPhone */
+  color: #1e293b;
+  transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.05);
+}
+
+/* 2. FOOTER RESPONSIVE */
+.footer-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+@media (max-width: 480px) {
+  .footer-acciones {
+    flex-direction: column; /* Botones apilados */
+  }
+
+  .btn-primario, .btn-secundario {
+    width: 100%; /* Botones de lado a lado en celu */
+    padding: 16px;
+    text-align: center;
+    order: 1;
+  }
+
+  .btn-secundario {
+    order: 2; /* El secundario queda abajo */
+    border: none;
+  }
+}
+
+.btn-secundario {
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.btn-primario {
+  padding: 12px 32px;
+  border-radius: 10px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primario:hover {
+  background: #1d4ed8;
+}
+
+.btn-primario:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.input-error {
+  border-color: #e53e3e;
+}
+
+.error-mensaje {
+  font-size: 12px;
+  color: #e53e3e;
+  margin-top: 4px;
+  display: block;
+}

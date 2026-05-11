@@ -1,0 +1,39 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Sumate a LeadEra</h1>
+      <p>Creá tu perfil de agente inmobiliario.</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+      <div class="input-row">
+        <div class="input-group">
+          <label>Nombre</label>
+          <input type="text" formControlName="nombre" placeholder="Mateo">
+        </div>
+        <div class="input-group">
+          <label>Apellido</label>
+          <input type="text" formControlName="apellido" placeholder="García">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Email Profesional</label>
+        <input type="email" formControlName="email" placeholder="mateo@inmobiliaria.com">
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres">
+      </div>
+
+      <button type="submit" [disabled]="registerForm.invalid" class="btn-primary">
+        Crear Cuenta
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿Ya sos parte? <a routerLink="/login">Iniciá sesión</a></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,99 @@
+<div class="contenedor-gestion">
+  <div class="tarjeta-formulario">
+    <header class="header-form">
+      <div class="titulo-seccion">
+        <span class="material-symbols-outlined icono-principal">search_insights</span>
+        <div>
+          <h1>Preferencias de Búsqueda</h1>
+          <p>Define los parámetros inmobiliarios para este cliente</p>
+        </div>
+      </div>
+      <button class="btn-cerrar" [routerLink]="['/leads', leadId]">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </header>
+
+    <form [formGroup]="busquedaForm" (ngSubmit)="guardar()">
+      
+      @if (busquedaForm.errors?.['precioInconsistente'] && busquedaForm.touched) {
+        <div class="alerta-error">
+          <span class="material-symbols-outlined">warning</span>
+          El precio mínimo no puede ser mayor al precio máximo.
+        </div>
+      }
+      @if (busquedaForm.errors?.['metrosInconsistentes'] && busquedaForm.touched) {
+        <div class="alerta-error">
+          <span class="material-symbols-outlined">warning</span>
+          Los metros cubiertos no pueden superar a los totales.
+        </div>
+      }
+
+      <div class="grid-form">
+        <div class="campo">
+          <label>Tipo de Propiedad *</label>
+          <select formControlName="tipoVivienda" [class.is-invalid]="f['tipoVivienda'].invalid && f['tipoVivienda'].touched">
+            <option value="" disabled>Seleccionar tipo...</option>
+            <option value="DEPTO">Departamento</option>
+            <option value="CASA">Casa</option>
+            <option value="PH">PH</option>
+            <option value="LOTE">Lote / Terreno</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label>Zona de interés *</label>
+          <input type="text" formControlName="zona" placeholder="Ej: Playa Grande"
+                 [class.is-invalid]="f['zona'].invalid && f['zona'].touched">
+        </div>
+
+        <div class="campo">
+          <label>Precio Mínimo (USD)</label>
+          <input type="number" formControlName="precioMin">
+        </div>
+
+        <div class="campo">
+          <label>Precio Máximo (USD) *</label>
+          <input type="number" formControlName="precioMax"
+                 [class.is-invalid]="f['precioMax'].invalid && f['precioMax'].touched">
+        </div>
+
+        <div class="campo">
+          <label>Metros Totales *</label>
+          <input type="number" formControlName="metrosTotales"
+                 [class.is-invalid]="f['metrosTotales'].invalid && f['metrosTotales'].touched">
+        </div>
+
+        <div class="campo">
+          <label>Metros Cubiertos</label>
+          <input type="number" formControlName="metrosCubiertos">
+        </div>
+
+        <div class="campo">
+          <label>Cantidad de Ambientes *</label>
+          <input type="number" formControlName="cantidadAmbientes"
+                 [class.is-invalid]="f['cantidadAmbientes'].invalid && f['cantidadAmbientes'].touched">
+        </div>
+
+        <div class="campo">
+          <label>Metros Descubiertos (Auto)</label>
+          <input type="number" formControlName="metrosDescubiertos" readonly class="input-readonly">
+        </div>
+      </div>
+
+      <div class="campo full-width">
+        <label>Observaciones adicionales</label>
+        <textarea formControlName="observaciones" rows="4" placeholder="Detalles específicos, cochera, orientación..."></textarea>
+      </div>
+
+      <div class="acciones">
+        <button type="button" class="btn-secundario" [routerLink]="['/leads', leadId]">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primario" [disabled]="busquedaForm.invalid">
+          <span class="material-symbols-outlined">save</span>
+          Guardar Búsqueda
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

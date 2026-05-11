@@ -1,0 +1,48 @@
+<section class="home-container">
+  @if (cargando()) {
+    <div class="loader-container">Cargando jornada de LeadEra...</div>
+  } @else {
+
+    <div class="home-header">
+      <h1>Hoy tenés <span class="highlight">{{ total() }}</span> tareas</h1>
+      <p class="subtitle">Gestioná tus contactos y hacé crecer tu cartera</p>
+    </div>
+
+    <div class="progress-card"  routerLink="/gestion-del-dia" style="cursor: pointer;">
+      <div class="progress-header">
+        <span>Progreso del día</span>
+        <span>Completaste <b>{{ completadas() }}</b> de {{ total() }} (Ver detalle)</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progreso()"></div>
+      </div>
+    </div>
+
+    <app-lead-section
+      title="Leads prioritarios"
+      subtitle="Atención inmediata requerida por falta de contacto"
+      badgeText="urgentes"
+      variant="prioritarios"
+      [leads]="leadsHoy()?.prioritarios || []"
+      (tareaCompletada)="actualizarVista($event)">
+    </app-lead-section>
+
+    <app-lead-section
+      title="Nuevos leads"
+      subtitle="Personas que consultaron recientemente y esperan respuesta"
+      badgeText="nuevos"
+      variant="nuevos"
+      [leads]="leadsHoy()?.nuevosSinContacto || []"
+      (tareaCompletada)="actualizarVista($event)">
+    </app-lead-section>
+
+    <app-lead-section
+      title="Seguimientos"
+      subtitle="Contactos activos que necesitan un recordatorio hoy"
+      badgeText="pendientes"
+      variant="seguimientos"
+      [leads]="leadsHoy()?.seguimientosDeHoy || []"
+      (tareaCompletada)="actualizarVista($event)">
+    </app-lead-section>
+  }
+</section>

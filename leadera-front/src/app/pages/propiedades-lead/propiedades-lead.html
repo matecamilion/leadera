@@ -1,0 +1,187 @@
+@if (cargando()) {
+  <div class="pantalla-carga">Cargando propiedades...</div>
+} @else {
+  <div class="contenedor-propiedades-lead">
+
+    <!-- ENCABEZADO -->
+    <header class="encabezado-pagina">
+      <div class="encabezado-izq">
+        <a [routerLink]="['/leads', leadId]" class="btn-volver">
+          <span class="material-symbols-outlined">arrow_back</span>
+          Volver al lead
+        </a>
+        <div class="titulo-bloque">
+          <h1>Propiedades asociadas</h1>
+          @if (lead()) {
+            <p class="subtitulo-lead">{{ lead().nombre }} {{ lead().apellido }}</p>
+          }
+        </div>
+      </div>
+      <div class="encabezado-der">
+        <div class="resumen-resultados">
+          <span class="material-symbols-outlined">home_work</span>
+          <span>
+            {{ propiedadesFiltradas().length }}
+            de {{ propiedades().length }}
+            {{ propiedades().length === 1 ? 'propiedad' : 'propiedades' }}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- BARRA DE FILTROS -->
+    <div class="barra-filtros">
+      <div class="campo-busqueda">
+        <span class="material-symbols-outlined icono-busqueda">search</span>
+        <input
+          type="text"
+          [ngModel]="textoBusqueda()"
+          (ngModelChange)="onBusquedaChange($event)"
+          placeholder="Buscar por dirección o zona..."
+          class="input-busqueda"
+        />
+      </div>
+
+      <select
+        [ngModel]="filtroTipo()"
+        (ngModelChange)="onTipoChange($event)"
+        class="select-filtro"
+      >
+        <option value="">Todos los tipos</option>
+        @for (tipo of tiposVivienda; track tipo) {
+          <option [value]="tipo">{{ tipo }}</option>
+        }
+      </select>
+
+      <select
+        [ngModel]="filtroEstado()"
+        (ngModelChange)="onEstadoChange($event)"
+        class="select-filtro"
+      >
+        <option value="">Todos los estados</option>
+        @for (estado of estadosPropiedad; track estado) {
+          <option [value]="estado">{{ estado }}</option>
+        }
+      </select>
+
+      @if (hayFiltrosActivos()) {
+        <button class="btn-limpiar" (click)="limpiarFiltros()">
+          <span class="material-symbols-outlined">close</span>
+          Limpiar
+        </button>
+      }
+    </div>
+
+    <!-- GRID DE PROPIEDADES -->
+    @if (propiedadesPaginadas().length > 0) {
+      <div class="grid-propiedades">
+        @for (prop of propiedadesPaginadas(); track prop.id) {
+          <div class="tarjeta-propiedad" (click)="verPropiedad(prop.id)">
+            <div class="prop-cabecera">
+              <span class="badge-tipo">{{ prop.tipoVivienda }}</span>
+              <span class="badge-estado" [ngClass]="prop.estado?.toLowerCase()">
+                {{ prop.estado }}
+              </span>
+            </div>
+
+            <h3 class="prop-direccion">{{ prop.direccion }}</h3>
+
+            <div class="prop-zona">
+              <span class="material-symbols-outlined">location_on</span>
+              <span>{{ prop.zona || 'Sin zona' }}</span>
+            </div>
+
+            <div class="prop-precio">
+              USD {{ prop.precio | number }}
+            </div>
+
+            <div class="prop-stats">
+              @if (prop.cantidadAmbientes) {
+                <div class="stat-item">
+                  <span class="material-symbols-outlined">meeting_room</span>
+                  <span>{{ prop.cantidadAmbientes }} amb.</span>
+                </div>
+              }
+              @if (prop.metrosTotales) {
+                <div class="stat-item">
+                  <span class="material-symbols-outlined">square_foot</span>
+                  <span>{{ prop.metrosTotales }} m²</span>
+                </div>
+              }
+              @if (prop.metrosCubiertos) {
+                <div class="stat-item">
+                  <span class="material-symbols-outlined">roofing</span>
+                  <span>{{ prop.metrosCubiertos }} m² cub.</span>
+                </div>
+              }
+            </div>
+
+            @if (prop.diasEnMercado != null) {
+              <div class="prop-mercado">
+                <span class="material-symbols-outlined">schedule</span>
+                <span>{{ prop.diasEnMercado }} días en mercado</span>
+              </div>
+            }
+
+            @if (prop.observaciones) {
+              <p class="prop-obs">{{ prop.observaciones }}</p>
+            }
+
+            <div class="prop-footer">
+              <span class="link-detalle">
+                Ver detalle
+                <span class="material-symbols-outlined">arrow_forward</span>
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- PAGINACIÓN -->
+      @if (totalPaginas() > 1) {
+        <div class="paginacion">
+          <button
+            class="btn-pagina btn-nav"
+            [disabled]="paginaActual() === 1"
+            (click)="irAPagina(paginaActual() - 1)"
+          >
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+
+          @for (pagina of paginas(); track pagina) {
+            <button
+              class="btn-pagina"
+              [class.activa]="paginaActual() === pagina"
+              (click)="irAPagina(pagina)"
+            >
+              {{ pagina }}
+            </button>
+          }
+
+          <button
+            class="btn-pagina btn-nav"
+            [disabled]="paginaActual() === totalPaginas()"
+            (click)="irAPagina(paginaActual() + 1)"
+          >
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+      }
+
+    } @else {
+      <div class="estado-vacio">
+        <span class="material-symbols-outlined icono-vacio">home_work</span>
+        @if (hayFiltrosActivos()) {
+          <h3>Sin resultados</h3>
+          <p>Ninguna propiedad coincide con los filtros aplicados.</p>
+          <button class="btn-limpiar-vacio" (click)="limpiarFiltros()">Limpiar filtros</button>
+        } @else {
+          <h3>Sin propiedades asociadas</h3>
+          <p>Este lead todavía no tiene propiedades cargadas.</p>
+          <a [routerLink]="['/leads', leadId]" class="btn-volver-lead">Volver al lead</a>
+        }
+      </div>
+    }
+
+  </div>
+}

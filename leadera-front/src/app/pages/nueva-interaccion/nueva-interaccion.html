@@ -1,0 +1,61 @@
+<div class="contenedor-interaccion">
+  <form [formGroup]="miFormulario" (ngSubmit)="guardar()" class="tarjeta-formulario">
+    
+    <div class="fila-input">
+      <label for="tipo">Tipo de interacción</label>
+      <div class="select-wrapper" [class.input-error]="esInvalido('tipo')">
+        <select id="tipo" formControlName="tipo">
+          <option value="" disabled>Seleccioná una opción...</option>
+          <option value="LLAMADA">Llamada</option>
+          <option value="WHATSAPP">WhatsApp</option>
+          <option value="VISITA">Visita</option>
+        </select>
+        <span class="material-symbols-outlined icono-select">expand_more</span>
+      </div>
+      @if (esInvalido('tipo')) {
+        <span class="msj-error">Este campo es obligatorio</span>
+      }
+    </div>
+
+    <div class="fila-input">
+      <label for="detalle">Detalle de lo conversado</label>
+      <textarea 
+        id="detalle" 
+        formControlName="detalle"
+        [class.input-error]="esInvalido('detalle')"
+        placeholder="Qué pasó con el lead..."></textarea>
+      
+      @if (esInvalido('detalle')) {
+        <span class="msj-error">
+          {{ miFormulario.get('detalle')?.errors?.['required'] ? 'El detalle es obligatorio' : 'Mínimo 10 caracteres' }}
+        </span>
+      }
+    </div>
+
+    <div class="fila-input seccion-agenda">
+      <label>¿Cuándo volvemos a contactar?</label>
+      <p class="instruccion-agenda">Programá el seguimiento para que aparezca en tu agenda.</p>
+      
+      <div class="atajos-agenda">
+        <button type="button" class="btn-atajo" (click)="setSeguimiento(1)">Mañana</button>
+        <button type="button" class="btn-atajo" (click)="setSeguimiento(3)">En 3 días</button>
+        <button type="button" class="btn-atajo" (click)="setSeguimiento(7)">1 semana</button>
+      </div>
+
+      <div class="input-fecha-wrapper">
+        <input 
+          type="datetime-local" 
+          formControlName="fechaProximoContacto"
+          class="input-fecha">
+        <span class="material-symbols-outlined icono-fecha">calendar_today</span>
+      </div>
+    </div>
+
+    <button 
+      type="submit" 
+      class="btn-guardar" 
+      [disabled]="miFormulario.invalid">
+      Guardar interacción
+    </button>
+  </form>
+</div>

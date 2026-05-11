@@ -1,0 +1,127 @@
+@if (operacion()) {
+  <div class="contenedor-operacion">
+    <div class="header-operacion">
+      <div>
+        <button class="btn-volver" [routerLink]="['/leads', leadId]">← Volver al lead</button>
+
+        <h1>{{ operacion()!.titulo }}</h1>
+
+        <div class="badges">
+          <span class="badge-tipo" [ngClass]="operacion()!.tipoOperacion.toLowerCase()">
+            {{ operacion()!.tipoOperacion }}
+          </span>
+
+          <span class="badge-estado" [ngClass]="operacion()!.estadoOperacion.toLowerCase()">
+            {{ operacion()!.estadoOperacion.replace('_', ' ') }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="header-cambio-estado">
+        <div>
+          <h2>Estado de la operación</h2>
+          <p>Cambiá el avance comercial de esta operación.</p>
+        </div>
+
+        @if (guardandoEstado()) {
+          <span class="guardando">Guardando...</span>
+        }
+      </div>
+
+      <div class="estado-acciones">
+        @for (estado of estadosOperacion; track estado) {
+          <button
+            class="btn-estado-operacion"
+            [ngClass]="[
+              estado.toLowerCase(),
+              operacion()!.estadoOperacion === estado ? 'activo' : '',
+            ]"
+            [disabled]="guardandoEstado() || operacion()!.estadoOperacion === estado"
+            (click)="cambiarEstadoOperacion(estado)"
+          >
+            {{ formatearEstado(estado) }}
+          </button>
+        }
+      </div>
+
+      @if (errorEstado()) {
+        <p class="error-estado">{{ errorEstado() }}</p>
+      }
+    </section>
+
+    @if (operacion()!.tipoOperacion === 'VENTA' && operacion()!.propiedad) {
+      <section class="card">
+        <h2>Propiedad asociada</h2>
+
+        <div class="detalle-principal">
+          <h3>{{ operacion()!.propiedad!.direccion }}</h3>
+          <span>{{ operacion()!.propiedad!.tipoVivienda }}</span>
+        </div>
+
+        <div class="grid-info">
+          <div>
+            <label>Precio</label>
+            <strong>USD {{ operacion()!.propiedad!.precio | number }}</strong>
+          </div>
+
+          <div>
+            <label>Ambientes</label>
+            <strong>{{ operacion()!.propiedad!.cantidadAmbientes }}</strong>
+          </div>
+
+          <div>
+            <label>Zona</label>
+            <strong>{{ operacion()!.propiedad!.zona || 'Sin zona' }}</strong>
+          </div>
+
+          <div>
+            <label>Estado</label>
+            <strong>{{ operacion()!.propiedad!.estado }}</strong>
+          </div>
+        </div>
+      </section>
+    }
+
+    @if (operacion()!.tipoOperacion === 'COMPRA' && operacion()!.busqueda) {
+      <section class="card">
+        <h2>Búsqueda asociada</h2>
+
+        <div class="detalle-principal">
+          <h3>{{ operacion()!.busqueda!.tipoVivienda }} en {{ operacion()!.busqueda!.zona }}</h3>
+          <span>{{ operacion()!.busqueda!.cantidadAmbientes }} ambientes</span>
+        </div>
+
+        <div class="grid-info">
+          <div>
+            <label>Presupuesto mínimo</label>
+            <strong>USD {{ operacion()!.busqueda!.precioMin | number }}</strong>
+          </div>
+
+          <div>
+            <label>Presupuesto máximo</label>
+            <strong>USD {{ operacion()!.busqueda!.precioMax | number }}</strong>
+          </div>
+
+          <div>
+            <label>Metros totales</label>
+            <strong>{{ operacion()!.busqueda!.metrosTotales || 0 }} m²</strong>
+          </div>
+
+          <div>
+            <label>Metros cubiertos</label>
+            <strong>{{ operacion()!.busqueda!.metrosCubiertos || 0 }} m²</strong>
+          </div>
+        </div>
+
+        <div class="observaciones">
+          <label>Observaciones</label>
+          <p>{{ operacion()!.busqueda!.observaciones || 'Sin observaciones cargadas.' }}</p>
+        </div>
+      </section>
+    }
+  </div>
+} @else {
+  <div class="loading">Cargando operación...</div>
+}

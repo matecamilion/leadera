@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+.contenedor-detalle {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  padding: 32px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+
+.tarjeta-blanca {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.tarjeta-blanca h3 { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 0 0 16px; }
+
+.btn-volver { color: #64748b; font-size: 0.9rem; text-decoration: none; font-weight: 500; }
+.btn-volver:hover { color: #1e293b; }
+
+.prop-header-page { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.prop-tipo-grande { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+.prop-direccion-grande { margin: 0 0 6px; font-size: 1.4rem; font-weight: 700; color: #1e293b; }
+.prop-zona { margin: 0 0 8px; color: #64748b; font-size: 0.9rem; }
+.dias-mercado-grande { margin: 0; color: #14b8a6; font-weight: 600; font-size: 0.9rem; }
+
+.prop-datos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.dato-box { background: #f8fafc; border-radius: 10px; padding: 12px; border: 1px solid #e2e8f0; }
+.dato-label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px; }
+.prop-obs { color: #475569; font-size: 0.9rem; background: #f8fafc; border-radius: 8px; padding: 12px; margin: 0; }
+
+.badge-estado-prop { padding: 2px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; }
+.badge-estado-prop.disponible { background: #dcfce7; color: #16a34a; }
+.badge-estado-prop.reservada { background: #fef3c7; color: #d97706; }
+.badge-estado-prop.vendida { background: #f3f4f6; color: #4b5563; }
+
+.estado-acciones { display: flex; gap: 8px; }
+.btn-estado-prop { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+.btn-estado-prop.disponible { background: #dcfce7; color: #16a34a; }
+.btn-estado-prop.reservada { background: #fef3c7; color: #d97706; }
+.btn-estado-prop.vendida { background: #f3f4f6; color: #4b5563; }
+
+.columna-historial { height: fit-content; }
+.header-historial { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.header-historial h2 { margin: 0; font-size: 1.3rem; font-weight: 700; color: #1e293b; }
+
+.btn-nueva {
+  background: #f0fdfa; color: #14b8a6;
+  border: 2px solid #14b8a6;
+  padding: 10px 20px; border-radius: 10px;
+  font-weight: 700; font-size: 0.85rem; cursor: pointer;
+}
+
+.form-evento {
+  display: flex; flex-direction: column; gap: 10px;
+  background: #f8fafc; padding: 16px; border-radius: 10px;
+  margin-bottom: 20px; border: 1px solid #e2e8f0;
+}
+.form-evento select, .form-evento textarea {
+  padding: 10px; border: 1px solid #e2e8f0;
+  border-radius: 8px; font-size: 0.9rem; font-family: 'Inter', sans-serif;
+}
+.btn-guardar-evento {
+  background: #14b8a6; color: white; border: none;
+  padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer;
+}
+
+.timeline { position: relative; padding-left: 32px; }
+.timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 0; width: 2px; background-color: #e2e8f0; }
+.timeline-item { position: relative; margin-bottom: 24px; }
+.timeline-punto { position: absolute; left: -32px; top: 8px; width: 12px; height: 12px; background-color: #14b8a6; border-radius: 50%; border: 3px solid white; z-index: 2; }
+.timeline-card { background: #f8fafc; border-radius: 12px; padding: 16px 20px; border: 1px solid #f1f5f9; }
+.timeline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.tipo { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #334155; }
+.fecha { font-size: 0.85rem; color: #94a3b8; }
+.comentario { margin: 0; color: #475569; font-size: 0.95rem; }
+
+.badge-evento { padding: 2px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; }
+.badge-evento.visita { background: #dbeafe; color: #1e40af; }
+.badge-evento.consulta { background: #fef3c7; color: #d97706; }
+
+.sin-datos { color: #94a3b8; font-size: 0.9rem; }
+.loading { display: flex; justify-content: center; align-items: center; height: 100vh; color: #64748b; }
+
+@media (max-width: 900px) {
+  .contenedor-detalle { display: flex; flex-direction: column; padding: 16px; }
+}

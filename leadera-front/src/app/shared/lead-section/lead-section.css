@@ -1,0 +1,150 @@
+.section-block {
+  margin-top: 40px;
+}
+
+.section-block.variant-completados {
+  opacity: 0.85;
+}
+
+/* ========================= */
+/* HEADER DE SECCIÓN */
+/* ========================= */
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.section-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0; /* Necesario para que flex-children puedan truncar texto */
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap; /* En mobile el badge puede bajar */
+}
+
+.section-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px; /* No se achica */
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.section-icon.prioritarios { background: #ffe5e5; color: #ff0000; }
+.section-icon.seguimientos { background: #fff3bf; color: #a16207; }
+.section-icon.nuevos       { background: #dbeafe; color: #2563eb; }
+.section-icon.completados  { background: #dcfce7; color: #15803d; }
+
+.section-title {
+  font-size: 1.4rem;    /* Antes era 1.6rem */
+  font-weight: 800;
+  margin: 0;
+  color: #1e293b;
+}
+
+.section-subtitle {
+  color: #64748b;
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+/* ========================= */
+/* BADGE DE CONTEO */
+/* ========================= */
+
+.count-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.count-badge.prioritarios { background: #ffe5e5; color: #ff0000; }
+.count-badge.seguimientos { background: #fff3bf; color: #a16207; }
+.count-badge.nuevos       { background: #dbeafe; color: #2563eb; }
+.count-badge.completados  { background: #dcfce7; color: #15803d; }
+
+/* ========================= */
+/* CAJA URGENTES (derecha) */
+/* ========================= */
+
+.urgent-box {
+  border-radius: 14px;
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 80px;
+  flex-shrink: 0;
+  background: #ff0000;
+  color: white;
+}
+
+.urgent-box .number {
+  font-size: 1.6rem;
+  font-weight: 800;
+  display: block;
+  line-height: 1;
+}
+
+.urgent-box .label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ========================= */
+/* GRILLA DE CARDS */
+/* ========================= */
+
+.cards-grid {
+  display: grid;
+  /* auto-fill con mínimo 280px: 
+     - En pantallas anchas: 2 columnas
+     - En tablet angosta (~600px): 1 columna sola
+     - En mobile: 1 columna
+     Sin necesidad de múltiples breakpoints */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 600px) {
+  .section-block {
+    margin-top: 28px;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr; /* 1 columna siempre en mobile */
+    gap: 12px;
+  }
+
+  .urgent-box {
+    padding: 8px 12px;
+    min-width: 64px;
+  }
+
+  .urgent-box .number {
+    font-size: 1.3rem;
+  }
+}

@@ -1,0 +1,41 @@
+<div class="lead-card" [routerLink]="['/leads', lead().id]">
+  <div class="lead-card-header">
+    <h3 class="lead-name">{{ nombreCompleto() }}</h3>
+
+    @if (completado()) {
+      <div class="contactado-badge">
+        ✓ Contactado
+      </div>
+    }
+  </div>
+
+  <div class="lead-meta">
+    <span class="estado-badge" [class]="claseEstado()">
+      {{ textoEstado() }}
+    </span>
+
+    <span class="tiempo-contacto">
+      {{ tiempoDesdeUltimoContacto() }}
+    </span>
+  </div>
+
+  <div class="lead-info">
+    <p>
+      <strong>Última interacción:</strong>
+      {{ ultimaInteraccion() }}
+    </p>
+  </div>
+
+  <div class="lead-actions">
+    <button
+    class="btn-principal"
+    (click)="irANuevaInteraccion()">
+
+      @if (!completado()) {
+        Registrar interacción
+      } @else {
+        Contactado
+      }
+    </button>
+  </div>
+</div>

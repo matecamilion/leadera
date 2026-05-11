@@ -1,0 +1,213 @@
+/* Heredamos la tipografía Inter y la base del listado */
+
+.contenedor-interaccion {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc; /* Gris azulado muy suave */
+  min-height: 100vh;
+  padding: 3rem 2rem;
+  max-width: 600px; /* Centramos el formulario */
+  margin: 0 auto;
+}
+
+/* Header */
+.header-interaccion {
+  margin-bottom: 2rem;
+}
+
+.btn-volver {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  width: fit-content;
+  transition: color 0.2s;
+}
+
+.btn-volver:hover {
+  color: #1e293b;
+}
+
+.titulo-contexto h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.nombre-contexto {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 4px 0 0 0;
+}
+
+.destacado {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Tarjeta y Formulario */
+.tarjeta-formulario {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.fila-input {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+/* Inputs, Selects y Textareas */
+input, select, textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #1e293b;
+  transition: all 0.2s;
+  box-sizing: border-box; /* Crucial para que el padding no rompa el ancho */
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #34d399; /* Verde más suave para el foco */
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+}
+
+input::placeholder, textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* Select con flecha custom */
+.select-wrapper {
+  position: relative;
+}
+
+select {
+  appearance: none; /* Quitamos la flecha nativa */
+  -webkit-appearance: none;
+  padding-right: 40px; /* Espacio para la flecha */
+}
+
+.icono-select {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none; /* Para que el click pase al select */
+}
+
+/* Textarea */
+textarea {
+  resize: vertical; /* Solo permitimos redimensionar hacia abajo */
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+/* Botón de Guardar */
+.btn-guardar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background-color: #10b981; /* Tu Verde LeadEra */
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.btn-guardar:hover {
+  background-color: #059669; /* Verde más oscuro al hover */
+}
+
+.btn-guardar .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.seccion-agenda {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f8fafc; /* Un gris muy suave para diferenciarlo */
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.instruccion-agenda {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.atajos-agenda {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.btn-atajo {
+  flex: 1;
+  background: white;
+  border: 1px solid #cbd5e1;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-atajo:hover {
+  background: #0f172a;
+  color: white;
+  border-color: #0f172a;
+}
+
+.input-fecha-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-fecha {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-family: inherit;
+  color: #1e293b;
+  background: white;
+}
+
+.icono-fecha {
+  position: absolute;
+  right: 12px;
+  color: #64748b;
+  pointer-events: none;
+  font-size: 20px;
+}

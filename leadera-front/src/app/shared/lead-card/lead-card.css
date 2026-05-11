@@ -1,0 +1,171 @@
+.lead-card {
+  cursor: pointer;
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e9edf3;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* Eliminamos min-height fijo — la card crece con su contenido */
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.lead-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
+}
+
+/* ========================= */
+/* HEADER */
+/* ========================= */
+
+.lead-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lead-name {
+  margin: 0;
+  font-size: 1.15rem;   /* Antes era 2rem — demasiado para una card de 2 col */
+  font-weight: 800;
+  line-height: 1.25;
+  color: #0f172a;
+  /* Corta el nombre largo con ... */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1; /* Toma el espacio disponible sin empujar el badge */
+}
+
+.contactado-badge {
+  background: #dcfce7;
+  color: #16a34a;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap; /* El badge no rompe en dos líneas */
+  flex-shrink: 0;
+}
+
+/* ========================= */
+/* META (estado + tiempo) */
+/* ========================= */
+
+.lead-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.estado-caliente { background: #ffe5e5; color: red; border: 1px solid #f74d4d; }
+.estado-tibio    { background: #fff3bf; color: #a16207; border: 1px solid #f4df7b; }
+.estado-frio     { background: #dbeafe; color: #2563eb; border: 1px solid #bfdbfe; }
+.estado-ganado   { background: #8de085; color: #3c6731; }
+.estado-inactivo { background-color: #f3f4f6; color: #4b5563; border: 1px solid #8b8d91; }
+
+.tiempo-contacto {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #64748b;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.tiempo-contacto::before {
+  content: "◷";
+  font-size: 0.88rem;
+  color: #94a3b8;
+}
+
+/* ========================= */
+/* INFO (última interacción) */
+/* ========================= */
+
+.lead-info {
+  color: #334155;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  /* Limitar a 2 líneas y cortar con ... */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lead-info strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* ========================= */
+/* ACCIONES */
+/* ========================= */
+
+.lead-actions {
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.btn-principal {
+  width: 100%;
+  height: 44px;         /* Antes era 56px — más compacto */
+  border: none;
+  border-radius: 14px;
+  font-size: 0.95rem;   /* Antes era 1.3rem */
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.btn-principal:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.97);
+}
+
+.btn-principal.completado-rojo  { background: #ef7d84; color: #ffffff; }
+.btn-principal.completado-gris  { background: #9aa5b1; color: #ffffff; }
+.btn-principal.completado-verde { background: #95e1c3; color: #ffffff; }
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 480px) {
+  .lead-card {
+    padding: 16px;
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  .lead-name {
+    font-size: 1.05rem;
+  }
+
+  .btn-principal {
+    height: 42px;
+    font-size: 0.9rem;
+  }
+}

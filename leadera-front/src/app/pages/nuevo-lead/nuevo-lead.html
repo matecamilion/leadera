@@ -1,0 +1,64 @@
+<div class="contenedor-modal">
+  <div class="modal-header">
+    <div class="icono-container">
+      <span class="material-symbols-outlined">person_add</span>
+    </div>
+    <div class="titulo-header">
+      <h2>Nuevo Prospecto</h2>
+      <p>Define los datos básicos del contacto en el sistema</p>
+    </div>
+  </div>
+
+  <form [formGroup]="leadForm" (ngSubmit)="guardar()" class="formulario-estilo">
+    <div class="grid-layout">
+      <div class="campo">
+        <label>Nombre *</label>
+        <input type="text" formControlName="nombre" placeholder="Ej: Mateo" />
+      </div>
+      <div class="campo">
+        <label>Apellido *</label>
+        <input type="text" formControlName="apellido" placeholder="Ej: Rodriguez" />
+      </div>
+
+      <div class="campo">
+        <label>Teléfono / WhatsApp *</label>
+        <input type="text" formControlName="telefono" placeholder="223 ..." />
+      </div>
+      <div class="campo">
+        <label>Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="mateo@ejemplo.com"
+          [class.input-error]="errorEmail"
+        />
+        @if (errorEmail) {
+          <span class="error-mensaje">{{ errorEmail }}</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Estado Inicial *</label>
+        <div class="select-custom">
+          <select formControlName="estado">
+            <option value="FRIO">Frío (Sin contacto previo)</option>
+            <option value="TIBIO">Tibio (Ya mostró interés)</option>
+            <option value="CALIENTE">Caliente (Urgencia de compra)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="campo full-width">
+        <label>Programar primer seguimiento (Opcional)</label>
+        <input type="datetime-local" formControlName="fechaProximoSeguimiento" />
+      </div>
+    </div>
+
+    <div class="footer-acciones">
+      <button type="button" class="btn-secundario" (click)="volver()">Cancelar</button>
+      <button type="submit" class="btn-primario" [disabled]="leadForm.invalid">
+        Crear y Continuar
+      </button>
+    </div>
+  </form>
+</div>

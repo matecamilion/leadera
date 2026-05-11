@@ -1,0 +1,88 @@
+@if (propiedad()) {
+  <div class="contenedor-detalle">
+
+    <aside class="columna-info">
+      <div class="tarjeta-blanca">
+        <a [routerLink]="['/leads', propiedad()!.lead?.id]" class="btn-volver">← Volver al lead</a>
+      </div>
+
+      <div class="tarjeta-blanca">
+        <div class="prop-header-page">
+          <span class="prop-tipo-grande">{{ propiedad()!.tipoVivienda }}</span>
+          <span class="badge-estado-prop" [ngClass]="propiedad()!.estado?.toLowerCase()">
+            {{ propiedad()!.estado }}
+          </span>
+        </div>
+        <h2 class="prop-direccion-grande">{{ propiedad()!.direccion }}</h2>
+        <p class="prop-zona">📍 {{ propiedad()!.zona }}</p>
+        <p class="dias-mercado-grande">📅 {{ propiedad()!.diasEnMercado }} días en mercado</p>
+      </div>
+
+      <div class="tarjeta-blanca">
+        <h3>Datos de la propiedad</h3>
+        <div class="prop-datos-grid">
+          <div class="dato-box"><span class="dato-label">Precio</span><strong>USD {{ propiedad()!.precio | number }}</strong></div>
+          <div class="dato-box"><span class="dato-label">Ambientes</span><strong>{{ propiedad()!.cantidadAmbientes }}</strong></div>
+          <div class="dato-box"><span class="dato-label">m² Totales</span><strong>{{ propiedad()!.metrosTotales }}</strong></div>
+          <div class="dato-box"><span class="dato-label">m² Cubiertos</span><strong>{{ propiedad()!.metrosCubiertos }}</strong></div>
+        </div>
+        @if (propiedad()!.observaciones) {
+          <p class="prop-obs">{{ propiedad()!.observaciones }}</p>
+        }
+      </div>
+
+      <div class="tarjeta-blanca">
+        <h3>Estado de la propiedad</h3>
+        <div class="estado-acciones">
+          <button class="btn-estado-prop disponible" (click)="cambiarEstado('DISPONIBLE')">Disponible</button>
+          <button class="btn-estado-prop reservada" (click)="cambiarEstado('RESERVADA')">Reservada</button>
+          <button class="btn-estado-prop vendida" (click)="cambiarEstado('VENDIDA')">Vendida</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="columna-historial tarjeta-blanca">
+      <div class="header-historial">
+        <h2>Actividad de la propiedad</h2>
+        <button class="btn-nueva" (click)="mostrarFormEvento = !mostrarFormEvento">
+          + Registrar evento
+        </button>
+      </div>
+
+      @if (mostrarFormEvento) {
+        <div class="form-evento">
+          <select [(ngModel)]="nuevoEvento.tipo">
+            <option value="">Tipo...</option>
+            <option value="VISITA">Visita</option>
+            <option value="CONSULTA">Consulta</option>
+          </select>
+          <textarea [(ngModel)]="nuevoEvento.detalle" rows="3" placeholder="Detalle del evento..."></textarea>
+          <button class="btn-guardar-evento" (click)="registrarEvento()">Guardar</button>
+        </div>
+      }
+
+      <div class="timeline">
+        @for (evento of eventos(); track evento.id; let i = $index) {
+          <div class="timeline-item">
+            <div class="timeline-punto"></div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <span class="tipo">
+                  <span class="badge-evento" [ngClass]="evento.tipo?.toLowerCase()">{{ evento.tipo }}</span>
+                  #{{ i + 1 }}
+                </span>
+                <span class="fecha">{{ evento.fecha | date: "d 'de' MMMM, HH:mm" }}</span>
+              </div>
+              <p class="comentario">{{ evento.detalle }}</p>
+            </div>
+          </div>
+        } @empty {
+          <p class="sin-datos">Sin actividad registrada aún.</p>
+        }
+      </div>
+    </main>
+
+  </div>
+} @else {
+  <div class="loading">Cargando propiedad...</div>
+}

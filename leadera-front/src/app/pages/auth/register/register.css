@@ -1,0 +1,118 @@
+/* Contenedor y Card (Igual que el Login para coherencia) */
+.auth-container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.auth-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 440px; /* Un pelín más ancho para que la fila doble respire */
+  padding: 48px 40px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.auth-header h1 {
+  text-align: center;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+}
+
+.auth-header p {
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+/* LÓGICA DE LA FILA (Nombre y Apellido) */
+.input-row {
+  display: flex;
+  gap: 16px; /* Espacio entre Nombre y Apellido */
+  margin-bottom: 20px;
+}
+
+.input-row .input-group {
+  flex: 1; /* Hace que ambos ocupen el 50% */
+  margin-bottom: 0; /* Quitamos el margen inferior aquí para usar el de la fila */
+}
+
+/* Campos de entrada estándar */
+.input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.input-group input {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Botón LeadEra */
+.btn-primary {
+  width: 100%;
+  height: 46px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.btn-primary:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Footer */
+.auth-footer {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.auth-footer a {
+  color: #10b981;
+  text-decoration: none;
+  font-weight: 600;
+}

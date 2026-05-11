@@ -1,0 +1,60 @@
+<div class="modal-content detalle-prop-content">
+  <div class="prop-modal-header">
+    <div>
+      <span class="prop-tipo-grande">{{ propiedad.tipoVivienda }}</span>
+      <h3>{{ propiedad.direccion }}</h3>
+      <p class="prop-zona">📍 {{ propiedad.zona }}</p>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px">
+      <span class="badge-estado-prop" [ngClass]="propiedad.estado?.toLowerCase()">
+        {{ propiedad.estado }}
+      </span>
+      <span class="dias-mercado-grande">📅 {{ propiedad.diasEnMercado }} días en mercado</span>
+    </div>
+  </div>
+
+  <div class="prop-datos-grid">
+    <div class="dato-box"><span class="dato-label">Precio</span><strong>USD {{ propiedad.precio | number }}</strong></div>
+    <div class="dato-box"><span class="dato-label">Ambientes</span><strong>{{ propiedad.cantidadAmbientes }}</strong></div>
+    <div class="dato-box"><span class="dato-label">m² Totales</span><strong>{{ propiedad.metrosTotales }}</strong></div>
+    <div class="dato-box"><span class="dato-label">m² Cubiertos</span><strong>{{ propiedad.metrosCubiertos }}</strong></div>
+  </div>
+
+  @if (propiedad.observaciones) {
+    <p class="prop-obs">{{ propiedad.observaciones }}</p>
+  }
+
+  <!-- Cambiar estado -->
+  <div class="estado-acciones">
+    <button class="btn-estado-prop disponible" (click)="cambiarEstado('DISPONIBLE')">Disponible</button>
+    <button class="btn-estado-prop reservada" (click)="cambiarEstado('RESERVADA')">Reservada</button>
+    <button class="btn-estado-prop vendida" (click)="cambiarEstado('VENDIDA')">Vendida</button>
+  </div>
+
+  <!-- Historial de eventos -->
+  <div class="eventos-header">
+    <h4>Actividad de la propiedad</h4>
+    <button class="btn-nueva-propiedad" (click)="mostrarFormEvento = !mostrarFormEvento">
+      + Registrar evento
+    </button>
+  </div>
+
+  @if (mostrarFormEvento) {
+    <div class="form-evento">
+      <select [(ngModel)]="nuevoEvento.tipo">
+        <option value="">Tipo...</option>
+        <option value="VISITA">Visita</option>
+        <option value="CONSULTA">Consulta</option>
+      </select>
+      <textarea [(ngModel)]="nuevoEvento.detalle" rows="2" placeholder="Detalle del evento..."></textarea>
+      <button class="btn-guardar" style="width:100%" (click)="registrarEvento()">Guardar</button>
+    </div>
+  }
+
+  <button class="btn-configurar-busqueda-full" [routerLink]="['/propiedades', propiedad.id]" (click)="cerrar.emit()">
+  <span class="material-symbols-outlined">bar_chart</span>
+  Ver actividad completa
+</button>
+
+  <button class="btn-cancelar" style="width:100%; margin-top:16px" (click)="cerrar.emit()">Cerrar</button>
+</div>

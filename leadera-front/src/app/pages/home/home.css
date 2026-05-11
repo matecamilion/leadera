@@ -1,0 +1,97 @@
+/* CONTENEDOR GENERAL */
+.home-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 20px 64px; /* Bajamos un poco el padding superior */
+  box-sizing: border-box; 
+  font-family: 'Inter', sans-serif;
+}
+
+/* ========================= */
+/* HEADER PRINCIPAL */
+/* ========================= */
+
+.home-header {
+  margin-bottom: 24px;
+}
+
+.home-header h1 {
+  /* Usamos clamp para que el título se achique solo en el celu */
+  font-size: clamp(1.8rem, 5vw, 2.8rem); 
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.highlight {
+  color: #14b8a6;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  margin-bottom: 0;
+}
+
+/* ========================= */
+/* PROGRESS CARD */
+/* ========================= */
+
+.progress-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  margin: 24px 0 40px;
+  border: 1px solid #f1f5f9; /* Un borde sutil para que no flote tanto */
+}
+
+/* HEADER PROGRESS: Acá es donde fallaba el celu */
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap; /* Para que en el celu el texto largo baje */
+  gap: 8px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+/* BARRA */
+.progress-bar {
+  width: 100%;
+  height: 8px; /* Un poco más delgada queda más elegante */
+  background: #f1f5f9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* RELLENO */
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #14b8a6, #10b981);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 600px) {
+  .home-container {
+    padding: 16px 16px 40px;
+  }
+
+  .progress-card {
+    padding: 14px;
+  }
+
+  /* En el celu, los dos textos del progreso van uno arriba del otro */
+  .progress-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

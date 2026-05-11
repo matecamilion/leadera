@@ -1,0 +1,226 @@
+/* 1. RESET Y CONFIGURACIÓN DE FUENTE */
+.contenedor-gestion {
+  /* Asegurate de tener @import o el link de Google Fonts para 'Inter' */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #f1f5f9; /* Fondo gris slate muy suave */
+  min-height: 100vh;
+  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* 2. LA TARJETA PRINCIPAL */
+.tarjeta-formulario {
+  background: white;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 
+              0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-sizing: border-box;
+}
+
+/* 3. HEADER DEL FORMULARIO */
+.header-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.titulo-seccion {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.icono-principal {
+  font-size: 32px;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.header-form h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.header-form p {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin: 4px 0 0 0;
+}
+
+/* 4. GRID Y CAMPOS */
+.grid-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+  margin-left: 4px;
+}
+
+/* 5. INPUTS, SELECTS Y TEXTAREAS */
+input, select, textarea {
+  padding: 14px 18px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #1e293b;
+  background-color: #f8fafc; /* Fondo sutilmente gris */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  background-color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.input-readonly {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+}
+
+/* 6. VALIDACIONES Y ALERTAS */
+.is-invalid {
+  border-color: #f87171 !important;
+  background-color: #fef2f2;
+}
+
+.alerta-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 1px solid #fee2e2;
+  margin-bottom: 32px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* 7. BOTONES Y ACCIONES */
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-primario {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primario:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primario:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-secundario {
+  background: white;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secundario:hover {
+  background: #f8fafc;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+.btn-cerrar {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-cerrar:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* 8. RESPONSIVIDAD */
+@media (max-width: 640px) {
+  .grid-form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .tarjeta-formulario {
+    padding: 32px 20px;
+    border-radius: 0; /* Full width en móviles */
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+
+  .btn-primario, .btn-secundario {
+    width: 100%;
+    justify-content: center;
+  }
+}

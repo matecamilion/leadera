@@ -1,0 +1,178 @@
+header {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  height: 70px;
+  border-bottom: 1px solid #ebeced;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.div-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* En Desktop mantenemos todo en línea */
+.div-derecha, .botones-acciones {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+img {
+  width: 110px;
+  height: 30px;
+  object-fit: contain;
+}
+
+button {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+}
+
+.btn-todos { background: #32b389; color: white; }
+.btn-gestion { background: #f1f5f9; color: #15803d; border: 1px solid #dcfce7; }
+.btn-nuevo-prospecto { background: white; color: #1e293b; border: 1px solid #e2e8f0; }
+
+.user-dropdown {
+  position: relative;
+  margin-left: 10px;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  background-color: #1e293b;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: white;
+  min-width: 220px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+  padding: 8px 0;
+  z-index: 1100;
+}
+
+.user-info{
+  text-align: center;
+  
+}
+
+.user-name{
+  font-weight: bold;
+}
+
+.user-btns{
+  display: flex;
+  flex-direction: column;
+}
+
+.user-btns button{
+  margin: 5px;
+  background: #f1f5f9; color: #15803d; border: 1px solid #dcfce7;
+}
+/* --- SECCIÓN RESPONSIVE CORREGIDA --- */
+
+@media (max-width: 768px) {
+  header {
+    height: auto;
+    padding: 12px 0;
+  }
+
+  .div-container {
+    display: grid;
+    /* Logo a la izquierda, Avatar a la derecha */
+    grid-template-columns: 1fr auto; 
+    row-gap: 15px;
+    padding: 0 15px;
+  }
+
+  /* Forzamos que el div-derecha no bloquee el flujo del grid */
+  .div-derecha {
+    display: contents; 
+  }
+
+  .div-izquierda {
+    justify-self: start;
+  }
+
+  /* El avatar se posiciona arriba a la derecha */
+  .user-dropdown {
+    grid-column: 2;
+    grid-row: 1;
+    margin-left: 0;
+  }
+
+  /* Los botones pasan a ocupar toda la fila de abajo */
+  .botones-acciones {
+    grid-column: span 2;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales */
+    gap: 8px;
+    width: 100%;
+  }
+
+  /* Ocultamos el texto largo en móviles para que no explote */
+  .texto-boton {
+    display: none;
+  }
+
+  button {
+    width: 100%;
+    justify-content: center;
+    height: 44px; /* Más cómodo para el dedo */
+    padding: 0;
+  }
+
+  /* En móvil el dropdown que ocupe buen espacio */
+  .dropdown-content {
+    position: fixed;
+    top: 65px;
+    left: 15px;
+    right: 15px;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Si es muy chico, el botón de "Nuevo Lead" puede ir abajo solo */
+  .botones-acciones {
+    grid-template-columns: 1fr 1fr;
+  }
+  .btn-nuevo-prospecto {
+    grid-column: span 2;
+  }
+  .texto-boton {
+    display: inline; /* Volvemos a mostrar texto si están apilados */
+  }
+}

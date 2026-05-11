@@ -1,0 +1,28 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>LeadEra</h1>
+      <p>Bienvenido, Agente. Iniciá sesión para continuar.</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="ejemplo@leadera.com">
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password" placeholder="••••••••">
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid" class="btn-primary">
+        Entrar al Dashboard
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿No tenés cuenta? <a routerLink="/register">Registrate acá</a></p>
+    </div>
+  </div>
+</div>

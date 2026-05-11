@@ -1,0 +1,108 @@
+<div class="contenedor-listado">
+  <header class="header-principal">
+    <div class="titulo-grupo">
+      <h1>Todos los leads</h1>
+      <span class="contador-leads">{{ leadsFiltrados().length }} leads encontrados</span>
+    </div>
+
+    <div class="buscador-wrapper">
+      <input
+        type="text"
+        placeholder="Buscar por nombre, email, teléfono o propiedad..."
+        [ngModel]="filtroBusqueda()"
+        (ngModelChange)="filtroBusqueda.set($event)"
+      />
+    </div>
+  </header>
+
+  <nav class="pestañas-filtro">
+    <button
+      [class.activa]="estadoSeleccionado() === 'TODOS'"
+      (click)="estadoSeleccionado.set('TODOS')"
+    >
+      Todos ({{ leads().length }})
+    </button>
+    <button
+      [class.activa]="estadoSeleccionado() === 'CALIENTE'"
+      (click)="estadoSeleccionado.set('CALIENTE')"
+    >
+      Calientes
+    </button>
+    <button
+      [class.activa]="estadoSeleccionado() === 'TIBIO'"
+      (click)="estadoSeleccionado.set('TIBIO')"
+    >
+      Tibios
+    </button>
+    <button
+      [class.activa]="estadoSeleccionado() === 'FRIO'"
+      (click)="estadoSeleccionado.set('FRIO')"
+    >
+      Frios
+    </button>
+    <button
+      [class.activa]="estadoSeleccionado() === 'INACTIVO'"
+      (click)="estadoSeleccionado.set('INACTIVO')"
+    >
+      Inactivos
+    </button>
+
+  </nav>
+
+  <div class="lista-contenedor">
+    @for (lead of leadsFiltrados(); track lead.id) {
+      <div class="tarjeta-lead">
+        <div class="seccion-principal">
+          <div class="fila-superior">
+            <h2 class="nombre-lead">{{ lead.nombre }} {{ lead.apellido }}</h2>
+            <span class="badge-estado" [ngClass]="lead.estado.toLowerCase()">{{
+              lead.estado
+            }}</span>
+          </div>
+
+          <div class="fila-contacto">
+            <span class="dato">
+              <span class="material-symbols-outlined icono-v">call</span>
+              {{ lead.telefono }}
+            </span>
+            <span class="dato">
+              <span class="material-symbols-outlined icono-v">mail</span>
+              {{ lead.email }}
+            </span>
+          </div>
+
+          <div class="fila-meta">
+            <span class="tiempo">
+              <span class="material-symbols-outlined icono-s">schedule</span>
+              {{ lead.ultimoContacto | tiempoTranscurrido }}
+            </span>
+            <span class="interacciones">
+              <span class="material-symbols-outlined icono-s">chat_bubble</span>
+              {{ lead.cantidadInteracciones }} interacciones
+            </span>
+          </div>
+
+          <div class="nota-ultima-accion">
+            <span class="texto-bold">Última:</span> {{ obtenerUltimoDetalle(lead) }}
+          </div>
+        </div>
+
+        <div class="seccion-busqueda">
+          <div class="resumen-operaciones">
+            <div class="operacion-mini-card">
+              <span class="operacion-label">Venta</span>
+              <strong>{{ contarOperacionesVenta(lead) }}</strong>
+            </div>
+
+            <div class="operacion-mini-card">
+              <span class="operacion-label">Compra</span>
+              <strong>{{ contarOperacionesCompra(lead) }}</strong>
+            </div>
+          </div>
+
+          <button class="btn-detalle" [routerLink]="['/leads', lead.id]">Ver detalle</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

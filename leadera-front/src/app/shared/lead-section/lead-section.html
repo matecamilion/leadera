@@ -1,0 +1,48 @@
+<section class="section-block">
+
+  <div class="section-header">
+
+    <div class="section-header-left">
+
+      <div class="section-title-row">
+
+        <div class="section-icon" [class]="variant()">
+          @if (variant() === 'prioritarios') { ⚠ }
+          @if (variant() === 'seguimientos') { ◷ }
+          @if (variant() === 'nuevos') { • }
+        </div>
+
+        <h2 class="section-title">{{ title() }}</h2>
+
+        <span class="count-badge" [class]="variant()">
+          {{ leads().length }} {{ badgeText() }}
+        </span>
+
+      </div>
+
+      <p class="section-subtitle">
+        {{ subtitle() }}
+      </p>
+
+    </div>
+
+    @if (variant() === 'prioritarios') {
+      <div class="urgent-box">
+        <div class="number">{{ leads().length }}</div>
+        <div class="label">Urgentes</div>
+      </div>
+    }
+
+  </div>
+
+  <div class="cards-grid">
+    @for (lead of leads(); track lead.id) {
+       <app-lead-card
+        [lead]="lead"
+        [contactado]="leadsContactados().includes(lead.id)"
+        (tareaCompletada)="reenviarTareaCompletada($event)">
+      </app-lead-card>
+    }
+  </div>
+
+</section>

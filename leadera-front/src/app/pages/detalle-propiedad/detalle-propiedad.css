@@ -1,0 +1,29 @@
+.detalle-prop-content { text-align: left; padding: 28px; }
+
+.prop-modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.prop-tipo-grande { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+.prop-modal-header h3 { margin: 4px 0; font-size: 1.2rem; color: #1e293b; }
+.prop-zona { margin: 0; font-size: 0.85rem; color: #64748b; }
+.dias-mercado-grande { font-size: 0.85rem; color: #14b8a6; font-weight: 600; }
+
+.prop-datos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.dato-box { background: #f8fafc; border-radius: 10px; padding: 12px; border: 1px solid #e2e8f0; }
+.dato-label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px; }
+
+.prop-obs { color: #475569; font-size: 0.9rem; background: #f8fafc; border-radius: 8px; padding: 12px; margin-bottom: 16px; }
+
+.estado-acciones { display: flex; gap: 8px; margin-bottom: 20px; }
+.btn-estado-prop { flex: 1; padding: 8px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+.btn-estado-prop.disponible { background: #dcfce7; color: #16a34a; }
+.btn-estado-prop.reservada { background: #fef3c7; color: #d97706; }
+.btn-estado-prop.vendida { background: #f3f4f6; color: #4b5563; }
+
+.eventos-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.eventos-header h4 { margin: 0; font-size: 0.95rem; color: #1e293b; }
+
+.form-evento { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; background: #f8fafc; padding: 14px; border-radius: 10px; }
+.form-evento select, .form-evento textarea { padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; }
+
+.badge-evento { padding: 2px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; }
+.badge-evento.visita { background: #dbeafe; color: #1e40af; }
+.badge-evento.consulta { background: #fef3c7; color: #d97706; }

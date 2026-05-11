@@ -1,0 +1,462 @@
+@if (lead()) {
+  <div class="contenedor-detalle">
+    <aside class="columna-info">
+      <div class="tarjeta-perfil tarjeta-blanca">
+        <div class="header-nombre">
+          <h2>{{ lead().nombre }} {{ lead().apellido }}</h2>
+          <div class="estado-interactivo" (click)="modalEstado.showModal()">
+            <span class="badge-estado" [ngClass]="lead().estado?.toLowerCase()">
+              {{ lead().estado }}
+            </span>
+            <span class="material-symbols-outlined icono-lapiz">edit</span>
+          </div>
+        </div>
+        
+
+        <dialog #modalEstado class="modal-leadera">
+          <div class="modal-content">
+            <h3>Actualizar Estado</h3>
+            <p>
+              ¿En qué etapa se encuentra <strong>{{ lead().nombre }}</strong
+              >?
+            </p>
+            <div class="opciones-estado">
+              
+              <button
+                (click)="confirmarCambio('CALIENTE', modalEstado)"
+                class="btn-opcion caliente"
+              >
+                <span class="material-symbols-outlined">local_fire_department</span> CALIENTE
+              </button>
+              <button (click)="confirmarCambio('TIBIO', modalEstado)" class="btn-opcion tibio">
+                <span class="material-symbols-outlined">device_thermostat</span> TIBIO
+              </button>
+              <button (click)="confirmarCambio('FRIO', modalEstado)" class="btn-opcion frio">
+                <span class="material-symbols-outlined">ac_unit</span> FRÍO
+              </button>
+              <button (click)="establecerLeadInactivo(modalEstado)" class="btn-opcion inactivo">
+                <span class="material-symbols-outlined">skull</span> INACTIVO
+              </button>
+            </div>
+            <button class="btn-cancelar" (click)="modalEstado.close()">Cerrar</button>
+          </div>
+        </dialog>
+
+        <div class="info-linea">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span
+            >Lead desde el
+            <strong>{{
+              lead().fechaEntrada ? (lead().fechaEntrada | date: 'dd/MM/yyyy') : 'Sin fecha'
+            }}</strong></span
+          >
+        </div>
+        <div class="info-linea">
+          <span class="material-symbols-outlined">insights</span>
+          <span>{{ lead().interacciones?.length || 0 }} interacciones registradas</span>
+        </div>
+      </div>
+
+      <div class="tarjeta-blanca">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <h3>Información de contacto</h3>
+          <span
+            class="material-symbols-outlined icono-lapiz"
+            (click)="modalContacto.showModal()"
+            style="cursor: pointer; color: #94a3b8"
+            >edit</span
+          >
+        </div>
+        <div class="info-linea">
+          <span class="material-symbols-outlined">call</span>
+          <span>{{ lead().telefono }}</span>
+        </div>
+        <div class="info-linea">
+          <span class="material-symbols-outlined">mail</span>
+          <span>{{ lead().email }}</span>
+        </div>
+      </div>
+
+      <dialog #modalContacto class="modal-leadera">
+        <div class="modal-content">
+          <h3>Editar contacto</h3>
+          <div class="campo-edicion">
+            <label>Teléfono</label>
+            <input type="text" [(ngModel)]="nuevoTelefono" placeholder="{{ lead().telefono }}" />
+          </div>
+          <div class="campo-edicion">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="nuevoEmail" placeholder="{{ lead().email }}" />
+          </div>
+          @if (errorContacto) {
+            <p class="error-msg">{{ errorContacto }}</p>
+          }
+          <div style="display: flex; gap: 12px; margin-top: 16px">
+            <button class="btn-cancelar" (click)="modalContacto.close()">Cancelar</button>
+            <button class="btn-guardar" (click)="guardarContacto(modalContacto)">Guardar</button>
+          </div>
+        </div>
+      </dialog>
+
+      <!-- Configuración comercial -->
+<div class="tarjeta-blanca">
+  <h3>Configuración comercial</h3>
+
+  <div class="acciones-comerciales">
+    <button
+      class="btn-config-comercial"
+      type="button"
+      (click)="modalNuevaPropiedad.showModal()"
+    >
+      <span class="material-symbols-outlined">add_home</span>
+      Agregar propiedad
+    </button>
+
+  </div>
+
+  <div class="resumen-config-comercial">
+    <div class="info-linea">
+      <span class="material-symbols-outlined">home_work</span>
+      <a [routerLink]="['/leads', id, 'propiedades']" class="link-propiedades">
+        {{ propiedades().length }} {{ propiedades().length === 1 ? 'propiedad asociada' : 'propiedades asociadas' }}
+        <span class="material-symbols-outlined link-flecha">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</div>
+      
+
+      
+    </aside>
+
+    <!-- MAIN -->
+    <main class="columna-historial tarjeta-blanca">
+      <!-- OPERACIONES -->
+      <section class="seccion-operaciones">
+        <div class="header-historial">
+          <div>
+            <h2>Operaciones</h2>
+            <p class="subtitulo-seccion">Negocios activos o históricos asociados a este lead.</p>
+          </div>
+
+          <button class="btn-nueva-propiedad" type="button" (click)="modalNuevaOperacion.showModal()">
+  + Agregar operación
+</button>
+        </div>
+
+        @for (operacion of operaciones(); track operacion.id) {
+          <div class="tarjeta-operacion">
+            <div class="operacion-header">
+              <div>
+                <span
+                  class="badge-tipo-operacion"
+                  [ngClass]="operacion.tipoOperacion.toLowerCase()"
+                >
+                  {{ operacion.tipoOperacion }}
+                </span>
+
+                <span
+                  class="badge-estado-operacion"
+                  [ngClass]="operacion.estadoOperacion.toLowerCase()"
+                >
+                  {{ operacion.estadoOperacion.replace('_', ' ') }}
+                </span>
+              </div>
+
+              <span class="fecha-operacion">
+                {{ operacion.fechaCreacion | date: "d 'de' MMMM, HH:mm" }}
+              </span>
+            </div>
+
+            <h3 class="titulo-operacion">{{ operacion.titulo }}</h3>
+
+            @if (operacion.descripcion) {
+              <p class="descripcion-operacion">{{ operacion.descripcion }}</p>
+            }
+
+            @if (operacion.tipoOperacion === 'VENTA' && operacion.propiedad) {
+              <div class="detalle-operacion-box">
+                <div class="detalle-operacion-icono">
+                  <span class="material-symbols-outlined">home_work</span>
+                </div>
+
+                <div>
+                  <p class="detalle-operacion-label">Propiedad asociada</p>
+                  <p class="detalle-operacion-titulo">{{ operacion.propiedad.direccion }}</p>
+
+                  <div class="detalle-operacion-meta">
+                    <span>{{ operacion.propiedad.tipoVivienda }}</span>
+                    <span>USD {{ operacion.propiedad.precio | number }}</span>
+                    <span>{{ operacion.propiedad.cantidadAmbientes }} amb.</span>
+                    <span>{{ operacion.propiedad.zona }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (operacion.tipoOperacion === 'COMPRA' && operacion.busqueda) {
+              <div class="detalle-operacion-box">
+                <div class="detalle-operacion-icono">
+                  <span class="material-symbols-outlined">search</span>
+                </div>
+
+                <div>
+                  <p class="detalle-operacion-label">Búsqueda asociada</p>
+                  <p class="detalle-operacion-titulo">
+                    {{ operacion.busqueda.tipoVivienda }} en {{ operacion.busqueda.zona }}
+                  </p>
+
+                  <div class="detalle-operacion-meta">
+                    <span>
+                      USD {{ operacion.busqueda.precioMin | number }} -
+                      {{ operacion.busqueda.precioMax | number }}
+                    </span>
+                    <span>{{ operacion.busqueda.cantidadAmbientes }} amb.</span>
+                    <span>{{ operacion.busqueda.metrosTotales || 0 }} m²</span>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <div class="acciones-operacion">
+              <button
+                class="btn-ver-detalle-operacion"
+                type="button"
+                [routerLink]="['/leads', id, 'operaciones', operacion.id]"
+              >
+                Ver detalle
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="estado-vacio-operaciones">
+            <span class="material-symbols-outlined">workspaces</span>
+            <h3>Sin operaciones registradas</h3>
+            <p>Este lead todavía no tiene operaciones de venta, compra o alquiler.</p>
+          </div>
+        }
+      </section>
+
+      <!-- HISTORIAL DE INTERACCIONES -->
+      <section class="seccion-interacciones">
+        <div class="header-historial header-interacciones">
+          <h2>Historial de interacciones</h2>
+          <button class="btn-nueva" [routerLink]="['/leads', id, 'interaccion']">
+            + Nueva interacción
+          </button>
+        </div>
+
+        <div class="timeline">
+          @for (interaccion of lead().interacciones; track interaccion.id) {
+            <div class="timeline-item">
+              <div class="timeline-punto"></div>
+
+              <div class="timeline-card">
+                <div class="timeline-header">
+                  <span class="tipo">
+                    <span class="material-symbols-outlined icon-blue">
+                      {{ interaccion.tipoInteraccion === 'WHATSAPP' ? 'chat_bubble' : 'schedule' }}
+                    </span>
+                    {{ interaccion.tipoInteraccion }}
+                  </span>
+
+                  <span class="fecha">
+                    {{ interaccion.fechaInteraccion | date: "d 'de' MMMM, HH:mm" }}
+                  </span>
+                </div>
+
+                <p class="comentario">{{ interaccion.detalle }}</p>
+              </div>
+            </div>
+          } @empty {
+            <p class="sin-datos">Aún no hay interacciones registradas para este lead.</p>
+          }
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal: Nueva Propiedad -->
+    <dialog #modalNuevaPropiedad class="modal-leadera modal-wide">
+      <div class="modal-content" style="text-align: left">
+        <h3 style="text-align: center; margin-bottom: 20px">Nueva Propiedad</h3>
+        <div class="campo-edicion">
+          <label>Dirección *</label>
+          <input
+            type="text"
+            [(ngModel)]="nuevaPropiedad.direccion"
+            placeholder="Ej: Av. Colón 1234"
+          />
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+          <div class="campo-edicion">
+            <label>Precio (USD)</label>
+            <input type="number" [(ngModel)]="nuevaPropiedad.precio" />
+          </div>
+          <div class="campo-edicion">
+            <label>Ambientes</label>
+            <input type="number" [(ngModel)]="nuevaPropiedad.cantidadAmbientes" />
+          </div>
+          <div class="campo-edicion">
+            <label>m² Totales</label>
+            <input type="number" [(ngModel)]="nuevaPropiedad.metrosTotales" />
+          </div>
+          <div class="campo-edicion">
+            <label>m² Cubiertos</label>
+            <input type="number" [(ngModel)]="nuevaPropiedad.metrosCubiertos" />
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+          <div class="campo-edicion">
+            <label>Tipo</label>
+            <select [(ngModel)]="nuevaPropiedad.tipoVivienda">
+              <option value="CASA">Casa</option>
+              <option value="DEPTO">Depto</option>
+              <option value="PH">PH</option>
+              <option value="DUPLEX">Dúplex</option>
+              <option value="TERRENO">Terreno</option>
+              <option value="OFICINA">Oficina</option>
+              <option value="LOCAL">Local</option>
+              <option value="GALPON">Galpón</option>
+            </select>
+          </div>
+          <div class="campo-edicion">
+            <label>Zona</label>
+            <input type="text" [(ngModel)]="nuevaPropiedad.zona" placeholder="Ej: Playa Grande" />
+          </div>
+        </div>
+        <div class="campo-edicion">
+          <label>Fecha publicación</label>
+          <input type="date" [(ngModel)]="nuevaPropiedad.fechaPublicacion" />
+        </div>
+        <div class="campo-edicion">
+          <label>Observaciones</label>
+          <textarea
+            [(ngModel)]="nuevaPropiedad.observaciones"
+            rows="3"
+            placeholder="Pileta, parrilla..."
+          ></textarea>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 16px">
+          <button class="btn-cancelar" (click)="modalNuevaPropiedad.close()">Cancelar</button>
+          <button
+            class="btn-guardar"
+            style="flex: 1"
+            (click)="agregarPropiedad(modalNuevaPropiedad)"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Modal: Detalle Propiedad -->
+    <dialog #modalDetalleProp class="modal-leadera modal-wide">
+      @if (propiedadSeleccionada()) {
+        <app-detalle-propiedad
+          [propiedad]="propiedadSeleccionada()!"
+          (cerrar)="modalDetalleProp.close()"
+          (estadoActualizado)="cargarPropiedades()"
+        >
+        </app-detalle-propiedad>
+      }
+    </dialog>
+
+    <dialog #modalNuevaOperacion class="modal-leadera modal-wide">
+  <div class="modal-content" style="text-align:left">
+    <h3 style="text-align:center; margin-bottom:20px">Nueva Operación</h3>
+
+    <div class="campo-edicion">
+      <label>Título *</label>
+      <input type="text" [(ngModel)]="nuevaOperacion.titulo" placeholder="Ej: Venta depto Colón 1300" />
+    </div>
+
+    <div class="campo-edicion">
+      <label>Tipo *</label>
+      <select [(ngModel)]="nuevaOperacion.tipoOperacion">
+        <option value="">Seleccioná un tipo</option>
+        <option value="VENTA">Venta</option>
+        <option value="COMPRA">Compra</option>
+        <option value="ALQUILER">Alquiler</option>
+      </select>
+    </div>
+
+    <!-- Propiedades: solo si VENTA y es vendedor -->
+    @if (nuevaOperacion.tipoOperacion === 'VENTA') {
+      <div class="campo-edicion">
+        <label>Propiedad asociada *</label>
+        @if (propiedades().length > 0) {
+          <select [(ngModel)]="nuevaOperacion.propiedad" [ngModelOptions]="{standalone: true}">
+            <option [ngValue]="null">Seleccioná una propiedad</option>
+            @for (prop of propiedades(); track prop.id) {
+              <option [ngValue]="{id: prop.id}">{{ prop.direccion }} — {{ prop.tipoVivienda }}</option>
+            }
+          </select>
+        } @else {
+          <p class="sin-datos">Este lead no tiene propiedades cargadas.</p>
+        }
+      </div>
+    }
+
+    <!-- Búsqueda inline: solo si COMPRA -->
+    @if (nuevaOperacion.tipoOperacion === 'COMPRA') {
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+        <div class="campo-edicion">
+          <label>Tipo de vivienda *</label>
+          <select [(ngModel)]="nuevaBusqueda.tipoVivienda">
+            <option value="">Seleccioná</option>
+            <option value="CASA">Casa</option>
+            <option value="DEPTO">Depto</option>
+            <option value="PH">PH</option>
+            <option value="DUPLEX">Dúplex</option>
+            <option value="TERRENO">Terreno</option>
+            <option value="OFICINA">Oficina</option>
+            <option value="LOCAL">Local</option>
+            <option value="GALPON">Galpón</option>
+          </select>
+        </div>
+        <div class="campo-edicion">
+          <label>Zona *</label>
+          <input type="text" [(ngModel)]="nuevaBusqueda.zona" placeholder="Ej: Playa Grande" />
+        </div>
+        <div class="campo-edicion">
+          <label>Precio mín. (USD)</label>
+          <input type="number" [(ngModel)]="nuevaBusqueda.precioMin" />
+        </div>
+        <div class="campo-edicion">
+          <label>Precio máx. (USD)</label>
+          <input type="number" [(ngModel)]="nuevaBusqueda.precioMax" />
+        </div>
+        <div class="campo-edicion">
+          <label>Ambientes</label>
+          <input type="number" [(ngModel)]="nuevaBusqueda.cantidadAmbientes" />
+        </div>
+        <div class="campo-edicion">
+          <label>m² Totales</label>
+          <input type="number" [(ngModel)]="nuevaBusqueda.metrosTotales" />
+        </div>
+      </div>
+      <div class="campo-edicion">
+        <label>Observaciones</label>
+        <textarea [(ngModel)]="nuevaBusqueda.observaciones" rows="2" placeholder="Necesidades especiales..."></textarea>
+      </div>
+    }
+
+    <div class="campo-edicion">
+      <label>Descripción</label>
+      <textarea [(ngModel)]="nuevaOperacion.descripcion" rows="3" placeholder="Detalles adicionales..."></textarea>
+    </div>
+
+    @if (errorOperacion) {
+      <p class="error-msg">{{ errorOperacion }}</p>
+    }
+
+    <div style="display:flex; gap:12px; margin-top:16px">
+      <button class="btn-cancelar" (click)="modalNuevaOperacion.close(); errorOperacion=''; nuevaBusqueda={}">Cancelar</button>
+      <button class="btn-guardar" style="flex:1" (click)="agregarOperacion(modalNuevaOperacion)">Guardar</button>
+    </div>
+  </div>
+</dialog>
+  </div>
+} @else {
+  <div class="loading">Cargando detalles del lead...</div>
+}

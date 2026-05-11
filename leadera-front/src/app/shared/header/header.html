@@ -1,0 +1,53 @@
+<header>
+  <div class="div-container">
+    <div class="div-izquierda">
+      <a routerLink="/home">
+        <img src="/images/logo.png" alt="LeadEra Logo" />
+      </a>
+    </div>
+
+    <div class="div-derecha">
+      <div class="botones-acciones">
+        <button class="btn-gestion" routerLink="/gestion-del-dia" routerLinkActive="active">
+          <span class="icon">✓</span>
+          <span class="texto-boton">Gestión del día</span>
+        </button>
+
+        <button class="btn-todos" routerLink="/leads">
+          <span class="texto-boton">Todos</span>
+        </button>
+
+        <button class="btn-nuevo-prospecto" routerLink="/leads/nuevo">
+          <span class="material-symbols-outlined">person_add</span>
+          <span class="texto-boton">Nuevo Lead</span>
+        </button>
+      </div>
+
+      <div class="user-dropdown">
+        <div class="user-avatar" (click)="toggleMenu()">
+          {{ iniciales() }}
+        </div>
+
+        @if (menuOpen()) {
+          <div class="dropdown-content">
+            <div class="user-info">
+              <span class="user-name">Hola {{ agenteNombre() }}!</span>
+            </div>
+
+            <hr class="dropdown-divider" />
+
+            <div class="user-btns">
+              <button class="dropdown-item" (click)="toggleMenu()" routerLink="/perfil">
+                <span class="material-symbols-outlined">person</span> Mi Perfil
+              </button>
+
+              <button class="dropdown-item logout" (click)="logout()">
+                <span class="material-symbols-outlined">logout</span> Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,155 @@
+<div class="dashboard-wrapper">
+
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <h1>Bienvenido al <span class="highlight">Dashboard de {{agenteNombre()}}</span></h1>
+    <p>Métricas clave de tu gestión inmobiliaria</p>
+  </div>
+
+  @if (stats) {
+
+    <!-- CARDS FILA 1 -->
+    <div class="cards-grid">
+
+  <div class="card card-blue">
+    <div class="card-icon icon-dark">
+      <span class="material-symbols-outlined">group</span>
+    </div>
+    <p class="card-label">Leads Activos</p>
+    <p class="card-value">{{ stats.activos }}</p>
+    <p class="card-sub">{{ stats.calientes }} calientes, {{ stats.tibios }} tibios, {{ stats.frios }} fríos</p>
+  </div>
+
+  <div class="card card-red-light">
+    <div class="card-icon icon-red">
+      <span class="material-symbols-outlined">track_changes</span>
+    </div>
+    <p class="card-label">Leads Calientes</p>
+    <p class="card-value">{{ stats.calientes }}</p>
+    <p class="card-sub">Alta probabilidad de conversión</p>
+  </div>
+
+  <div class="card card-green-soft">
+    <div class="card-icon icon-green-dark">
+      <span class="material-symbols-outlined">check_circle</span>
+    </div>
+    <p class="card-label">Ganados Este Mes</p>
+    <p class="card-value">{{ stats.ganadosMes }}</p>
+    <p class="card-sub">Operaciones cerradas este mes</p>
+  </div>
+
+  <div class="card card-green-light">
+    <div class="card-icon icon-green">
+      <span class="material-symbols-outlined">person_add</span>
+    </div>
+    <p class="card-label">Leads Nuevos Este Mes</p>
+    <p class="card-value">{{ stats.nuevosDelMes }}</p>
+    <p class="card-sub">Leads ingresados este mes</p>
+  </div>
+
+</div>
+
+<div class="cards-grid">
+
+  <div class="card card-green-light">
+    <div class="card-icon icon-green">
+      <span class="material-symbols-outlined">trending_up</span>
+    </div>
+    <p class="card-label">Tasa de Conversión</p>
+    <p class="card-value">{{ stats.tasaConversion }}%</p>
+    <p class="card-sub">{{ stats.ganadosMes }} ganados de {{ stats.nuevosDelMes }} nuevos</p>
+  </div>
+
+  <div class="card card-pink-light">
+    <div class="card-icon icon-purple">
+      <span class="material-symbols-outlined">schedule</span>
+    </div>
+    <p class="card-label">Tiempo de Respuesta</p>
+    <p class="card-value">{{ stats.tiempoRespuesta }}d</p>
+    <p class="card-sub">Promedio en leads calientes</p>
+  </div>
+
+  <div class="card card-blue-soft">
+    <div class="card-icon icon-blue">
+      <span class="material-symbols-outlined">monitor_heart</span>
+    </div>
+    <p class="card-label">Interacciones (7d)</p>
+    <p class="card-value">{{ stats.interacciones7d }}</p>
+    <p class="card-sub">Contactos esta semana</p>
+  </div>
+
+  <div class="card card-gray">
+    <div class="card-icon icon-gray">
+      <span class="material-symbols-outlined">cancel</span>
+    </div>
+    <p class="card-label">Leads Perdidos</p>
+    <p class="card-value">{{ stats.perdidos }}</p>
+    <p class="card-sub">Oportunidades no concretadas</p>
+  </div>
+
+</div>
+
+    <!-- RESUMEN DE PERFORMANCE -->
+    <div class="performance-card">
+      <h2>Resumen de Performance</h2>
+      <div class="performance-grid">
+
+        <div class="perf-col">
+          <p class="perf-title">PIPELINE DE LEADS</p>
+          <div class="perf-row">
+            <span class="dot dot-red"></span>
+            <span class="perf-label">Calientes</span>
+            <span class="perf-val">{{ stats.calientes }}</span>
+          </div>
+          <div class="perf-row">
+            <span class="dot dot-yellow"></span>
+            <span class="perf-label">Tibios</span>
+            <span class="perf-val">{{ stats.tibios }}</span>
+          </div>
+          <div class="perf-row">
+            <span class="dot dot-blue"></span>
+            <span class="perf-label">Fríos</span>
+            <span class="perf-val">{{ stats.frios }}</span>
+          </div>
+        </div>
+
+        <div class="perf-col">
+          <p class="perf-title">ESTADO DE LEADS</p>
+          <div class="perf-row">
+            <span class="perf-label">Activos</span>
+            <span class="perf-val">{{ stats.activos }}</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">Operaciones concretadas</span>
+            <span class="perf-val green">{{ stats.ganadosMes }}</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">Perdidos</span>
+            <span class="perf-val">{{ stats.perdidos }}</span>
+          </div>
+        </div>
+
+        <div class="perf-col">
+          <p class="perf-title">ACTIVIDAD RECIENTE</p>
+          <div class="perf-row">
+            <span class="perf-label">Interacciones en los ultimos 7 dias</span>
+            <span class="perf-val"> {{stats.interacciones7d}}</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">Ganados este mes</span>
+            <span class="perf-val green">{{ stats.ganadosMes }}</span>
+          </div>
+          <div class="perf-row">
+            <span class="perf-label">Total de leads en el mes de {{ mesActual }}</span>
+            <span class="perf-val">{{ stats.nuevosDelMes }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  } @else {
+    <p class="loading">Cargando estadísticas...</p>
+  }
+
+</div>

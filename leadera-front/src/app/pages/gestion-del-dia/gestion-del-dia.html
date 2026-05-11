@@ -1,0 +1,27 @@
+<section class="history-container">
+  <div class="header-navigation">
+    <button class="btn-back" routerLink="/home">← Volver al Dashboard</button>
+  </div>
+
+  <div class="history-header">
+    <h1>Gestión de Hoy</h1>
+    <p class="subtitle">Repasá los leads que ya procesaste durante la jornada</p>
+  </div>
+
+  @if (leads().length > 0) {
+    <app-lead-section
+      title="Contactados hoy"
+      [subtitle]="'Llevás ' + leads().length + ' gestiones exitosas'"
+      badgeText="completado"
+      variant="completados"
+      [leads]="leads()">
+    </app-lead-section>
+  } @else {
+    <div class="empty-history">
+      <div class="icon">☕</div>
+      <h2>Aún no hay registros</h2>
+      <p>Cuando contactes a tu primer lead de hoy, aparecerá aquí.</p>
+      <button class="btn-primary" routerLink="/home">Ir a trabajar</button>
+    </div>
+  }
+</section>
