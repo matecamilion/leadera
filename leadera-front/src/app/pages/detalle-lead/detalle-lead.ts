@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LeadService } from '../../core/services/lead-service';
@@ -25,6 +25,17 @@ export class DetalleLead implements OnInit {
   public lead = signal<any>(null);
   public id: number = 0;
   operaciones = signal<Operacion[]>([]);
+
+  ultimasOperaciones = computed(() => {
+    const ops = this.operaciones();
+    return ops.slice(-2).reverse();
+  });
+
+  ultimaInteraccion = computed(() => {
+    const interacciones = this.lead()?.interacciones;
+    if (!interacciones || interacciones.length === 0) return null;
+    return interacciones[interacciones.length - 1];
+  });
 
   // Contacto
   nuevoTelefono: string = '';
@@ -71,13 +82,6 @@ export class DetalleLead implements OnInit {
 
   agregarPropiedad(modal: HTMLDialogElement) {
   const propiedadAEnviar: any = { ...this.nuevaPropiedad };
-
-  if (
-    propiedadAEnviar.fechaPublicacion &&
-    !propiedadAEnviar.fechaPublicacion.includes('T')
-  ) {
-    propiedadAEnviar.fechaPublicacion = propiedadAEnviar.fechaPublicacion + 'T00:00:00';
-  }
 
   this.propiedadService.agregar(this.id, propiedadAEnviar).subscribe({
     next: (p) => {

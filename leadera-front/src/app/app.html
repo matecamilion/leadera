@@ -1,6 +1,10 @@
-@if (mostrarHeader) {
-  <app-header></app-header>
+@if (mostrarSidebar) {
+  <app-sidebar></app-sidebar>
+  <main class="with-sidebar">
+    <router-outlet></router-outlet>
+  </main>
+} @else {
+  <main>
+    <router-outlet></router-outlet>
+  </main>
 }
-<main>
-  <router-outlet></router-outlet>
-</main>

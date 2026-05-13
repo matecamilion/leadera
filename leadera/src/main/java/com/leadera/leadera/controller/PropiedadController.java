@@ -1,6 +1,8 @@
 package com.leadera.leadera.controller;
 
-import com.leadera.leadera.entity.EventoPropiedad;
+import com.leadera.leadera.dto.EditarPropiedadRequest;
+import com.leadera.leadera.dto.EventoOperacionResumenDTO;
+import com.leadera.leadera.dto.PropiedadResumenDTO;
 import com.leadera.leadera.entity.Propiedad;
 import com.leadera.leadera.service.PropiedadService;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,10 @@ public class PropiedadController {
         this.propiedadService = propiedadService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<PropiedadResumenDTO>> listarMisPropiedades(Authentication authentication) {
+        return ResponseEntity.ok(propiedadService.obtenerPropiedadesDelAgente(authentication.getName()));
+    }
 
     @PostMapping("/lead/{leadId}")
     public ResponseEntity<Propiedad> agregarPropiedad(@PathVariable Long leadId,
@@ -32,17 +38,6 @@ public class PropiedadController {
     @GetMapping("/lead/{leadId}")
     public ResponseEntity<List<Propiedad>> listarPropiedades(@PathVariable Long leadId) {
         return ResponseEntity.ok(propiedadService.obtenerPropiedadesDeLead(leadId));
-    }
-
-    @PostMapping("/{propiedadId}/eventos")
-    public ResponseEntity<EventoPropiedad> registrarEvento(@PathVariable Long propiedadId,
-                                                           @RequestBody EventoPropiedad evento) {
-        return ResponseEntity.ok(propiedadService.registrarEvento(propiedadId, evento));
-    }
-
-    @GetMapping("/{propiedadId}/eventos")
-    public ResponseEntity<List<EventoPropiedad>> listarEventos(@PathVariable Long propiedadId) {
-        return ResponseEntity.ok(propiedadService.obtenerEventos(propiedadId));
     }
 
     @PatchMapping("/{id}/estado")
@@ -57,5 +52,17 @@ public class PropiedadController {
         return ResponseEntity.ok(propiedadService.obtenerPorId(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Propiedad> editar(@PathVariable Long id,
+                                            @RequestBody EditarPropiedadRequest request,
+                                            Authentication authentication) {
+        return ResponseEntity.ok(propiedadService.editarPropiedad(id, request, authentication.getName()));
+    }
+
+    @GetMapping("/{id}/eventos")
+    public ResponseEntity<List<EventoOperacionResumenDTO>> listarEventos(@PathVariable Long id,
+                                                                         Authentication authentication) {
+        return ResponseEntity.ok(propiedadService.obtenerEventosDePropiedad(id, authentication.getName()));
+    }
 
 }

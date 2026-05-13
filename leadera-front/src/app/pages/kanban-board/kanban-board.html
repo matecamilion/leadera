@@ -1,0 +1,61 @@
+<div class="kanban-page">
+  <header class="kanban-header">
+    <h1>Pipeline de operaciones</h1>
+    <div class="kanban-actions">
+      <a class="btn-cerradas" routerLink="/operaciones/cerradas">
+        <span class="material-symbols-outlined">archive</span>
+        Ver cerradas
+      </a>
+      <button class="btn-refresh" (click)="cargarPipeline()" [disabled]="cargando()">
+        Refrescar
+      </button>
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  }
+
+  @if (cargando()) {
+    <p class="estado-vacio">Cargando pipeline…</p>
+  } @else {
+    <div class="kanban-board">
+      @for (columna of columnas(); track trackByEstado($index, columna)) {
+        <section class="columna" [attr.data-estado]="columna.estado">
+          <header class="columna-header">
+            <h2>{{ formatearEstado(columna.estado) }}</h2>
+            <span class="contador">{{ columna.operaciones.length }}</span>
+          </header>
+
+          <div
+            class="columna-cards"
+            cdkDropList
+            [id]="columna.estado"
+            [cdkDropListData]="columna.operaciones"
+            [cdkDropListConnectedTo]="estados"
+            (cdkDropListDropped)="onDrop($event, columna.estado)"
+          >
+            @for (op of columna.operaciones; track trackById($index, op)) {
+              <article class="card" cdkDrag>
+                <div class="card-body">
+                  <div class="card-lead">{{ op.nombreLead }} {{ op.apellidoLead }}</div>
+                  <div class="card-tipo">{{ op.tipoOperacion }}</div>
+                  <div class="card-precio">{{ op.precioEstimado }}</div>
+                  <div class="card-descripcion">{{ op.descripcionPropiedad }}</div>
+                </div>
+                <a
+                  class="link-detalle"
+                  [routerLink]="['/leads', op.leadId, 'operaciones', op.id]"
+                >
+                  Ver detalle →
+                </a>
+              </article>
+            } @empty {
+              <p class="columna-vacia">Sin operaciones</p>
+            }
+          </div>
+        </section>
+      }
+    </div>
+  }
+</div>

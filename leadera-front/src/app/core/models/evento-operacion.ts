@@ -1,4 +1,4 @@
-export interface EventoPropiedad {
+export interface EventoOperacion {
   id: number;
   tipo: 'VISITA' | 'CONSULTA';
   fecha: string;

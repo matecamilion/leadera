@@ -92,3 +92,129 @@
 @media (max-width: 900px) {
   .contenedor-detalle { display: flex; flex-direction: column; padding: 16px; }
 }
+
+/* Botón editar + modal */
+.btn-editar-prop {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0f7ff;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-editar-prop:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-editar-prop .material-symbols-outlined {
+  font-size: 16px;
+}
+
+.modal-edit-prop {
+  border: none;
+  border-radius: 16px;
+  padding: 0;
+  width: 520px;
+  max-width: 95vw;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-edit-prop::backdrop {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content-edit {
+  padding: 28px;
+  text-align: left;
+}
+
+.modal-content-edit h3 {
+  margin: 0 0 20px;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.modal-content-edit .campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.modal-content-edit .campo label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.modal-content-edit .campo input,
+.modal-content-edit .campo select,
+.modal-content-edit .campo textarea {
+  padding: 9px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  outline: none;
+  font-family: inherit;
+}
+
+.modal-content-edit .campo input:focus,
+.modal-content-edit .campo select:focus,
+.modal-content-edit .campo textarea:focus {
+  border-color: #2563eb;
+}
+
+.modal-content-edit .campo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.error-edit {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin: 0 0 12px;
+}
+
+.acciones-edit {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-cancelar-edit,
+.btn-guardar-edit {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  font-size: 0.92rem;
+}
+
+.btn-cancelar-edit {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.btn-guardar-edit {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-guardar-edit:disabled,
+.btn-cancelar-edit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -1,0 +1,229 @@
+.operaciones-page {
+  padding: 32px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  box-sizing: border-box;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.btn-volver {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #0f172a;
+}
+
+.lead-nombre {
+  font-weight: 500;
+  color: #64748b;
+  font-size: 1.1rem;
+}
+
+.subtitulo {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.filtros {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.select-filtro {
+  padding: 9px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  background: white;
+  outline: none;
+  cursor: pointer;
+}
+
+.select-filtro:focus {
+  border-color: #2563eb;
+}
+
+.alert-error {
+  padding: 0.75rem 1rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  margin-bottom: 16px;
+}
+
+.estado-vacio {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  color: #64748b;
+}
+
+.estado-vacio .material-symbols-outlined {
+  font-size: 42px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.estado-vacio h3 {
+  margin: 0 0 6px;
+  color: #334155;
+}
+
+.lista-operaciones {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tarjeta-operacion {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px 20px;
+  transition: all 0.2s ease;
+}
+
+.tarjeta-operacion:hover {
+  border-color: #14b8a6;
+  transform: translateY(-1px);
+}
+
+.operacion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge-tipo,
+.badge-estado {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.badge-tipo.venta { background: #dcfce7; color: #15803d; }
+.badge-tipo.compra { background: #dbeafe; color: #1d4ed8; }
+.badge-tipo.alquiler { background: #fef3c7; color: #b45309; }
+
+.badge-estado.abierta { background: #f1f5f9; color: #334155; }
+.badge-estado.en_gestion { background: #e0f2fe; color: #0369a1; }
+.badge-estado.reservada { background: #fef3c7; color: #b45309; }
+.badge-estado.cerrada_ganada { background: #dcfce7; color: #15803d; }
+.badge-estado.cancelada { background: #fee2e2; color: #b91c1c; }
+
+.fecha {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.titulo {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.descripcion {
+  margin: 0 0 12px;
+  color: #475569;
+  line-height: 1.5;
+  font-size: 0.93rem;
+}
+
+.detalle-box {
+  display: flex;
+  gap: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 10px;
+}
+
+.detalle-icon {
+  font-size: 22px;
+  color: #14b8a6;
+  flex-shrink: 0;
+}
+
+.detalle-label {
+  margin: 0 0 4px;
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.detalle-titulo {
+  margin: 0 0 6px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.detalle-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.btn-ver-detalle {
+  color: #0f766e;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.btn-ver-detalle:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .operaciones-page {
+    padding: 16px;
+  }
+  .operacion-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

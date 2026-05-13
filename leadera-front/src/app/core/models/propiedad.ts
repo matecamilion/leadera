@@ -1,5 +1,3 @@
-import { EventoPropiedad } from './evento-propiedad';
-
 export interface Propiedad {
   id: number;
   direccion: string;
@@ -13,6 +11,5 @@ export interface Propiedad {
   fechaPublicacion: string;
   diasEnMercado: number;
   estado: 'DISPONIBLE' | 'RESERVADA' | 'VENDIDA';
-  eventos?: EventoPropiedad[];
   lead?: { id: number };
 }

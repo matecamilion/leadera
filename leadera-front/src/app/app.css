@@ -1,0 +1,11 @@
+main.with-sidebar {
+  margin-left: 220px;
+  min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  main.with-sidebar {
+    margin-left: 0;
+    padding-top: 60px;
+  }
+}

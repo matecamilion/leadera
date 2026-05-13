@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Interaccion } from '../models/interaccion';
 
 export interface CrearInteraccionRequest {
   detalle: string;
@@ -15,6 +16,10 @@ export class InteraccionService {
   private apiUrl = `${environment.apiUrl}/leads`;
 
   constructor(private http: HttpClient) {}
+
+  obtenerInteraccionesDelLead(leadId: number): Observable<Interaccion[]> {
+    return this.http.get<Interaccion[]>(`${this.apiUrl}/${leadId}/interacciones`);
+  }
 
   crearInteraccion(
     leadId: number,

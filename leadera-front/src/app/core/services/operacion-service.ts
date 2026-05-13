@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Propiedad } from '../models/propiedad';
 import { Busqueda } from '../models/busqueda';
+import { OperacionPipeline } from '../models/operacion-pipeline';
+import { EventoOperacion } from '../models/evento-operacion';
 import { environment } from '../../../environments/environment';
 
 export type TipoOperacion = 'VENTA' | 'COMPRA' | 'ALQUILER';
@@ -19,6 +21,8 @@ export interface Operacion {
   fechaProximoSeguimiento: string | null;
   propiedad: Propiedad | null;
   busqueda: Busqueda | null;
+  leadId?: number;
+  montoOperacion?: number | null;
 }
 
 export interface CrearOperacionRequest {
@@ -61,6 +65,41 @@ cambiarEstadoOperacion(
   return this.http.patch<Operacion>(
     `${this.apiUrl}/leads/${leadId}/operaciones/${operacionId}/estado?estadoOperacion=${estadoOperacion}`,
     {}
+  );
+}
+
+obtenerPipeline(): Observable<OperacionPipeline[]> {
+  return this.http.get<OperacionPipeline[]>(`${this.apiUrl}/operaciones`);
+}
+
+obtenerOperacionesCerradas(): Observable<OperacionPipeline[]> {
+  return this.http.get<OperacionPipeline[]>(`${this.apiUrl}/operaciones/cerradas`);
+}
+
+obtenerEventos(leadId: number, operacionId: number): Observable<EventoOperacion[]> {
+  return this.http.get<EventoOperacion[]>(
+    `${this.apiUrl}/leads/${leadId}/operaciones/${operacionId}/eventos`
+  );
+}
+
+registrarEvento(
+  leadId: number,
+  operacionId: number,
+  evento: Partial<EventoOperacion>
+): Observable<EventoOperacion> {
+  return this.http.post<EventoOperacion>(
+    `${this.apiUrl}/leads/${leadId}/operaciones/${operacionId}/eventos`,
+    evento
+  );
+}
+
+cambiarEstadoPipeline(
+  operacionId: number,
+  estadoOperacion: EstadoOperacion
+): Observable<OperacionPipeline> {
+  return this.http.patch<OperacionPipeline>(
+    `${this.apiUrl}/operaciones/${operacionId}/estado`,
+    { estadoOperacion }
   );
 }
 }

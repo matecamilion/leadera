@@ -2,13 +2,26 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Propiedad } from '../models/propiedad';
-import { EventoPropiedad } from '../models/evento-propiedad';
 import { environment } from '../../../environments/environment';
+
+export interface PropiedadResumen {
+  id: number;
+  titulo: string;
+  tipo: string;
+  estado: 'DISPONIBLE' | 'RESERVADA' | 'VENDIDA';
+  precio: number | null;
+  leadId: number;
+  leadNombre: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class PropiedadService {
   private http = inject(HttpClient);
   private base = `${environment.apiUrl}/propiedades`;
+
+  obtenerTodas(): Observable<PropiedadResumen[]> {
+    return this.http.get<PropiedadResumen[]>(this.base);
+  }
 
   obtenerPorLead(leadId: number): Observable<Propiedad[]> {
     return this.http.get<Propiedad[]>(`${this.base}/lead/${leadId}`);
@@ -22,12 +35,8 @@ export class PropiedadService {
     return this.http.patch<Propiedad>(`${this.base}/${id}/estado`, { estado });
   }
 
-  registrarEvento(propiedadId: number, evento: Partial<EventoPropiedad>): Observable<EventoPropiedad> {
-    return this.http.post<EventoPropiedad>(`${this.base}/${propiedadId}/eventos`, evento);
-  }
-
-  obtenerEventos(propiedadId: number): Observable<EventoPropiedad[]> {
-    return this.http.get<EventoPropiedad[]>(`${this.base}/${propiedadId}/eventos`);
+  editar(id: number, body: Partial<Propiedad>): Observable<Propiedad> {
+    return this.http.put<Propiedad>(`${this.base}/${id}`, body);
   }
 
   obtenerPorId(id: number): Observable<Propiedad> {

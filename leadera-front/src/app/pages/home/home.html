@@ -4,14 +4,14 @@
   } @else {
 
     <div class="home-header">
-      <h1>Hoy tenés <span class="highlight">{{ total() }}</span> tareas</h1>
+      <h1>Hoy tenés <span class="highlight">{{ totalPendientes() }}</span> tareas</h1>
       <p class="subtitle">Gestioná tus contactos y hacé crecer tu cartera</p>
     </div>
 
     <div class="progress-card"  routerLink="/gestion-del-dia" style="cursor: pointer;">
       <div class="progress-header">
         <span>Progreso del día</span>
-        <span>Completaste <b>{{ completadas() }}</b> de {{ total() }} (Ver detalle)</span>
+        <span>Completaste <b>{{ completadas() }}</b> de {{ totalOriginal() }} (Ver detalle)</span>
       </div>
       <div class="progress-bar">
         <div class="progress-fill" [style.width.%]="progreso()"></div>

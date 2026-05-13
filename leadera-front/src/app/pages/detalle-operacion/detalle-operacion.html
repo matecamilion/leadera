@@ -18,6 +18,31 @@
       </div>
     </div>
 
+    <section class="card precio-card">
+      <label class="precio-label">Precio</label>
+      <strong class="precio-valor">
+        @if (operacion()!.montoOperacion != null) {
+          USD {{ operacion()!.montoOperacion | number }}
+          <span class="precio-tag">(acordado)</span>
+        } @else if (operacion()!.tipoOperacion === 'VENTA' && operacion()!.propiedad?.precio) {
+          USD {{ operacion()!.propiedad!.precio | number }}
+        } @else if (operacion()!.tipoOperacion === 'COMPRA' && operacion()!.busqueda) {
+          @if (operacion()!.busqueda!.precioMin && operacion()!.busqueda!.precioMax) {
+            USD {{ operacion()!.busqueda!.precioMin | number }} -
+            {{ operacion()!.busqueda!.precioMax | number }}
+          } @else if (operacion()!.busqueda!.precioMin) {
+            Desde USD {{ operacion()!.busqueda!.precioMin | number }}
+          } @else if (operacion()!.busqueda!.precioMax) {
+            Hasta USD {{ operacion()!.busqueda!.precioMax | number }}
+          } @else {
+            Sin presupuesto registrado
+          }
+        } @else {
+          Sin precio registrado
+        }
+      </strong>
+    </section>
+
     <section class="card">
       <div class="header-cambio-estado">
         <div>
@@ -83,6 +108,71 @@
         </div>
       </section>
     }
+
+    <section class="card seccion-eventos">
+      <div class="header-eventos">
+        <div>
+          <h2>Actividad</h2>
+          <p class="subtitulo-eventos">Visitas y consultas registradas para esta operación.</p>
+        </div>
+        <button
+          type="button"
+          class="btn-nuevo-evento"
+          (click)="toggleFormEvento()"
+        >
+          {{ mostrarFormEvento() ? 'Cancelar' : '+ Registrar evento' }}
+        </button>
+      </div>
+
+      @if (mostrarFormEvento()) {
+        <div class="form-evento">
+          <div class="form-evento-fila">
+            <select [(ngModel)]="nuevoEvento.tipo">
+              <option [ngValue]="undefined">Tipo…</option>
+              <option value="VISITA">Visita</option>
+              <option value="CONSULTA">Consulta</option>
+            </select>
+          </div>
+          <textarea
+            [(ngModel)]="nuevoEvento.detalle"
+            rows="3"
+            placeholder="Detalle del evento (¿qué pasó? ¿quién vino?)…"
+          ></textarea>
+          @if (errorEvento()) {
+            <p class="error-evento">{{ errorEvento() }}</p>
+          }
+          <button
+            type="button"
+            class="btn-guardar-evento"
+            (click)="registrarEvento()"
+            [disabled]="guardandoEvento()"
+          >
+            {{ guardandoEvento() ? 'Guardando…' : 'Guardar evento' }}
+          </button>
+        </div>
+      }
+
+      <div class="timeline-eventos">
+        @for (evento of eventos(); track evento.id) {
+          <div class="evento-item">
+            <div class="evento-punto"></div>
+            <div class="evento-card">
+              <div class="evento-header">
+                <span class="badge-evento" [ngClass]="evento.tipo?.toLowerCase()">
+                  {{ evento.tipo }}
+                </span>
+                <span class="evento-fecha">
+                  {{ evento.fecha | date: "d 'de' MMMM, HH:mm" }}
+                </span>
+              </div>
+              <p class="evento-detalle">{{ evento.detalle }}</p>
+            </div>
+          </div>
+        } @empty {
+          <p class="sin-eventos">Sin actividad registrada aún.</p>
+        }
+      </div>
+    </section>
 
     @if (operacion()!.tipoOperacion === 'COMPRA' && operacion()!.busqueda) {
       <section class="card">

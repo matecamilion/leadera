@@ -1,5 +1,6 @@
 package com.leadera.leadera.controller;
 
+import com.leadera.leadera.entity.EventoOperacion;
 import com.leadera.leadera.entity.Operacion;
 import com.leadera.leadera.enums.EstadoOperacion;
 import com.leadera.leadera.service.OperacionService;
@@ -92,6 +93,29 @@ public class OperacionController {
                         estadoOperacion,
                         authentication.getName()
                 )
+        );
+    }
+
+    @PostMapping("/{operacionId}/eventos")
+    public ResponseEntity<EventoOperacion> registrarEvento(
+            @PathVariable Long leadId,
+            @PathVariable Long operacionId,
+            @RequestBody EventoOperacion evento,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(
+                operacionService.registrarEvento(leadId, operacionId, evento, authentication.getName())
+        );
+    }
+
+    @GetMapping("/{operacionId}/eventos")
+    public ResponseEntity<List<EventoOperacion>> listarEventos(
+            @PathVariable Long leadId,
+            @PathVariable Long operacionId,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(
+                operacionService.obtenerEventos(leadId, operacionId, authentication.getName())
         );
     }
 }

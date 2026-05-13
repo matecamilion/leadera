@@ -1,0 +1,209 @@
+.propiedades-page {
+  padding: 32px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.6rem;
+}
+
+.subtitulo {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.btn-refresh {
+  padding: 9px 16px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-refresh:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+.filtros {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.input-buscar,
+.select-estado {
+  padding: 9px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  background: white;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.input-buscar {
+  flex: 1;
+  min-width: 240px;
+}
+
+.input-buscar:focus,
+.select-estado:focus {
+  border-color: #2563eb;
+}
+
+.alert-error {
+  padding: 0.75rem 1rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  margin-bottom: 16px;
+}
+
+.estado-vacio {
+  color: #64748b;
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+}
+
+.tabla-wrapper {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.tabla-propiedades {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+}
+
+.tabla-propiedades thead {
+  background: #f8fafc;
+}
+
+.tabla-propiedades th {
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 700;
+  color: #475569;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabla-propiedades td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+  vertical-align: middle;
+}
+
+.tabla-propiedades tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla-propiedades tbody tr:hover {
+  background: #f8fafc;
+}
+
+.celda-titulo {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.col-precio {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.sin-precio {
+  color: #94a3b8;
+}
+
+.badge-estado {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-estado.disponible {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-estado.reservada {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.badge-estado.vendida {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.link-lead {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link-lead:hover {
+  text-decoration: underline;
+}
+
+.link-detalle {
+  color: #0f766e;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.link-detalle:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .propiedades-page {
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tabla-propiedades th,
+  .tabla-propiedades td {
+    padding: 10px 12px;
+  }
+}

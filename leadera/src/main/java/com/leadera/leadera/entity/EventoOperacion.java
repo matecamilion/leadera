@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "eventos_propiedad")
+@Table(name = "evento_operacion")
 @Data
 @NoArgsConstructor
-public class EventoPropiedad {
+public class EventoOperacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +24,7 @@ public class EventoPropiedad {
     private String detalle;
 
     @ManyToOne
-    @JoinColumn(name = "propiedad_id")
+    @JoinColumn(name = "operacion_id")
     @JsonBackReference
-    private Propiedad propiedad;
+    private Operacion operacion;
 }

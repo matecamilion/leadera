@@ -1,12 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { OperacionService, Operacion } from '../../core/services/operacion-service';
+import { EventoOperacion } from '../../core/models/evento-operacion';
 
 
 @Component({
   selector: 'app-detalle-operacion',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './detalle-operacion.html',
   styleUrl: './detalle-operacion.css',
 })
@@ -20,6 +22,12 @@ export class DetalleOperacion implements OnInit {
   operacionId!: number;
   guardandoEstado = signal<boolean>(false);
 errorEstado = signal<string>('');
+
+eventos = signal<EventoOperacion[]>([]);
+nuevoEvento: Partial<EventoOperacion> = {};
+mostrarFormEvento = signal<boolean>(false);
+guardandoEvento = signal<boolean>(false);
+errorEvento = signal<string>('');
 
 estadosOperacion = [
   'ABIERTA',
@@ -46,6 +54,45 @@ estadosOperacion = [
       next: (data) => this.operacion.set(data),
       error: (err) => console.error('Error al cargar operación', err)
     });
+    this.cargarEventos();
+  }
+
+  cargarEventos() {
+    this.operacionService.obtenerEventos(this.leadId, this.operacionId).subscribe({
+      next: (data) => this.eventos.set(data),
+      error: (err) => console.error('Error al cargar eventos', err)
+    });
+  }
+
+  toggleFormEvento() {
+    this.mostrarFormEvento.update(v => !v);
+    this.errorEvento.set('');
+  }
+
+  registrarEvento() {
+    if (!this.nuevoEvento.tipo || !this.nuevoEvento.detalle?.trim()) {
+      this.errorEvento.set('Completá tipo y detalle.');
+      return;
+    }
+
+    this.guardandoEvento.set(true);
+    this.errorEvento.set('');
+
+    this.operacionService
+      .registrarEvento(this.leadId, this.operacionId, this.nuevoEvento)
+      .subscribe({
+        next: (creado) => {
+          this.eventos.update(list => [creado, ...list]);
+          this.nuevoEvento = {};
+          this.mostrarFormEvento.set(false);
+          this.guardandoEvento.set(false);
+        },
+        error: (err) => {
+          console.error('Error al registrar evento', err);
+          this.errorEvento.set(err?.error?.message ?? 'No se pudo registrar el evento.');
+          this.guardandoEvento.set(false);
+        }
+      });
   }
 
   cambiarEstadoOperacion(nuevoEstado: string) {

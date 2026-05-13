@@ -237,3 +237,222 @@
     grid-template-columns: 1fr;
   }
 }
+
+.precio-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.precio-label {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.precio-valor {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #15803d;
+}
+
+.precio-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #0369a1;
+  background: #e0f2fe;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Sección de eventos */
+.seccion-eventos {
+  margin-top: 16px;
+}
+
+.header-eventos {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.header-eventos h2 {
+  margin: 0;
+}
+
+.subtitulo-eventos {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.btn-nuevo-evento {
+  background: #f0f7ff;
+  color: #2563eb;
+  border: 2px solid #2563eb;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-nuevo-evento:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.form-evento {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-evento select,
+.form-evento textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  background: white;
+  outline: none;
+}
+
+.form-evento textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.form-evento select:focus,
+.form-evento textarea:focus {
+  border-color: #2563eb;
+}
+
+.error-evento {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.btn-guardar-evento {
+  align-self: flex-end;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.btn-guardar-evento:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.timeline-eventos {
+  position: relative;
+  padding-left: 28px;
+}
+
+.timeline-eventos::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 8px;
+  bottom: 0;
+  width: 2px;
+  background: #e2e8f0;
+}
+
+.evento-item {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.evento-punto {
+  position: absolute;
+  left: -28px;
+  top: 10px;
+  width: 12px;
+  height: 12px;
+  background: #2563eb;
+  border-radius: 50%;
+  border: 3px solid white;
+  z-index: 2;
+}
+
+.evento-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.evento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge-evento {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.badge-evento.visita {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-evento.consulta {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.evento-fecha {
+  color: #94a3b8;
+  font-size: 0.82rem;
+}
+
+.evento-detalle {
+  margin: 0;
+  color: #475569;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.sin-eventos {
+  margin: 0;
+  padding: 18px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #64748b;
+  font-size: 0.9rem;
+  text-align: center;
+}

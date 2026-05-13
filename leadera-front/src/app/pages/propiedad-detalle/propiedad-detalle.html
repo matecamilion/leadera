@@ -16,6 +16,9 @@
         <h2 class="prop-direccion-grande">{{ propiedad()!.direccion }}</h2>
         <p class="prop-zona">📍 {{ propiedad()!.zona }}</p>
         <p class="dias-mercado-grande">📅 {{ propiedad()!.diasEnMercado }} días en mercado</p>
+        <button class="btn-editar-prop" type="button" (click)="abrirModalEdicion(modalEditar)">
+          <span class="material-symbols-outlined">edit</span> Editar propiedad
+        </button>
       </div>
 
       <div class="tarjeta-blanca">
@@ -44,45 +47,76 @@
     <main class="columna-historial tarjeta-blanca">
       <div class="header-historial">
         <h2>Actividad de la propiedad</h2>
-        <button class="btn-nueva" (click)="mostrarFormEvento = !mostrarFormEvento">
-          + Registrar evento
-        </button>
       </div>
-
-      @if (mostrarFormEvento) {
-        <div class="form-evento">
-          <select [(ngModel)]="nuevoEvento.tipo">
-            <option value="">Tipo...</option>
-            <option value="VISITA">Visita</option>
-            <option value="CONSULTA">Consulta</option>
-          </select>
-          <textarea [(ngModel)]="nuevoEvento.detalle" rows="3" placeholder="Detalle del evento..."></textarea>
-          <button class="btn-guardar-evento" (click)="registrarEvento()">Guardar</button>
-        </div>
-      }
-
-      <div class="timeline">
-        @for (evento of eventos(); track evento.id; let i = $index) {
-          <div class="timeline-item">
-            <div class="timeline-punto"></div>
-            <div class="timeline-card">
-              <div class="timeline-header">
-                <span class="tipo">
-                  <span class="badge-evento" [ngClass]="evento.tipo?.toLowerCase()">{{ evento.tipo }}</span>
-                  #{{ i + 1 }}
-                </span>
-                <span class="fecha">{{ evento.fecha | date: "d 'de' MMMM, HH:mm" }}</span>
-              </div>
-              <p class="comentario">{{ evento.detalle }}</p>
-            </div>
-          </div>
-        } @empty {
-          <p class="sin-datos">Sin actividad registrada aún.</p>
-        }
-      </div>
+      <p class="sin-datos">
+        Las visitas y consultas se registran desde la operación de venta asociada.
+      </p>
     </main>
 
   </div>
 } @else {
   <div class="loading">Cargando propiedad...</div>
 }
+
+<dialog #modalEditar class="modal-edit-prop">
+  <div class="modal-content-edit">
+    <h3>Editar propiedad</h3>
+
+    <div class="campo">
+      <label>Dirección</label>
+      <input type="text" [(ngModel)]="edicion.direccion" />
+    </div>
+
+    <div class="campo-grid">
+      <div class="campo">
+        <label>Precio (USD)</label>
+        <input type="number" [(ngModel)]="edicion.precio" />
+      </div>
+      <div class="campo">
+        <label>Ambientes</label>
+        <input type="number" [(ngModel)]="edicion.cantidadAmbientes" />
+      </div>
+      <div class="campo">
+        <label>m² Totales</label>
+        <input type="number" [(ngModel)]="edicion.metrosTotales" />
+      </div>
+      <div class="campo">
+        <label>m² Cubiertos</label>
+        <input type="number" [(ngModel)]="edicion.metrosCubiertos" />
+      </div>
+    </div>
+
+    <div class="campo-grid">
+      <div class="campo">
+        <label>Tipo</label>
+        <select [(ngModel)]="edicion.tipoVivienda">
+          @for (t of tiposVivienda; track t) {
+            <option [value]="t">{{ t }}</option>
+          }
+        </select>
+      </div>
+      <div class="campo">
+        <label>Zona</label>
+        <input type="text" [(ngModel)]="edicion.zona" />
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Observaciones</label>
+      <textarea [(ngModel)]="edicion.observaciones" rows="3"></textarea>
+    </div>
+
+    @if (errorEdicion()) {
+      <p class="error-edit">{{ errorEdicion() }}</p>
+    }
+
+    <div class="acciones-edit">
+      <button type="button" class="btn-cancelar-edit" (click)="modalEditar.close()" [disabled]="guardandoEdicion()">
+        Cancelar
+      </button>
+      <button type="button" class="btn-guardar-edit" (click)="guardarEdicion(modalEditar)" [disabled]="guardandoEdicion()">
+        {{ guardandoEdicion() ? 'Guardando…' : 'Guardar cambios' }}
+      </button>
+    </div>
+  </div>
+</dialog>

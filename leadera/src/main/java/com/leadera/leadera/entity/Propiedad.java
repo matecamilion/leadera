@@ -1,8 +1,6 @@
 package com.leadera.leadera.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.leadera.leadera.enums.EstadoPropiedad;
 import com.leadera.leadera.enums.TipoVivienda;
 import jakarta.persistence.*;
@@ -14,8 +12,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "propiedad")
@@ -45,12 +41,6 @@ public class Propiedad {
     @JoinColumn(name = "lead_id")
     @JsonBackReference
     private Lead lead;
-
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL)
-    private List<EventoPropiedad> eventos = new ArrayList<>();
-
 
     @Enumerated(EnumType.STRING)
     private EstadoPropiedad estado = EstadoPropiedad.DISPONIBLE;

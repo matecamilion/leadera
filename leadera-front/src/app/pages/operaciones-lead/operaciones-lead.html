@@ -1,0 +1,117 @@
+<div class="operaciones-page">
+  <header class="page-header">
+    <div class="header-left">
+      <button class="btn-volver" [routerLink]="['/leads', leadId]">← Volver al lead</button>
+      <h1>
+        Operaciones
+        @if (lead()) {
+          <span class="lead-nombre">de {{ lead().nombre }} {{ lead().apellido }}</span>
+        }
+      </h1>
+      <p class="subtitulo">{{ operaciones().length }} operaciones registradas</p>
+    </div>
+  </header>
+
+  <div class="filtros">
+    <select
+      class="select-filtro"
+      [value]="filtroTipo()"
+      (change)="onTipoChange($any($event.target).value)"
+    >
+      <option value="">Todos los tipos</option>
+      @for (t of tipos; track t) {
+        <option [value]="t">{{ t }}</option>
+      }
+    </select>
+    <select
+      class="select-filtro"
+      [value]="filtroEstado()"
+      (change)="onEstadoChange($any($event.target).value)"
+    >
+      <option value="">Todos los estados</option>
+      @for (e of estados; track e) {
+        <option [value]="e">{{ formatearEstado(e) }}</option>
+      }
+    </select>
+  </div>
+
+  @if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  }
+
+  @if (cargando()) {
+    <p class="estado-vacio">Cargando operaciones…</p>
+  } @else if (operacionesFiltradas().length === 0) {
+    <div class="estado-vacio">
+      <span class="material-symbols-outlined">workspaces</span>
+      <h3>Sin operaciones</h3>
+      <p>Este lead todavía no tiene operaciones que coincidan con los filtros.</p>
+    </div>
+  } @else {
+    <div class="lista-operaciones">
+      @for (op of operacionesFiltradas(); track trackById($index, op)) {
+        <article class="tarjeta-operacion">
+          <div class="operacion-header">
+            <div class="badges">
+              <span class="badge-tipo" [ngClass]="op.tipoOperacion.toLowerCase()">
+                {{ op.tipoOperacion }}
+              </span>
+              <span class="badge-estado" [ngClass]="op.estadoOperacion.toLowerCase()">
+                {{ formatearEstado(op.estadoOperacion) }}
+              </span>
+            </div>
+            <span class="fecha">{{ op.fechaCreacion | date: "d 'de' MMMM, HH:mm" }}</span>
+          </div>
+
+          <h3 class="titulo">{{ op.titulo }}</h3>
+
+          @if (op.descripcion) {
+            <p class="descripcion">{{ op.descripcion }}</p>
+          }
+
+          @if (op.tipoOperacion === 'VENTA' && op.propiedad) {
+            <div class="detalle-box">
+              <span class="material-symbols-outlined detalle-icon">home_work</span>
+              <div>
+                <p class="detalle-label">Propiedad asociada</p>
+                <p class="detalle-titulo">{{ op.propiedad.direccion }}</p>
+                <div class="detalle-meta">
+                  <span>{{ op.propiedad.tipoVivienda }}</span>
+                  <span>USD {{ op.propiedad.precio | number }}</span>
+                  <span>{{ op.propiedad.zona }}</span>
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (op.tipoOperacion === 'COMPRA' && op.busqueda) {
+            <div class="detalle-box">
+              <span class="material-symbols-outlined detalle-icon">search</span>
+              <div>
+                <p class="detalle-label">Búsqueda</p>
+                <p class="detalle-titulo">
+                  {{ op.busqueda.tipoVivienda }} en {{ op.busqueda.zona }}
+                </p>
+                <div class="detalle-meta">
+                  <span>
+                    USD {{ op.busqueda.precioMin | number }} -
+                    {{ op.busqueda.precioMax | number }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+
+          <div class="acciones">
+            <a
+              class="btn-ver-detalle"
+              [routerLink]="['/leads', leadId, 'operaciones', op.id]"
+            >
+              Ver detalle →
+            </a>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

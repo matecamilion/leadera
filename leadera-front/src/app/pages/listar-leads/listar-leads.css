@@ -3,7 +3,6 @@
 
 .contenedor-listado {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #f8fafc;
   min-height: 100vh;
   padding: 1.5rem 1rem; /* Reducido para móviles */
   color: #1e293b;

@@ -1,0 +1,75 @@
+<button class="hamburger" (click)="toggleSidebar()" aria-label="Abrir menú">
+  <span class="material-symbols-outlined">menu</span>
+</button>
+
+<div
+  class="sidebar-backdrop"
+  [class.visible]="sidebarOpen()"
+  (click)="closeSidebar()"
+></div>
+
+<aside class="sidebar" [class.open]="sidebarOpen()">
+  <div class="sidebar-header">
+    <a routerLink="/home">
+      <img src="/images/logo.png" alt="LeadEra" class="sidebar-logo" />
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/home" routerLinkActive="active" class="nav-item nav-item-primary">
+      <span class="material-symbols-outlined">home</span>
+      <span class="nav-label">Home</span>
+    </a>
+
+    <a routerLink="/gestion-del-dia" routerLinkActive="active" class="nav-item nav-item-primary">
+      <span class="material-symbols-outlined">task_alt</span>
+      <span class="nav-label">Gestión del día</span>
+    </a>
+
+    <div class="nav-divider"></div>
+
+    <a routerLink="/pipeline" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">view_kanban</span>
+      <span class="nav-label">Pipeline</span>
+    </a>
+
+    <a
+      routerLink="/leads"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="nav-item"
+    >
+      <span class="material-symbols-outlined">groups</span>
+      <span class="nav-label">Leads</span>
+    </a>
+
+    <a routerLink="/propiedades" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">home_work</span>
+      <span class="nav-label">Propiedades</span>
+    </a>
+
+    <a routerLink="/leads/nuevo" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">person_add</span>
+      <span class="nav-label">Nuevo Lead</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-user">
+    <button class="user-toggle" (click)="toggleMenu()">
+      <div class="user-avatar">{{ iniciales() }}</div>
+      <span class="user-name">{{ agenteNombre() }}</span>
+      <span class="material-symbols-outlined chevron">{{ menuOpen() ? 'expand_more' : 'expand_less' }}</span>
+    </button>
+
+    @if (menuOpen()) {
+      <div class="user-menu">
+        <button class="user-menu-item" routerLink="/perfil">
+          <span class="material-symbols-outlined">person</span> Mi Perfil
+        </button>
+        <button class="user-menu-item logout" (click)="logout()">
+          <span class="material-symbols-outlined">logout</span> Cerrar Sesión
+        </button>
+      </div>
+    }
+  </div>
+</aside>

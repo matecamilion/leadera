@@ -237,6 +237,11 @@
   border-radius: 20px;
   padding: 0;
   width: 350px;
+  max-width: 95vw;
+  max-height: 90vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
@@ -245,7 +250,11 @@
   backdrop-filter: blur(4px);
 }
 
-.modal-content { padding: 30px; text-align: center; }
+.modal-content {
+  padding: 30px;
+  text-align: center;
+  box-sizing: border-box;
+}
 
 .opciones-estado {
   display: flex;
@@ -324,16 +333,29 @@
   color: #475569;
 }
 
-.campo-edicion input {
+.campo-edicion input,
+.campo-edicion select,
+.campo-edicion textarea {
+  width: 100%;
+  box-sizing: border-box;
   padding: 10px 14px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   font-size: 0.95rem;
+  font-family: inherit;
+  background: white;
   outline: none;
   transition: border 0.2s;
 }
 
-.campo-edicion input:focus {
+.campo-edicion textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.campo-edicion input:focus,
+.campo-edicion select:focus,
+.campo-edicion textarea:focus {
   border-color: #2563eb;
 }
 
@@ -450,7 +472,7 @@
   padding: 8px 16px; border-radius: 8px;
   font-weight: 700; font-size: 0.85rem; cursor: pointer;
 }
-.modal-wide { width: 480px; max-width: 95vw; }
+.modal-wide { width: 520px; max-width: 95vw; }
 
 .seccion-operaciones {
   margin-bottom: 40px;
@@ -760,4 +782,168 @@
   height: 100vh;
   color: #64748b;
   font-weight: 500;
+}
+
+/* 7. RESÚMENES (Operaciones / Interacciones) */
+.seccion-resumen {
+  margin-bottom: 28px;
+}
+
+.resumen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.resumen-header h2 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.15rem;
+  color: #0f172a;
+}
+
+.resumen-contador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.resumen-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resumen-item-operacion {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.resumen-item-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.resumen-item-titulo {
+  margin: 4px 0 0;
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+.resumen-item-fecha {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.resumen-item-interaccion {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.resumen-interaccion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.resumen-interaccion-header .tipo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.92rem;
+}
+
+.resumen-interaccion-header .fecha {
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.resumen-interaccion-detalle {
+  margin: 0;
+  color: #475569;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.resumen-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.btn-ver-todas {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ver-todas:hover {
+  border-color: #14b8a6;
+  color: #14b8a6;
+}
+
+.btn-ver-todas .material-symbols-outlined {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.btn-ver-todas:hover .material-symbols-outlined {
+  transform: translateX(3px);
+}
+
+.sin-datos {
+  margin: 0;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #64748b;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .resumen-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .resumen-interaccion-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
 }

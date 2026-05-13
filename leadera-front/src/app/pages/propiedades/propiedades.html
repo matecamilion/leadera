@@ -1,0 +1,84 @@
+<div class="propiedades-page">
+  <header class="page-header">
+    <div>
+      <h1>Propiedades</h1>
+      <p class="subtitulo">Todas las propiedades asociadas a tus leads.</p>
+    </div>
+    <button class="btn-refresh" (click)="cargar()" [disabled]="cargando()">Refrescar</button>
+  </header>
+
+  <div class="filtros">
+    <input
+      type="text"
+      class="input-buscar"
+      placeholder="Buscar por título o lead..."
+      [value]="textoBusqueda()"
+      (input)="onBusquedaChange($any($event.target).value)"
+    />
+    <select
+      class="select-estado"
+      [value]="filtroEstado()"
+      (change)="onEstadoChange($any($event.target).value)"
+    >
+      <option value="">Todos los estados</option>
+      @for (estado of estadosPropiedad; track estado) {
+        <option [value]="estado">{{ estado }}</option>
+      }
+    </select>
+  </div>
+
+  @if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  }
+
+  @if (cargando()) {
+    <p class="estado-vacio">Cargando propiedades…</p>
+  } @else if (propiedadesFiltradas().length === 0) {
+    <p class="estado-vacio">No hay propiedades para mostrar.</p>
+  } @else {
+    <div class="tabla-wrapper">
+      <table class="tabla-propiedades">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th class="col-precio">Precio</th>
+            <th>Lead</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of propiedadesFiltradas(); track trackById($index, p)) {
+            <tr>
+              <td class="celda-titulo">{{ p.titulo || 'Sin título' }}</td>
+              <td>{{ p.tipo || '—' }}</td>
+              <td>
+                <span class="badge-estado" [ngClass]="p.estado.toLowerCase()">
+                  {{ p.estado }}
+                </span>
+              </td>
+              <td class="col-precio">
+                @if (p.precio != null) {
+                  USD {{ p.precio | number }}
+                } @else {
+                  <span class="sin-precio">—</span>
+                }
+              </td>
+              <td>
+                <a class="link-lead" [routerLink]="['/leads', p.leadId]">
+                  {{ p.leadNombre }}
+                </a>
+              </td>
+              <td>
+                <a class="link-detalle" [routerLink]="['/propiedades', p.id]">
+                  Ver detalle →
+                </a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

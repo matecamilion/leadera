@@ -17,11 +17,21 @@ export class Home implements OnInit {
   leadsHoy = signal<LeadsHoyResponse | null>(null);
 
   // Computeds basadas en la respuesta del server
-  total = computed(() => this.leadsHoy()?.totalTareasDelDia ?? 0);
+  totalOriginal = computed(() => this.leadsHoy()?.totalTareasDelDia ?? 0);
   completadas = computed(() => this.leadsHoy()?.tareasCompletadasDelDia ?? 0);
 
+  totalPendientes = computed(() => {
+    const data = this.leadsHoy();
+    if (!data) return 0;
+    return (
+      (data.nuevosSinContacto?.length ?? 0) +
+      (data.prioritarios?.length ?? 0) +
+      (data.seguimientosDeHoy?.length ?? 0)
+    );
+  });
+
   progreso = computed(() => {
-    const t = this.total();
+    const t = this.totalOriginal();
     return t > 0 ? Math.round((this.completadas() / t) * 100) : 0;
   });
 

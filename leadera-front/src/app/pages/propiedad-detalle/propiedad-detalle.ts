@@ -4,7 +4,6 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PropiedadService } from '../../core/services/propiedad-service';
 import { Propiedad } from '../../core/models/propiedad';
-import { EventoPropiedad } from '../../core/models/evento-propiedad';
 
 @Component({
   selector: 'app-propiedad-detalle',
@@ -18,17 +17,17 @@ export class PropiedadDetalle implements OnInit {
   private propiedadService = inject(PropiedadService);
 
   propiedad = signal<Propiedad | null>(null);
-  eventos = signal<EventoPropiedad[]>([]);
-  nuevoEvento: Partial<EventoPropiedad> = {};
-  mostrarFormEvento = false;
+
+  // Edición
+  edicion: Partial<Propiedad> = {};
+  guardandoEdicion = signal<boolean>(false);
+  errorEdicion = signal<string>('');
+
+  readonly tiposVivienda = ['CASA', 'DEPTO', 'PH', 'DUPLEX', 'TERRENO', 'OFICINA', 'LOCAL', 'GALPON'];
 
   @Input('propiedad') set propiedadInput(value: Propiedad | null) {
     if (value) {
       this.propiedad.set(value);
-
-      if (value.id) {
-        this.cargarEventos(value.id);
-      }
     }
   }
 
@@ -51,30 +50,6 @@ export class PropiedadDetalle implements OnInit {
     this.propiedadService.obtenerPorId(id).subscribe({
       next: (p) => this.propiedad.set(p)
     });
-
-    this.cargarEventos(id);
-  }
-
-  cargarEventos(id: number) {
-    this.propiedadService.obtenerEventos(id).subscribe({
-      next: (e) => this.eventos.set(e)
-    });
-  }
-
-  registrarEvento() {
-    const propiedadActual = this.propiedad();
-
-    if (!propiedadActual) {
-      return;
-    }
-
-    this.propiedadService.registrarEvento(propiedadActual.id, this.nuevoEvento).subscribe({
-      next: (e) => {
-        this.eventos.update(list => [...list, e]);
-        this.nuevoEvento = {};
-        this.mostrarFormEvento = false;
-      }
-    });
   }
 
   cambiarEstado(estado: string) {
@@ -89,6 +64,46 @@ export class PropiedadDetalle implements OnInit {
         this.propiedad.update(p => ({ ...p!, estado: estado as any }));
         this.estadoActualizado.emit();
       }
+    });
+  }
+
+  abrirModalEdicion(modal: HTMLDialogElement) {
+    const p = this.propiedad();
+    if (!p) return;
+    this.edicion = {
+      direccion: p.direccion,
+      precio: p.precio,
+      cantidadAmbientes: p.cantidadAmbientes,
+      metrosTotales: p.metrosTotales,
+      metrosCubiertos: p.metrosCubiertos,
+      tipoVivienda: p.tipoVivienda,
+      zona: p.zona,
+      observaciones: p.observaciones,
+    };
+    this.errorEdicion.set('');
+    modal.showModal();
+  }
+
+  guardarEdicion(modal: HTMLDialogElement) {
+    const p = this.propiedad();
+    if (!p) return;
+
+    const body: any = { ...this.edicion };
+
+    this.guardandoEdicion.set(true);
+    this.errorEdicion.set('');
+
+    this.propiedadService.editar(p.id, body).subscribe({
+      next: (actualizada) => {
+        this.propiedad.set(actualizada);
+        this.guardandoEdicion.set(false);
+        modal.close();
+      },
+      error: (err) => {
+        console.error('Error al editar propiedad', err);
+        this.errorEdicion.set(err?.error?.message ?? 'No se pudo guardar los cambios.');
+        this.guardandoEdicion.set(false);
+      },
     });
   }
 }

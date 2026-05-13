@@ -1,23 +1,32 @@
 package com.leadera.leadera.service;
 
 import com.leadera.leadera.entity.Busqueda;
+import com.leadera.leadera.entity.EventoOperacion;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.entity.Operacion;
 import com.leadera.leadera.entity.Propiedad;
+import com.leadera.leadera.dto.OperacionPipelineDTO;
 import com.leadera.leadera.enums.EstadoOperacion;
+import com.leadera.leadera.enums.EstadoPropiedad;
 import com.leadera.leadera.enums.TipoOperacion;
 import com.leadera.leadera.exception.BadRequestException;
 import com.leadera.leadera.exception.ResourceNotFoundException;
 import com.leadera.leadera.exception.UnauthorizedActionException;
 import com.leadera.leadera.repository.BusquedaRepository;
+import com.leadera.leadera.repository.EventoOperacionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
 import com.leadera.leadera.repository.PropiedadRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OperacionService {
@@ -26,21 +35,33 @@ public class OperacionService {
     private final LeadRepository leadRepository;
     private final PropiedadRepository propiedadRepository;
     private final BusquedaRepository busquedaRepository;
+    private final EventoOperacionRepository eventoOperacionRepository;
 
     private static final ZoneId ZONA_ARGENTINA = ZoneId.of("America/Argentina/Buenos_Aires");
+
+    private static final Map<EstadoOperacion, Set<EstadoOperacion>> TRANSICIONES_VALIDAS = Map.of(
+            EstadoOperacion.ABIERTA,        EnumSet.of(EstadoOperacion.EN_GESTION, EstadoOperacion.CANCELADA),
+            EstadoOperacion.EN_GESTION,     EnumSet.of(EstadoOperacion.ABIERTA, EstadoOperacion.RESERVADA, EstadoOperacion.CANCELADA),
+            EstadoOperacion.RESERVADA,      EnumSet.of(EstadoOperacion.EN_GESTION, EstadoOperacion.CERRADA_GANADA, EstadoOperacion.CANCELADA),
+            EstadoOperacion.CERRADA_GANADA, EnumSet.noneOf(EstadoOperacion.class),
+            EstadoOperacion.CANCELADA,      EnumSet.noneOf(EstadoOperacion.class)
+    );
 
     public OperacionService(
             OperacionRepository operacionRepository,
             LeadRepository leadRepository,
             PropiedadRepository propiedadRepository,
-            BusquedaRepository busquedaRepository
+            BusquedaRepository busquedaRepository,
+            EventoOperacionRepository eventoOperacionRepository
     ) {
         this.operacionRepository = operacionRepository;
         this.leadRepository = leadRepository;
         this.propiedadRepository = propiedadRepository;
         this.busquedaRepository = busquedaRepository;
+        this.eventoOperacionRepository = eventoOperacionRepository;
     }
 
+    @Transactional
     public Operacion crearOperacion(Long leadId, Operacion operacionRequest, String emailAgente) {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con id: " + leadId));
@@ -67,7 +88,13 @@ public class OperacionService {
             asociarBusquedaACompra(operacion, operacionRequest);
         }
 
-        return operacionRepository.save(operacion);
+        Operacion guardada = operacionRepository.save(operacion);
+
+        if (guardada.getTipoOperacion() == TipoOperacion.VENTA && guardada.getPropiedad() != null) {
+            sincronizarEstadoPropiedad(guardada.getPropiedad());
+        }
+
+        return guardada;
     }
 
     private void asociarPropiedadAVenta(Operacion operacion, Operacion operacionRequest, Long leadId) {
@@ -82,6 +109,10 @@ public class OperacionService {
 
         if (propiedad.getLead() == null || !propiedad.getLead().getId().equals(leadId)) {
             throw new BadRequestException("La propiedad no pertenece a este lead");
+        }
+
+        if (propiedad.getEstado() == EstadoPropiedad.VENDIDA) {
+            throw new BadRequestException("No se puede crear una operación de venta sobre una propiedad ya vendida.");
         }
 
         operacion.setPropiedad(propiedad);
@@ -122,6 +153,7 @@ public class OperacionService {
     }
 
 
+    @Transactional
     public Operacion cambiarEstadoOperacion(
             Long leadId,
             Long operacionId,
@@ -134,21 +166,141 @@ public class OperacionService {
                 emailAgente
         ).orElseThrow(() -> new ResourceNotFoundException("No existe la operación o no tenés permiso para modificarla"));
 
+        return aplicarCambioDeEstado(operacion, nuevoEstado);
+    }
+
+    @Transactional
+    public OperacionPipelineDTO cambiarEstadoOperacionPipeline(
+            Long operacionId,
+            EstadoOperacion nuevoEstado,
+            String emailAgente
+    ) {
+        Operacion operacion = operacionRepository.findByIdAndAgenteEmail(operacionId, emailAgente)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe la operación o no tenés permiso para modificarla"));
+
+        Operacion actualizada = aplicarCambioDeEstado(operacion, nuevoEstado);
+        return OperacionPipelineDTO.fromEntity(actualizada);
+    }
+
+    public List<OperacionPipelineDTO> obtenerPipelineDelAgente(String emailAgente) {
+        return operacionRepository.findPipelineByAgenteEmail(emailAgente).stream()
+                .map(OperacionPipelineDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public List<OperacionPipelineDTO> obtenerOperacionesCerradasDelAgente(String emailAgente) {
+        return operacionRepository.findCerradasByAgenteEmail(emailAgente).stream()
+                .map(OperacionPipelineDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public EventoOperacion registrarEvento(Long leadId, Long operacionId, EventoOperacion evento, String emailAgente) {
+        Operacion operacion = operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailAgente)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe la operación o no tenés permiso para modificarla"));
+
+        evento.setFecha(LocalDateTime.now(ZONA_ARGENTINA));
+        evento.setOperacion(operacion);
+
+        return eventoOperacionRepository.save(evento);
+    }
+
+    public List<EventoOperacion> obtenerEventos(Long leadId, Long operacionId, String emailAgente) {
+        operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailAgente)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe la operación o no tenés permiso para verla"));
+
+        return eventoOperacionRepository.findByOperacionIdOrderByFechaDesc(operacionId);
+    }
+
+    private Operacion aplicarCambioDeEstado(Operacion operacion, EstadoOperacion nuevoEstado) {
         if (nuevoEstado == null) {
             throw new BadRequestException("El estado de la operación no puede ser nulo");
         }
 
+        EstadoOperacion estadoActual = operacion.getEstadoOperacion();
+
+        if (estadoActual == nuevoEstado) {
+            return operacion;
+        }
+
+        Set<EstadoOperacion> permitidos = TRANSICIONES_VALIDAS.getOrDefault(estadoActual, EnumSet.noneOf(EstadoOperacion.class));
+        if (!permitidos.contains(nuevoEstado)) {
+            throw new BadRequestException(
+                    "Transición no permitida: " + estadoActual + " → " + nuevoEstado);
+        }
+
+        if (operacion.getTipoOperacion() == TipoOperacion.VENTA && operacion.getPropiedad() != null) {
+            validarConflictoConPropiedad(operacion, nuevoEstado);
+        }
+
         operacion.setEstadoOperacion(nuevoEstado);
 
-        if (
-                nuevoEstado == EstadoOperacion.CERRADA_GANADA ||
-                        nuevoEstado == EstadoOperacion.CANCELADA
-        ) {
+        if (nuevoEstado == EstadoOperacion.CERRADA_GANADA || nuevoEstado == EstadoOperacion.CANCELADA) {
             operacion.setFechaCierre(LocalDateTime.now(ZONA_ARGENTINA));
         } else {
             operacion.setFechaCierre(null);
         }
 
-        return operacionRepository.save(operacion);
+        Operacion guardada = operacionRepository.save(operacion);
+
+        if (guardada.getTipoOperacion() == TipoOperacion.VENTA && guardada.getPropiedad() != null) {
+            sincronizarEstadoPropiedad(guardada.getPropiedad());
+        }
+
+        return guardada;
+    }
+
+    private void validarConflictoConPropiedad(Operacion operacion, EstadoOperacion nuevoEstado) {
+        if (nuevoEstado != EstadoOperacion.RESERVADA && nuevoEstado != EstadoOperacion.CERRADA_GANADA) {
+            return;
+        }
+
+        Long propiedadId = operacion.getPropiedad().getId();
+        List<Operacion> otras = operacionRepository.findByPropiedadId(propiedadId).stream()
+                .filter(o -> !o.getId().equals(operacion.getId()))
+                .toList();
+
+        boolean otraGanada = otras.stream()
+                .anyMatch(o -> o.getEstadoOperacion() == EstadoOperacion.CERRADA_GANADA);
+        if (otraGanada) {
+            throw new BadRequestException(
+                    "Esta propiedad ya tiene otra operación cerrada como ganada.");
+        }
+
+        if (nuevoEstado == EstadoOperacion.RESERVADA) {
+            boolean otraReservada = otras.stream()
+                    .anyMatch(o -> o.getEstadoOperacion() == EstadoOperacion.RESERVADA);
+            if (otraReservada) {
+                throw new BadRequestException(
+                        "Esta propiedad ya está reservada por otra operación activa.");
+            }
+        }
+    }
+
+    private void sincronizarEstadoPropiedad(Propiedad propiedad) {
+        if (propiedad == null) return;
+
+        List<Operacion> ops = operacionRepository.findByPropiedadId(propiedad.getId());
+
+        boolean hayGanada = ops.stream()
+                .anyMatch(o -> o.getEstadoOperacion() == EstadoOperacion.CERRADA_GANADA);
+        boolean hayReservada = ops.stream()
+                .anyMatch(o -> o.getEstadoOperacion() == EstadoOperacion.RESERVADA);
+
+        EstadoPropiedad nuevoEstado;
+        if (hayGanada) {
+            nuevoEstado = EstadoPropiedad.VENDIDA;
+        } else if (hayReservada) {
+            nuevoEstado = EstadoPropiedad.RESERVADA;
+        } else {
+            nuevoEstado = EstadoPropiedad.DISPONIBLE;
+        }
+
+        if (propiedad.getEstado() != nuevoEstado) {
+            propiedad.setEstado(nuevoEstado);
+            propiedadRepository.save(propiedad);
+        }
     }
 }
