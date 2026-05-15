@@ -49,9 +49,6 @@ button {
 
 .btn-todos { background: #32b389; color: white; }
 .btn-gestion { background: #f1f5f9; color: #15803d; border: 1px solid #dcfce7; }
-.btn-dashboard { background: #10a05a; color: white; border: 1px solid #0a7a44; }
-.btn-dashboard:hover { background: #0a7a44; }
-.btn-dashboard.active { background: #0a7a44; }
 .btn-nuevo-prospecto { background: white; color: #1e293b; border: 1px solid #e2e8f0; }
 
 .user-dropdown {
