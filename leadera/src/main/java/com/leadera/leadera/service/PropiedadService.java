@@ -48,7 +48,14 @@ public class PropiedadService {
         return propiedadRepository.save(propiedad);
     }
 
-    public List<Propiedad> obtenerPropiedadesDeLead(Long leadId) {
+    public List<Propiedad> obtenerPropiedadesDeLead(Long leadId, String emailAgente) {
+        Lead lead = leadRepository.findById(leadId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
+
+        if (lead.getAgente() == null || !lead.getAgente().getEmail().equals(emailAgente)) {
+            throw new UnauthorizedActionException("No tenés permiso para ver las propiedades de este lead.");
+        }
+
         return propiedadRepository.findByLeadId(leadId);
     }
 
@@ -69,9 +76,17 @@ public class PropiedadService {
         return propiedadRepository.save(propiedad);
     }
 
-    public Propiedad obtenerPorId(Long id) {
-        return propiedadRepository.findById(id)
+    public Propiedad obtenerPorId(Long id, String emailAgente) {
+        Propiedad propiedad = propiedadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
+
+        if (propiedad.getLead() == null
+                || propiedad.getLead().getAgente() == null
+                || !propiedad.getLead().getAgente().getEmail().equals(emailAgente)) {
+            throw new UnauthorizedActionException("No tenés permiso para ver esta propiedad.");
+        }
+
+        return propiedad;
     }
 
     public Propiedad editarPropiedad(Long propiedadId, EditarPropiedadRequest request, String emailAgente) {

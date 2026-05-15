@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth-service';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 })
 export class Login {
   loginForm: FormGroup;
+  errorLogin = signal<string>('');
 
   constructor(
     private fb: FormBuilder,
@@ -27,17 +28,12 @@ export class Login {
   onSubmit(){
     if(this.loginForm.valid){
       this.authService.login(this.loginForm.value).subscribe({
-        next: (response) => {
-          console.log('Response completa:', response);
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('agente_nombre', response.nombre); 
-          localStorage.setItem('agente_email', response.email);  
-          console.log('Login exitoso, token guardado');
+        next: () => {
+          this.errorLogin.set('');
           this.router.navigate(['/home']);
         },
-        error: (err) => { 
-          console.error('Error en el login', err);
-          alert('Credenciales incorrectas. ¡Fijate bien!');
+        error: (err) => {
+          this.errorLogin.set(err.mensajeAmigable || 'Credenciales incorrectas');
         }
       })
     }

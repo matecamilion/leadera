@@ -21,6 +21,10 @@
       </button>
     </form>
 
+    @if (errorLogin()) {
+      <p class="error-login">{{ errorLogin() }}</p>
+    }
+
     <div class="auth-footer">
       <p>¿No tenés cuenta? <a routerLink="/register">Registrate acá</a></p>
     </div>

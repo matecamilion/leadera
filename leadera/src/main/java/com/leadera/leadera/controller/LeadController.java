@@ -1,15 +1,18 @@
 package com.leadera.leadera.controller;
 
 import com.leadera.leadera.dto.AgenteDashboardDTO;
+import com.leadera.leadera.dto.CrearLeadRequest;
 import com.leadera.leadera.dto.LeadResumenDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Interaccion;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.enums.EstadoLead;
 import com.leadera.leadera.service.LeadService;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import org.apache.coyote.Response;
 import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +29,9 @@ public class LeadController {
 
     //Crear lead
     @PostMapping
-    public Lead crearLead(@RequestBody Lead lead, Authentication authentication) {
-        return leadService.crearLead(lead, authentication.getName());
+    public ResponseEntity<Lead> crearLead(@Valid @RequestBody CrearLeadRequest request, Authentication authentication) {
+        Lead creado = leadService.crearLead(request, authentication.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
     // Obtener mis leads
@@ -72,9 +76,9 @@ public class LeadController {
 
     // Actualizar estado del lead
     @PutMapping("/{id}/estado")
-    public Lead cambiarEstado(@PathVariable Long id, @RequestParam EstadoLead nuevoEstado) {
+    public Lead cambiarEstado(@PathVariable Long id, @RequestParam EstadoLead nuevoEstado, Authentication authentication) {
         // El service ya maneja la búsqueda por ID
-        return leadService.cambiarEstado(id, nuevoEstado);
+        return leadService.cambiarEstado(id, nuevoEstado, authentication.getName());
     }
 
 
@@ -84,8 +88,8 @@ public class LeadController {
     }
 
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<Lead> establecerLeadInactivo(@PathVariable Long id) {
-        return ResponseEntity.ok(leadService.establecerLeadInactivo(id));
+    public ResponseEntity<Lead> establecerLeadInactivo(@PathVariable Long id, Authentication authentication) {
+        return ResponseEntity.ok(leadService.establecerLeadInactivo(id, authentication.getName()));
     }
 
     @GetMapping("/agente/{id}/stats")

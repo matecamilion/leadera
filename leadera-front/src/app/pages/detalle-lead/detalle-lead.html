@@ -1,3 +1,9 @@
+@if (errorGeneral()) {
+  <div class="banner-error">
+    {{ errorGeneral() }}
+    <button (click)="errorGeneral.set('')">✕</button>
+  </div>
+}
 @if (lead()) {
   <div class="contenedor-detalle">
     <aside class="columna-info">

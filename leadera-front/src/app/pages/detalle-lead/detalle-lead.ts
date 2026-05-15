@@ -25,6 +25,7 @@ export class DetalleLead implements OnInit {
   public lead = signal<any>(null);
   public id: number = 0;
   operaciones = signal<Operacion[]>([]);
+  errorGeneral = signal<string>('');
 
   ultimasOperaciones = computed(() => {
     const ops = this.operaciones();
@@ -62,21 +63,21 @@ export class DetalleLead implements OnInit {
         this.cargarPropiedades();
         this.cargarOperaciones();
       },
-      error: (err) => console.error('Error al traer el lead', err)
+      error: (err) => this.errorGeneral.set(err.mensajeAmigable || 'No se pudo cargar el detalle del lead.')
     });
   }
 
   cargarPropiedades() {
   this.propiedadService.obtenerPorLead(this.id).subscribe({
     next: (data) => this.propiedades.set(data),
-    error: (err) => console.error('Error al cargar propiedades', err)
+    error: (err) => this.errorGeneral.set(err.mensajeAmigable || 'No se pudieron cargar las propiedades.')
   });
 }
 
   cargarOperaciones() {
   this.operacionService.obtenerOperacionesDelLead(this.id).subscribe({
     next: (data) => this.operaciones.set(data),
-    error: (err) => console.error('Error al cargar operaciones', err)
+    error: (err) => this.errorGeneral.set(err.mensajeAmigable || 'No se pudieron cargar las operaciones.')
   });
 }
 
@@ -90,7 +91,7 @@ export class DetalleLead implements OnInit {
       modal.close();
     },
     error: (err) => {
-      console.error(err);
+      this.errorGeneral.set(err.mensajeAmigable || 'No se pudo agregar la propiedad.');
     }
   });
 }
@@ -115,8 +116,7 @@ export class DetalleLead implements OnInit {
         modal.close();
       },
       error: (err) => {
-        console.error(err);
-        alert("No se pudo actualizar el estado");
+        this.errorGeneral.set(err.mensajeAmigable || 'No se pudo actualizar el estado.');
       }
     });
   }
@@ -128,8 +128,7 @@ export class DetalleLead implements OnInit {
         modal.close();
       },
       error: (err) => {
-        console.log(err);
-        alert("No se pudo establecer como inactivo");
+        this.errorGeneral.set(err.mensajeAmigable || 'No se pudo establecer como inactivo.');
       }
     });
   }
@@ -168,8 +167,8 @@ export class DetalleLead implements OnInit {
         modal.close();
       },
       error: (err) => {
-        this.errorOperacion = 'Error al crear la operación.';
-        console.error(err);
+        this.errorOperacion = err.mensajeAmigable || 'Error al crear la operación.';
+        this.errorGeneral.set(err.mensajeAmigable || 'No se pudo crear la operación.');
       }
     });
   }

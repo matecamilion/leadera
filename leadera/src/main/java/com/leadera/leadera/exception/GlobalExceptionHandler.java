@@ -1,16 +1,21 @@
 package com.leadera.leadera.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
@@ -83,6 +88,35 @@ public class GlobalExceptionHandler {
         // Sin PII en logs (Ley 25.326). Solo tipo y stack abreviado.
         log.error("Error no manejado en {}: {}", req.getRequestURI(), ex.toString(), ex);
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor", req, null);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest req) {
+        Throwable causa = ex.getCause();
+        if (causa instanceof InvalidFormatException ife && ife.getTargetType() != null && ife.getTargetType().isEnum()) {
+            String campo = ife.getPath().isEmpty() ? "desconocido" : ife.getPath().get(ife.getPath().size() - 1).getFieldName();
+            String valor = String.valueOf(ife.getValue());
+            String mensaje = "Valor inválido '" + valor + "' para el campo '" + campo + "'";
+            return build(HttpStatus.BAD_REQUEST, mensaje, req, null);
+        }
+        return build(HttpStatus.BAD_REQUEST, "Formato de la petición inválido", req, null);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest req) {
+        String mensaje = "El parámetro '" + ex.getName() + "' recibió el valor '" + ex.getValue() + "' que no es válido";
+        return build(HttpStatus.BAD_REQUEST, mensaje, req, null);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiError> handleMissingParameter(MissingServletRequestParameterException ex, HttpServletRequest req) {
+        return build(HttpStatus.BAD_REQUEST, "Falta el parámetro requerido: " + ex.getParameterName(), req, null);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest req) {
+        log.error("Violación de integridad de datos en {}: {}", req.getRequestURI(), ex.getMostSpecificCause().getMessage());
+        return build(HttpStatus.CONFLICT, "No se pudo completar la operación por un conflicto de datos", req, null);
     }
 
     private ResponseEntity<ApiError> build(HttpStatus status, String message, HttpServletRequest req, Map<String, String> validationErrors) {

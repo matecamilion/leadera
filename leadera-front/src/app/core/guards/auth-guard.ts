@@ -7,12 +7,24 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Si hay un token en el localStorage, lo dejamos pasar
-  if (authService.getToken()) {
-    return true;
+  const token = authService.getToken();
+
+  if (!token) {
+    router.navigate(['/login']);
+    return false;
   }
 
-  // Si no hay token, lo mandamos al login y bloqueamos la entrada
-  router.navigate(['/login']);
-  return false;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (!payload.exp || payload.exp * 1000 <= Date.now()) {
+      authService.logout();
+      router.navigate(['/login']);
+      return false;
+    }
+    return true;
+  } catch {
+    authService.logout();
+    router.navigate(['/login']);
+    return false;
+  }
 };

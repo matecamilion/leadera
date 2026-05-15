@@ -35,8 +35,8 @@ public class PropiedadController {
     }
 
     @GetMapping("/lead/{leadId}")
-    public ResponseEntity<List<Propiedad>> listarPropiedades(@PathVariable Long leadId) {
-        return ResponseEntity.ok(propiedadService.obtenerPropiedadesDeLead(leadId));
+    public ResponseEntity<List<Propiedad>> listarPropiedades(@PathVariable Long leadId, Authentication authentication) {
+        return ResponseEntity.ok(propiedadService.obtenerPropiedadesDeLead(leadId, authentication.getName()));
     }
 
     @PatchMapping("/{id}/estado")
@@ -47,8 +47,8 @@ public class PropiedadController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Propiedad> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(propiedadService.obtenerPorId(id));
+    public ResponseEntity<Propiedad> obtenerPorId(@PathVariable Long id, Authentication authentication) {
+        return ResponseEntity.ok(propiedadService.obtenerPorId(id, authentication.getName()));
     }
 
     @PutMapping("/{id}")

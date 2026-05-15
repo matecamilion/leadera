@@ -1,13 +1,13 @@
 package com.leadera.leadera.controller;
 
+import com.leadera.leadera.dto.CrearInteraccionRequest;
 import com.leadera.leadera.entity.Interaccion;
 import com.leadera.leadera.service.InteraccionService;
-import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/leads/{leadId}/interacciones")
@@ -20,9 +20,10 @@ public class InteraccionController {
 
     @PostMapping
     public ResponseEntity<Interaccion> crear(@PathVariable Long leadId,
-                                             @RequestBody Interaccion interaccion,
-                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime proximoContacto) {
-        return ResponseEntity.ok(interaccionService.crearInteraccion(leadId, interaccion, proximoContacto));
+                                             @Valid @RequestBody CrearInteraccionRequest request,
+                                             Authentication authentication) {
+        Interaccion creada = interaccionService.crearInteraccion(leadId, request, authentication.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(creada);
     }
 
 }

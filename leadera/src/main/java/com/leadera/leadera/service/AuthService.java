@@ -1,6 +1,7 @@
 package com.leadera.leadera.service;
 
 import com.leadera.leadera.dto.LoginResponse;
+import com.leadera.leadera.dto.RegisterRequest;
 import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.exception.DuplicateResourceException;
 import com.leadera.leadera.exception.ResourceNotFoundException;
@@ -39,11 +40,15 @@ public class AuthService {
         );
     }
 
-    public String registrar(Agente agente) {
-        if (agente.getEmail() != null && agenteRepository.findByEmail(agente.getEmail()).isPresent()) {
+    public String registrar(RegisterRequest request) {
+        if (request.getEmail() != null && agenteRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new DuplicateResourceException("Ya existe un agente con ese email");
         }
-        agente.setPassword(passwordEncoder.encode(agente.getPassword()));
+        Agente agente = new Agente();
+        agente.setNombre(request.getNombre());
+        agente.setApellido(request.getApellido());
+        agente.setEmail(request.getEmail());
+        agente.setPassword(passwordEncoder.encode(request.getPassword()));
         try {
             agenteRepository.save(agente);
         } catch (DataIntegrityViolationException ex) {

@@ -1,6 +1,7 @@
 package com.leadera.leadera.service;
 
 import com.leadera.leadera.dto.AgenteDashboardDTO;
+import com.leadera.leadera.dto.CrearLeadRequest;
 import com.leadera.leadera.dto.LeadResumenDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Agente;
@@ -36,20 +37,24 @@ public class LeadService {
     }
 
 
-    public Lead crearLead(Lead lead, String email) {
+    public Lead crearLead(CrearLeadRequest request, String email) {
 
         Agente agente = agenteRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Agente no encontrado"));
 
-        if (lead.getEmail() != null && leadRepository.existsByEmail(lead.getEmail())) {
+        if (request.getEmail() != null && leadRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateResourceException("Ya existe un lead con ese email");
         }
 
+        Lead lead = new Lead();
+        lead.setNombre(request.getNombre());
+        lead.setApellido(request.getApellido());
+        lead.setTelefono(request.getTelefono());
+        lead.setEmail(request.getEmail());
+        lead.setEstado(request.getEstado());
+        lead.setFechaProximoSeguimiento(request.getFechaProximoSeguimiento());
         lead.setAgente(agente);
-
-        if (lead.getFechaEntrada() == null) {
-            lead.setFechaEntrada(LocalDateTime.now());
-        }
+        lead.setFechaEntrada(LocalDateTime.now());
 
         return leadRepository.save(lead);
     }
@@ -106,9 +111,13 @@ public class LeadService {
 
 
 
-    public Lead cambiarEstado(Long id, EstadoLead nuevoEstado) {
+    public Lead cambiarEstado(Long id, EstadoLead nuevoEstado, String emailAgente) {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
+
+        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+            throw new UnauthorizedActionException("No tenés permiso para modificar este lead.");
+        }
 
         lead.setEstado(nuevoEstado);
         return leadRepository.save(lead);
@@ -139,9 +148,13 @@ public class LeadService {
         return new LeadsHoyResponse(nuevos, prioritarios, seguimientos, yaContactados, totalTareas, completadas);
     }
 
-    public Lead establecerLeadInactivo(Long id) {
+    public Lead establecerLeadInactivo(Long id, String emailAgente) {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
+
+        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+            throw new UnauthorizedActionException("No tenés permiso para modificar este lead.");
+        }
 
          lead.setEstado(EstadoLead.INACTIVO);
          return leadRepository.save(lead);
