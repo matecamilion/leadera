@@ -1,5 +1,6 @@
 package com.leadera.leadera.controller;
 
+import com.leadera.leadera.dto.ActividadRecienteDTO;
 import com.leadera.leadera.dto.AgenteDashboardDTO;
 import com.leadera.leadera.dto.CrearLeadRequest;
 import com.leadera.leadera.dto.LeadResumenDTO;
@@ -95,6 +96,11 @@ public class LeadController {
     @GetMapping("/agente/{id}/stats")
     public ResponseEntity<AgenteDashboardDTO> getStats(@PathVariable Long id) {
         return ResponseEntity.ok(leadService.obtenerEstadisticasAgente(id));
+    }
+
+    @GetMapping("/agente/{id}/actividad-reciente")
+    public ResponseEntity<List<ActividadRecienteDTO>> getActividadReciente(@PathVariable Long id) {
+        return ResponseEntity.ok(leadService.obtenerActividadReciente(id, 5));
     }
 
     @PutMapping("/{id}/editar-contacto")

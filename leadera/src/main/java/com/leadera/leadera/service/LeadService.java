@@ -1,5 +1,6 @@
 package com.leadera.leadera.service;
 
+import com.leadera.leadera.dto.ActividadRecienteDTO;
 import com.leadera.leadera.dto.AgenteDashboardDTO;
 import com.leadera.leadera.dto.CrearLeadRequest;
 import com.leadera.leadera.dto.LeadResumenDTO;
@@ -16,6 +17,7 @@ import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
@@ -218,6 +220,13 @@ public class LeadService {
         return leadRepository.save(lead);
     }
 
+
+    public List<ActividadRecienteDTO> obtenerActividadReciente(Long agenteId, int limit) {
+        return interaccionRepository.findUltimasInteracciones(agenteId, PageRequest.of(0, limit))
+                .stream()
+                .map(ActividadRecienteDTO::fromEntity)
+                .toList();
+    }
 
     public List<LeadResumenDTO> obtenerResumenLeadsPorAgente(String email) {
         List<Lead> leads = leadRepository.findByAgenteEmail(email);

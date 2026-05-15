@@ -1,155 +1,397 @@
-<div class="dashboard-wrapper">
+<div class="dash">
 
-  <!-- HEADER -->
-  <div class="dashboard-header">
-    <h1>Bienvenido al <span class="highlight">Dashboard de {{agenteNombre()}}</span></h1>
-    <p>Métricas clave de tu gestión inmobiliaria</p>
-  </div>
-
-  @if (stats) {
-
-    <!-- CARDS FILA 1 -->
-    <div class="cards-grid">
-
-  <div class="card card-blue">
-    <div class="card-icon icon-dark">
-      <span class="material-symbols-outlined">group</span>
-    </div>
-    <p class="card-label">Leads Activos</p>
-    <p class="card-value">{{ stats.activos }}</p>
-    <p class="card-sub">{{ stats.calientes }} calientes, {{ stats.tibios }} tibios, {{ stats.frios }} fríos</p>
-  </div>
-
-  <div class="card card-red-light">
-    <div class="card-icon icon-red">
-      <span class="material-symbols-outlined">track_changes</span>
-    </div>
-    <p class="card-label">Leads Calientes</p>
-    <p class="card-value">{{ stats.calientes }}</p>
-    <p class="card-sub">Alta probabilidad de conversión</p>
-  </div>
-
-  <div class="card card-green-soft">
-    <div class="card-icon icon-green-dark">
-      <span class="material-symbols-outlined">check_circle</span>
-    </div>
-    <p class="card-label">Ganados Este Mes</p>
-    <p class="card-value">{{ stats.ganadosMes }}</p>
-    <p class="card-sub">Operaciones cerradas este mes</p>
-  </div>
-
-  <div class="card card-green-light">
-    <div class="card-icon icon-green">
-      <span class="material-symbols-outlined">person_add</span>
-    </div>
-    <p class="card-label">Leads Nuevos Este Mes</p>
-    <p class="card-value">{{ stats.nuevosDelMes }}</p>
-    <p class="card-sub">Leads ingresados este mes</p>
-  </div>
-
-</div>
-
-<div class="cards-grid">
-
-  <div class="card card-green-light">
-    <div class="card-icon icon-green">
-      <span class="material-symbols-outlined">trending_up</span>
-    </div>
-    <p class="card-label">Tasa de Conversión</p>
-    <p class="card-value">{{ stats.tasaConversion }}%</p>
-    <p class="card-sub">{{ stats.ganadosMes }} ganados de {{ stats.nuevosDelMes }} nuevos</p>
-  </div>
-
-  <div class="card card-pink-light">
-    <div class="card-icon icon-purple">
-      <span class="material-symbols-outlined">schedule</span>
-    </div>
-    <p class="card-label">Tiempo de Respuesta</p>
-    <p class="card-value">{{ stats.tiempoRespuesta }}d</p>
-    <p class="card-sub">Promedio en leads calientes</p>
-  </div>
-
-  <div class="card card-blue-soft">
-    <div class="card-icon icon-blue">
-      <span class="material-symbols-outlined">monitor_heart</span>
-    </div>
-    <p class="card-label">Interacciones (7d)</p>
-    <p class="card-value">{{ stats.interacciones7d }}</p>
-    <p class="card-sub">Contactos esta semana</p>
-  </div>
-
-  <div class="card card-gray">
-    <div class="card-icon icon-gray">
-      <span class="material-symbols-outlined">cancel</span>
-    </div>
-    <p class="card-label">Leads Perdidos</p>
-    <p class="card-value">{{ stats.perdidos }}</p>
-    <p class="card-sub">Oportunidades no concretadas</p>
-  </div>
-
-</div>
-
-    <!-- RESUMEN DE PERFORMANCE -->
-    <div class="performance-card">
-      <h2>Resumen de Performance</h2>
-      <div class="performance-grid">
-
-        <div class="perf-col">
-          <p class="perf-title">PIPELINE DE LEADS</p>
-          <div class="perf-row">
-            <span class="dot dot-red"></span>
-            <span class="perf-label">Calientes</span>
-            <span class="perf-val">{{ stats.calientes }}</span>
-          </div>
-          <div class="perf-row">
-            <span class="dot dot-yellow"></span>
-            <span class="perf-label">Tibios</span>
-            <span class="perf-val">{{ stats.tibios }}</span>
-          </div>
-          <div class="perf-row">
-            <span class="dot dot-blue"></span>
-            <span class="perf-label">Fríos</span>
-            <span class="perf-val">{{ stats.frios }}</span>
-          </div>
-        </div>
-
-        <div class="perf-col">
-          <p class="perf-title">ESTADO DE LEADS</p>
-          <div class="perf-row">
-            <span class="perf-label">Activos</span>
-            <span class="perf-val">{{ stats.activos }}</span>
-          </div>
-          <div class="perf-row">
-            <span class="perf-label">Operaciones concretadas</span>
-            <span class="perf-val green">{{ stats.ganadosMes }}</span>
-          </div>
-          <div class="perf-row">
-            <span class="perf-label">Perdidos</span>
-            <span class="perf-val">{{ stats.perdidos }}</span>
-          </div>
-        </div>
-
-        <div class="perf-col">
-          <p class="perf-title">ACTIVIDAD RECIENTE</p>
-          <div class="perf-row">
-            <span class="perf-label">Interacciones en los ultimos 7 dias</span>
-            <span class="perf-val"> {{stats.interacciones7d}}</span>
-          </div>
-          <div class="perf-row">
-            <span class="perf-label">Ganados este mes</span>
-            <span class="perf-val green">{{ stats.ganadosMes }}</span>
-          </div>
-          <div class="perf-row">
-            <span class="perf-label">Total de leads en el mes de {{ mesActual }}</span>
-            <span class="perf-val">{{ stats.nuevosDelMes }}</span>
-          </div>
-        </div>
-
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">L<span class="brand-dot">·</span></span>
+      <div class="brand-text">
+        <span class="brand-name">LeadEra</span>
+        <span class="brand-sub">Dashboard</span>
       </div>
     </div>
 
-  } @else {
-    <p class="loading">Cargando estadísticas...</p>
-  }
+    <div class="periodos" role="tablist" aria-label="Período">
+      <button
+        type="button"
+        [class.active]="periodoActivo() === '7d'"
+        (click)="setPeriodo('7d')">7d</button>
+      <button
+        type="button"
+        [class.active]="periodoActivo() === '30d'"
+        (click)="setPeriodo('30d')">30d</button>
+      <button
+        type="button"
+        [class.active]="periodoActivo() === '90d'"
+        (click)="setPeriodo('90d')">90d</button>
+      <button
+        type="button"
+        [class.active]="periodoActivo() === 'ano'"
+        (click)="setPeriodo('ano')">Año</button>
+    </div>
 
+    <div class="user-avatar" title="{{ agenteNombre() }}">{{ iniciales() }}</div>
+  </header>
+
+  @if (stats(); as s) {
+
+    <!-- GREETING -->
+    <section class="greeting">
+      <h1 class="greeting-title">
+        {{ saludo() }}, <span class="greeting-name">{{ agenteNombre() }}</span> <span class="wave">👋</span>
+      </h1>
+      <p class="greeting-sub">
+        <span class="cap">{{ mesActual }}</span> · quedan {{ diasRestantesMes() }} días del mes
+      </p>
+      @if (s.calientes > 0) {
+        <span class="pill-attention">
+          <span class="pulse"></span>
+          {{ s.calientes }} leads calientes requieren tu atención
+        </span>
+      }
+    </section>
+
+    <!-- KPI ROW -->
+    <section class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Leads activos</span>
+          <span class="delta up">↑</span>
+        </div>
+        <div class="kpi-value">{{ s.activos }}</div>
+        <div class="kpi-context">{{ s.calientes }} calientes · {{ s.tibios }} tibios · {{ s.frios }} fríos</div>
+        <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 26 L15 22 L30 24 L45 18 L60 20 L75 12 L90 14 L105 8 L120 6"
+                fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M0 26 L15 22 L30 24 L45 18 L60 20 L75 12 L90 14 L105 8 L120 6 L120 32 L0 32 Z"
+                fill="var(--brand-softer)" />
+        </svg>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Tasa de conversión</span>
+          <span class="delta up">↑</span>
+        </div>
+        <div class="kpi-value">{{ s.tasaConversion }}<span class="kpi-unit">%</span></div>
+        <div class="kpi-context">{{ s.ganadosMes }} ganados de {{ s.nuevosDelMes }} nuevos</div>
+        <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 22 L15 20 L30 16 L45 18 L60 14 L75 10 L90 12 L105 8 L120 4"
+                fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Tiempo de respuesta</span>
+          <span class="delta down">↓</span>
+        </div>
+        <div class="kpi-value">{{ s.tiempoRespuesta }}<span class="kpi-unit">d</span></div>
+        <div class="kpi-context">Promedio en leads calientes</div>
+        <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 6 L15 10 L30 8 L45 14 L60 12 L75 18 L90 16 L105 22 L120 24"
+                fill="none" stroke="var(--warm)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Ganados este mes</span>
+          <span class="delta up">↑</span>
+        </div>
+        <div class="kpi-value">{{ s.ganadosMes }}</div>
+        <div class="kpi-context">Operaciones cerradas</div>
+        <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 28 L15 26 L30 24 L45 18 L60 20 L75 14 L90 12 L105 8 L120 6"
+                fill="none" stroke="var(--brand-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M0 28 L15 26 L30 24 L45 18 L60 20 L75 14 L90 12 L105 8 L120 6 L120 32 L0 32 Z"
+                fill="var(--brand-softer)" />
+        </svg>
+      </div>
+    </section>
+
+    <!-- MAIN GRID -->
+    <section class="main-grid">
+
+      <!-- Evolución de leads -->
+      <div class="card evol-card">
+        <header class="card-head">
+          <div>
+            <h2 class="card-title">Evolución de leads</h2>
+            <p class="card-sub">Últimos 30 días</p>
+          </div>
+          <div class="evol-counters">
+            <div><span class="dot dot-brand"></span>Nuevos <b>{{ s.nuevosDelMes }}</b></div>
+            <div><span class="dot dot-brand-deep"></span>Ganados <b>{{ s.ganadosMes }}</b></div>
+            <div><span class="dot dot-mute"></span>Perdidos <b>{{ s.perdidos }}</b></div>
+          </div>
+        </header>
+
+        <div class="evol-chart">
+          <svg viewBox="0 0 720 220" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="areaBrand" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#10a05a" stop-opacity="0.22"/>
+                <stop offset="100%" stop-color="#10a05a" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g class="grid">
+              <line x1="0" y1="40" x2="720" y2="40" />
+              <line x1="0" y1="90" x2="720" y2="90" />
+              <line x1="0" y1="140" x2="720" y2="140" />
+              <line x1="0" y1="190" x2="720" y2="190" />
+            </g>
+            <!-- Nuevos -->
+            <path d="M0 160 L60 150 L120 140 L180 120 L240 130 L300 110 L360 100 L420 90 L480 80 L540 70 L600 60 L660 50 L720 40 L720 220 L0 220 Z"
+                  fill="url(#areaBrand)" />
+            <path d="M0 160 L60 150 L120 140 L180 120 L240 130 L300 110 L360 100 L420 90 L480 80 L540 70 L600 60 L660 50 L720 40"
+                  fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Ganados -->
+            <path d="M0 200 L60 195 L120 190 L180 188 L240 180 L300 178 L360 170 L420 165 L480 150 L540 140 L600 130 L660 125 L720 110"
+                  fill="none" stroke="var(--brand-deep)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Perdidos -->
+            <path d="M0 205 L60 205 L120 200 L180 200 L240 198 L300 198 L360 197 L420 196 L480 196 L540 195 L600 195 L660 195 L720 195"
+                  fill="none" stroke="var(--ink-4)" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round" />
+
+            <!-- Marker Hoy -->
+            <line x1="720" y1="0" x2="720" y2="220" stroke="var(--ink-4)" stroke-dasharray="2 4" />
+            <circle cx="720" cy="40" r="4" fill="var(--brand)" />
+          </svg>
+          <div class="evol-xaxis">
+            <span>1 {{ mesActual }}</span>
+            <span>8 {{ mesActual }}</span>
+            <span>15 {{ mesActual }}</span>
+            <span>22 {{ mesActual }}</span>
+            <span class="today">Hoy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column stack -->
+      <div class="right-stack">
+
+        <!-- Meta del mes -->
+        <div class="card meta-card">
+          <header class="card-head">
+            <h2 class="card-title">Meta del mes</h2>
+            <span class="meta-faltante">{{ diasRestantesMes() }}d restantes</span>
+          </header>
+
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 160 160" aria-hidden="true">
+              <circle class="ring-track" cx="80" cy="80" r="64" />
+              <circle
+                class="ring-progress"
+                cx="80" cy="80" r="64"
+                [attr.stroke-dasharray]="2 * 3.14159265 * 64"
+                [attr.stroke-dashoffset]="(2 * 3.14159265 * 64) * (1 - metaProgreso() / 100)" />
+            </svg>
+            <div class="ring-content">
+              <div class="ring-value">{{ s.ganadosMes }}<span class="ring-meta">/{{ metaMes }}</span></div>
+              <div class="ring-label">cierres</div>
+            </div>
+          </div>
+
+          <div class="meta-foot">
+            <div><span class="meta-k">Ritmo necesario</span> <b>{{ ritmoNecesario() }}/día</b></div>
+          </div>
+        </div>
+
+        <!-- Temperatura -->
+        <div class="card temp-card">
+          <header class="card-head">
+            <h2 class="card-title">Temperatura de leads</h2>
+          </header>
+
+          <div class="donut-wrap">
+            <svg class="donut" viewBox="0 0 140 140" aria-hidden="true">
+              <circle class="donut-track" cx="70" cy="70" [attr.r]="donutRadius" />
+              <circle
+                class="donut-arc hot"
+                cx="70" cy="70" [attr.r]="donutRadius"
+                [attr.stroke-dasharray]="arcoCaliente() + ' ' + donutCircunferencia"
+                stroke-dashoffset="0" />
+              <circle
+                class="donut-arc warm"
+                cx="70" cy="70" [attr.r]="donutRadius"
+                [attr.stroke-dasharray]="arcoTibio() + ' ' + donutCircunferencia"
+                [attr.stroke-dashoffset]="-offsetTibio()" />
+              <circle
+                class="donut-arc cool"
+                cx="70" cy="70" [attr.r]="donutRadius"
+                [attr.stroke-dasharray]="arcoFrio() + ' ' + donutCircunferencia"
+                [attr.stroke-dashoffset]="-offsetFrio()" />
+            </svg>
+            <div class="donut-center">
+              <div class="donut-total">{{ totalTemperatura() }}</div>
+              <div class="donut-totlbl">total</div>
+            </div>
+          </div>
+
+          <ul class="temp-legend">
+            <li>
+              <span class="dot dot-hot"></span>
+              <span class="leg-name">Caliente</span>
+              <span class="leg-val">{{ s.calientes }} · {{ porcCaliente() }}%</span>
+            </li>
+            <li>
+              <span class="dot dot-warm"></span>
+              <span class="leg-name">Tibio</span>
+              <span class="leg-val">{{ s.tibios }} · {{ porcTibio() }}%</span>
+            </li>
+            <li>
+              <span class="dot dot-cool"></span>
+              <span class="leg-name">Frío</span>
+              <span class="leg-val">{{ s.frios }} · {{ porcFrio() }}%</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM GRID -->
+    <section class="bottom-grid">
+
+      <!-- Embudo -->
+      <div class="card funnel-card">
+        <header class="card-head">
+          <div>
+            <h2 class="card-title">Embudo de conversión</h2>
+            <p class="card-sub">Del primer contacto al cierre</p>
+          </div>
+        </header>
+
+        <ul class="funnel">
+          @for (et of embudoEtapas(); track et.num) {
+            <li class="funnel-row">
+              <span class="funnel-num">{{ et.num }}</span>
+              <span class="funnel-name">{{ et.nombre }}</span>
+              <div class="funnel-bar">
+                <span class="funnel-fill" [style.width.%]="et.ancho"></span>
+              </div>
+              <span class="funnel-val">{{ et.valor }}</span>
+              <span class="funnel-porc">{{ et.porc }}%</span>
+            </li>
+          }
+        </ul>
+
+        <p class="insight">
+          <span class="material-symbols-outlined">tips_and_updates</span>
+          La mayor caída suele estar entre <b>Calificados</b> y <b>Visita agendada</b>. Apuntá esfuerzo de contacto ahí.
+        </p>
+      </div>
+
+      <!-- Origen -->
+      <!-- TODO: reemplazar con GET /leads/agente/{id}/origen cuando se agregue campo 'origen' al Lead -->
+      <div class="card origen-card">
+        <header class="card-head">
+          <h2 class="card-title">Origen de leads</h2>
+          <span class="badge-mock">mock</span>
+        </header>
+        <ul class="origen-list">
+          @for (o of origenesMock; track o.nombre) {
+            <li>
+              <div class="origen-row">
+                <span class="origen-name">{{ o.nombre }}</span>
+                <span class="origen-porc">{{ o.porcentaje }}%</span>
+              </div>
+              <div class="origen-bar">
+                <span class="origen-fill" [style.width.%]="o.porcentaje" [style.background]="o.color"></span>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- PROXIMAS ACCIONES -->
+    <section class="card actions-card">
+      <header class="card-head">
+        <div>
+          <h2 class="card-title">Próximas acciones</h2>
+          <p class="card-sub">Top 5 ordenadas por score</p>
+        </div>
+        <a routerLink="/gestion-del-dia" class="link-cta">Ver todas →</a>
+      </header>
+
+      @if (proximasAcciones().length === 0) {
+        <p class="empty">No tenés tareas pendientes para hoy.</p>
+      } @else {
+        <table class="actions-table">
+          <thead>
+            <tr>
+              <th>Lead</th>
+              <th>Interés</th>
+              <th>Temperatura</th>
+              <th>Score</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of proximasAcciones(); track item.lead.id) {
+              <tr>
+                <td>
+                  <div class="lead-cell">
+                    <span class="lead-avatar" [class]="estadoClass(item.lead.estado)">{{ inicialesLead(item.lead) }}</span>
+                    <div class="lead-meta">
+                      <span class="lead-name">{{ item.lead.nombre }} {{ item.lead.apellido }}</span>
+                      <span class="lead-sub">{{ getSubtituloLead(item.lead) }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="interes-cell">{{ item.lead.email || '—' }}</td>
+                <td>
+                  <span class="temp-pill" [class]="estadoClass(item.lead.estado)">
+                    <span class="temp-dot"></span>
+                    {{ estadoLabel(item.lead.estado) }}
+                  </span>
+                </td>
+                <td>
+                  <div class="score-cell">
+                    <div class="score-bar"><span [style.width.%]="item.score"></span></div>
+                    <span class="score-num">{{ item.score }}</span>
+                  </div>
+                </td>
+                <td>
+                  <button type="button" class="cta-btn" (click)="irALead(item.lead.id)">
+                    {{ getAccionLabel(item.lead) }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+
+    <!-- ACTIVIDAD RECIENTE -->
+    <section class="card activity-card">
+      <header class="card-head">
+        <h2 class="card-title">Actividad reciente</h2>
+        <span class="card-sub">Últimas interacciones</span>
+      </header>
+
+      @if (actividadReciente().length === 0) {
+        <p class="empty">Sin actividad reciente.</p>
+      } @else {
+        <ul class="activity-list">
+          @for (a of actividadReciente(); track a.fechaInteraccion + a.detalle) {
+            <li class="activity-item">
+              <span class="activity-icon" [class]="iconoActividad(a.tipoInteraccion).tone">
+                <span class="material-symbols-outlined">{{ iconoActividad(a.tipoInteraccion).icon }}</span>
+              </span>
+              <div class="activity-body">
+                <p class="activity-text">
+                  <b>{{ a.leadNombre }} {{ a.leadApellido }}</b> — {{ a.detalle }}
+                </p>
+                <span class="activity-time">{{ formatRelativo(a.fechaInteraccion) }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+  } @else {
+    <p class="loading">Cargando dashboard…</p>
+  }
 </div>
