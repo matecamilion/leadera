@@ -24,7 +24,6 @@ public class Lead {
     private String apellido;
     private String telefono;
 
-    @Column(unique = true)
     private String email;
     private LocalDateTime fechaEntrada;
     private LocalDateTime ultimoContacto;
@@ -34,6 +33,12 @@ public class Lead {
     private EstadoLead estado;
 
     private LocalDateTime fechaProximoSeguimiento;
+
+    @Column(length = 100)
+    private String origen;
+
+    @Column(name = "descripcion_inicial", length = 500)
+    private String descripcionInicial;
 
     @ManyToOne
     @JoinColumn(name = "agente_id")

@@ -14,6 +14,8 @@ import java.util.List;
 public interface LeadRepository extends JpaRepository<Lead, Long> {
 
     boolean existsByEmail(String email);
+
+    boolean existsByAgenteEmailAndEmail(String agenteEmail, String email);
     // 1. FUNDAMENTALES + FILTRO AGENTE
     List<Lead> findByEstadoAndAgenteEmail(EstadoLead estado, String email);
 

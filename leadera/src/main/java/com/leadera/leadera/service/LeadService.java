@@ -2,7 +2,8 @@ package com.leadera.leadera.service;
 
 import com.leadera.leadera.dto.ActividadRecienteDTO;
 import com.leadera.leadera.dto.AgenteDashboardDTO;
-import com.leadera.leadera.dto.CrearLeadRequest;
+import com.leadera.leadera.dto.LeadRequestDTO;
+import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Agente;
@@ -13,6 +14,7 @@ import com.leadera.leadera.enums.TipoOperacion;
 import com.leadera.leadera.exception.DuplicateResourceException;
 import com.leadera.leadera.exception.ResourceNotFoundException;
 import com.leadera.leadera.exception.UnauthorizedActionException;
+import com.leadera.leadera.mapper.LeadMapper;
 import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
@@ -39,26 +41,21 @@ public class LeadService {
     }
 
 
-    public Lead crearLead(CrearLeadRequest request, String email) {
+    public LeadResponseDTO crearLead(LeadRequestDTO request, String email) {
 
         Agente agente = agenteRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Agente no encontrado"));
 
-        if (request.getEmail() != null && leadRepository.existsByEmail(request.getEmail())) {
-            throw new DuplicateResourceException("Ya existe un lead con ese email");
+        if (request.getEmail() != null && !request.getEmail().isBlank()
+                && leadRepository.existsByAgenteEmailAndEmail(email, request.getEmail())) {
+            throw new DuplicateResourceException("Ya tenés un lead con ese email");
         }
 
-        Lead lead = new Lead();
-        lead.setNombre(request.getNombre());
-        lead.setApellido(request.getApellido());
-        lead.setTelefono(request.getTelefono());
-        lead.setEmail(request.getEmail());
-        lead.setEstado(request.getEstado());
-        lead.setFechaProximoSeguimiento(request.getFechaProximoSeguimiento());
+        Lead lead = LeadMapper.toEntity(request);
         lead.setAgente(agente);
         lead.setFechaEntrada(LocalDateTime.now());
 
-        return leadRepository.save(lead);
+        return LeadMapper.toDTO(leadRepository.save(lead));
     }
 
     public List<Lead> obtenerLeadsPorAgente(String email) {

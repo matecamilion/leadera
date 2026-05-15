@@ -2,7 +2,8 @@ package com.leadera.leadera.controller;
 
 import com.leadera.leadera.dto.ActividadRecienteDTO;
 import com.leadera.leadera.dto.AgenteDashboardDTO;
-import com.leadera.leadera.dto.CrearLeadRequest;
+import com.leadera.leadera.dto.LeadRequestDTO;
+import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Interaccion;
@@ -30,8 +31,8 @@ public class LeadController {
 
     //Crear lead
     @PostMapping
-    public ResponseEntity<Lead> crearLead(@Valid @RequestBody CrearLeadRequest request, Authentication authentication) {
-        Lead creado = leadService.crearLead(request, authentication.getName());
+    public ResponseEntity<LeadResponseDTO> crearLead(@Valid @RequestBody LeadRequestDTO request, Authentication authentication) {
+        LeadResponseDTO creado = leadService.crearLead(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
