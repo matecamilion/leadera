@@ -29,6 +29,8 @@ export class NuevoLead {
     telefono: ['', [Validators.required]],
     email: ['', [Validators.email]],
     estado: ['FRIO', [Validators.required]],
+    origen: ['MANUAL', [Validators.required]],
+    descripcionInicial: ['', [Validators.maxLength(500)]],
     fechaProximoSeguimiento: [''],
   });
 

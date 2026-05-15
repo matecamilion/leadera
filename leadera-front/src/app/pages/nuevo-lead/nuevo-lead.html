@@ -48,9 +48,33 @@
         </div>
       </div>
 
+      <div class="campo">
+        <label>Origen del lead *</label>
+        <div class="select-custom">
+          <select formControlName="origen">
+            <option value="MANUAL">Carga manual</option>
+            <option value="REFERIDO">Referido</option>
+            <option value="WHATSAPP">WhatsApp</option>
+            <option value="FORMULARIO_WEB">Formulario web</option>
+            <option value="META_ADS">Meta Ads</option>
+            <option value="OTRO">Otro</option>
+          </select>
+        </div>
+      </div>
+
       <div class="campo full-width">
         <label>Programar primer seguimiento (Opcional)</label>
         <input type="datetime-local" formControlName="fechaProximoSeguimiento" />
+      </div>
+
+      <div class="campo full-width">
+        <label>¿Qué sabés del lead? (Opcional)</label>
+        <textarea
+          formControlName="descripcionInicial"
+          placeholder="Ej: Vino referido por Juan. Busca depto de 2 ambientes en zona céntrica, presupuesto USD 80k."
+          rows="3"
+          maxlength="500"
+        ></textarea>
       </div>
     </div>
 

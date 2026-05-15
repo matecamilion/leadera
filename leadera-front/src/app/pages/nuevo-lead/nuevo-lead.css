@@ -85,9 +85,10 @@
 }
 
 /* Inputs más altos para uso táctil */
-.campo input, 
+.campo input,
+.campo textarea,
 .select-custom select {
-  padding: 14px 16px; 
+  padding: 14px 16px;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
   background: #f8fafc;
@@ -96,13 +97,26 @@
   transition: all 0.2s;
   width: 100%;
   box-sizing: border-box;
+  font-family: inherit;
 }
 
-.campo input:focus {
+.campo textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.4;
+}
+
+.campo input:focus,
+.campo textarea:focus,
+.select-custom select:focus {
   outline: none;
   border-color: #2563eb;
   background: white;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.05);
+}
+
+.campo.full-width {
+  grid-column: 1 / -1;
 }
 
 /* 2. FOOTER RESPONSIVE */
