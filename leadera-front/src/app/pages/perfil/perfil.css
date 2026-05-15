@@ -94,19 +94,65 @@
   color: white;
 }
 
-.user-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--brand);
-  color: white;
-  display: flex;
+.export-btn {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.02em;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px 0 12px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: white;
+  border: 1px solid var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: pointer;
   box-shadow: var(--shadow-sm);
+  transition: background 0.15s, transform 0.1s, border-color 0.15s;
+}
+.export-btn:hover {
+  background: var(--brand-deep);
+  border-color: var(--brand-deep);
+}
+.export-btn:active { transform: translateY(1px); }
+.export-btn .material-symbols-outlined { font-size: 18px; }
+.export-btn-label { line-height: 1; }
+
+/* Sello de exportación — solo visible en print */
+.export-stamp {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  margin: 0 0 18px;
+  background: var(--brand-softer);
+  border: 1px solid #d6ecdf;
+  border-radius: 12px;
+}
+.export-stamp-left { display: flex; flex-direction: column; line-height: 1.2; }
+.export-stamp-brand {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-ink);
+  letter-spacing: -0.005em;
+}
+.export-stamp-agent { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+.export-stamp-right { display: flex; flex-direction: column; text-align: right; line-height: 1.2; }
+.export-stamp-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+}
+.export-stamp-date {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--brand-ink);
+  margin-top: 2px;
 }
 
 /* GREETING */
@@ -761,4 +807,85 @@
   }
   .actions-table tbody td { padding: 4px 0; border: none; }
   .interes-cell { font-size: 12px; }
+}
+
+/* PRINT — exportar a PDF manteniendo la estética del dashboard */
+@media print {
+  :host {
+    background: white;
+  }
+  .dash {
+    max-width: none;
+    padding: 0 12px 12px;
+  }
+  /* Botón y selector no se imprimen */
+  .export-btn,
+  .periodos {
+    display: none !important;
+  }
+  /* Sello de fecha visible solo en el PDF */
+  .export-stamp {
+    display: flex;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .topbar {
+    padding-top: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 12px;
+  }
+  /* Forzar impresión de colores en cards, pills, gráficos */
+  .kpi-card,
+  .card,
+  .pill-attention,
+  .temp-pill,
+  .delta,
+  .funnel-fill,
+  .origen-fill,
+  .score-bar span,
+  .ring-progress,
+  .donut-arc,
+  .spark path,
+  .insight,
+  .badge-mock,
+  .cta-btn,
+  .lead-avatar,
+  .activity-icon,
+  .user-avatar,
+  .brand-mark {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* Reducir un poco para que entre mejor en A4 */
+  .greeting-title { font-size: 24px; }
+  .kpi-value { font-size: 30px; }
+  .card-title { font-size: 14px; }
+  /* Evitar cortes feos */
+  .kpi-card,
+  .card,
+  .funnel-row,
+  .activity-item,
+  .actions-table tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .main-grid,
+  .bottom-grid {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  /* Sin sombras pesadas en el PDF */
+  .kpi-card,
+  .card {
+    box-shadow: none !important;
+  }
+  /* Saltos de página antes de secciones grandes */
+  .actions-card { page-break-before: auto; }
+  .activity-card { page-break-before: auto; }
+}
+
+@page {
+  size: A4;
+  margin: 14mm 12mm;
 }

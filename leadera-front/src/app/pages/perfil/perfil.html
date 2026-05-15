@@ -29,8 +29,22 @@
         (click)="setPeriodo('ano')">Año</button>
     </div>
 
-    <div class="user-avatar" title="{{ agenteNombre() }}">{{ iniciales() }}</div>
+    <button type="button" class="export-btn" (click)="exportarPdf()" title="Exportar dashboard a PDF">
+      <span class="material-symbols-outlined">picture_as_pdf</span>
+      <span class="export-btn-label">Exportar PDF</span>
+    </button>
   </header>
+
+  <div class="export-stamp" aria-hidden="true">
+    <div class="export-stamp-left">
+      <span class="export-stamp-brand">LeadEra · Dashboard</span>
+      <span class="export-stamp-agent">{{ agenteNombre() }}</span>
+    </div>
+    <div class="export-stamp-right">
+      <span class="export-stamp-label">Exportado el</span>
+      <span class="export-stamp-date">{{ fechaExportacion() }}</span>
+    </div>
+  </div>
 
   @if (stats(); as s) {
 

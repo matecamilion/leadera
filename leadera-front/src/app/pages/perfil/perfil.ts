@@ -46,6 +46,7 @@ export class Perfil {
   actividadReciente = signal<ActividadReciente[]>([]);
 
   periodoActivo = signal<'7d' | '30d' | '90d' | 'ano'>('30d');
+  fechaExportacion = signal<string>('');
 
   agenteNombre = computed(() => this.authService.getNombreAgente() || 'Agente');
   iniciales = computed(() => {
@@ -175,6 +176,14 @@ export class Perfil {
 
   setPeriodo(p: '7d' | '30d' | '90d' | 'ano') {
     this.periodoActivo.set(p);
+  }
+
+  exportarPdf() {
+    const ahora = new Date();
+    const fecha = ahora.toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' });
+    const hora = ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+    this.fechaExportacion.set(`${fecha} · ${hora} hs`);
+    setTimeout(() => window.print(), 50);
   }
 
   calcularScore(lead: Lead): number {
