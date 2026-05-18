@@ -43,17 +43,6 @@
   flex: 1; /* Toma el espacio disponible sin empujar el badge */
 }
 
-.contactado-badge {
-  background: #dcfce7;
-  color: #16a34a;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  white-space: nowrap; /* El badge no rompe en dos líneas */
-  flex-shrink: 0;
-}
-
 /* ========================= */
 /* META (estado + tiempo) */
 /* ========================= */

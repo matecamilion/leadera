@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LeadService } from '../../core/services/lead-service';
-import { Lead } from '../../core/models/lead';
+import { LeadHoy } from '../../core/models/lead-hoy';
 import { LeadSection } from '../../shared/lead-section/lead-section';
 
 @Component({
@@ -13,7 +13,7 @@ import { LeadSection } from '../../shared/lead-section/lead-section';
   styleUrl: './gestion-del-dia.css'
 })
 export class GestionDelDia implements OnInit {
-  leads = signal<Lead[]>([]);
+  leads = signal<LeadHoy[]>([]);
   cargando = signal(true);
 
   constructor(private leadService: LeadService) {}

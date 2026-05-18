@@ -1,10 +1,10 @@
-import { Lead } from "./lead";
+import { LeadHoy } from "./lead-hoy";
 
 export interface LeadsHoyResponse {
-    nuevosSinContacto: Lead[];
-    prioritarios: Lead[];
-    seguimientosDeHoy: Lead[];
-    contactadosHoy: Lead[];
-    totalTareasDelDia: number;     
+    nuevosSinContacto: LeadHoy[];
+    prioritarios: LeadHoy[];
+    seguimientosDeHoy: LeadHoy[];
+    contactadosHoy: LeadHoy[];
+    totalTareasDelDia: number;
     tareasCompletadasDelDia: number;
 }

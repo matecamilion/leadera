@@ -16,7 +16,6 @@ export class Home implements OnInit {
   error = signal('');
   leadsHoy = signal<LeadsHoyResponse | null>(null);
 
-  // Computeds basadas en la respuesta del server
   totalOriginal = computed(() => this.leadsHoy()?.totalTareasDelDia ?? 0);
   completadas = computed(() => this.leadsHoy()?.tareasCompletadasDelDia ?? 0);
 
@@ -52,12 +51,7 @@ export class Home implements OnInit {
         console.error(err);
         this.error.set('Error al conectar con el servidor');
         this.cargando.set(false);
-      }
+      },
     });
-  }
-
-  // Se dispara cuando contactás a alguien desde LeadSection
-  actualizarVista(leadId: number): void {
-    this.cargarDatos(); 
   }
 }

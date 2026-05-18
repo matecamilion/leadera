@@ -1,8 +1,12 @@
 package com.leadera.leadera.mapper;
 
+import com.leadera.leadera.dto.LeadHoyDTO;
 import com.leadera.leadera.dto.LeadRequestDTO;
 import com.leadera.leadera.dto.LeadResponseDTO;
+import com.leadera.leadera.entity.Interaccion;
 import com.leadera.leadera.entity.Lead;
+
+import java.util.List;
 
 public class LeadMapper {
 
@@ -23,6 +27,23 @@ public class LeadMapper {
                 lead.getFechaProximoSeguimiento(),
                 lead.getOrigen(),
                 lead.getDescripcionInicial()
+        );
+    }
+
+    public static LeadHoyDTO toHoyDTO(Lead lead) {
+        if (lead == null) return null;
+        String ultima = null;
+        List<Interaccion> interacciones = lead.getInteracciones();
+        if (interacciones != null && !interacciones.isEmpty()) {
+            ultima = interacciones.get(interacciones.size() - 1).getDetalle();
+        }
+        return new LeadHoyDTO(
+                lead.getId(),
+                lead.getNombre(),
+                lead.getApellido(),
+                lead.getEstado(),
+                lead.getUltimoContacto(),
+                ultima
         );
     }
 

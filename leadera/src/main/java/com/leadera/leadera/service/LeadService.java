@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import java.time.temporal.ChronoUnit;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class LeadService {
@@ -126,25 +128,36 @@ public class LeadService {
     public LeadsHoyResponse obtenerLeadsDeHoy(String email) {
         LocalDateTime ahora = LocalDateTime.now();
         LocalDateTime inicioHoy = ahora.toLocalDate().atStartOfDay();
-        LocalDateTime finHoy = ahora.toLocalDate().atTime(23, 59, 59);
 
         List<Lead> nuevos = leadRepository.findByUltimoContactoIsNullAndAgenteEmailAndEstadoNot(email, EstadoLead.INACTIVO);
 
-        // Para prioritarios, usá el método de abajo o el nuevo del repository
-        LocalDateTime fechaLimitePrioritarios = LocalDateTime.now().minusDays(7);
+        LocalDateTime fechaLimitePrioritarios = ahora.minusDays(7);
         List<Lead> prioritarios = leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimitePrioritarios, email);
 
         List<Lead> seguimientos = leadRepository.findSeguimientosPendientes(
                 ahora, email, EstadoLead.INACTIVO
         );
 
+        // Dedup: un lead que ya está en "prioritarios" no debe duplicarse en "seguimientos".
+        // Prioritario manda porque marca un atraso > 7 días que requiere atención inmediata.
+        Set<Long> idsPrioritarios = prioritarios.stream().map(Lead::getId).collect(Collectors.toSet());
+        List<Lead> seguimientosUnicos = seguimientos.stream()
+                .filter(l -> !idsPrioritarios.contains(l.getId()))
+                .toList();
+
         List<Lead> yaContactados = leadRepository.findByUltimoContactoAfterAndAgenteEmail(inicioHoy, email);
 
-
-        int totalTareas = nuevos.size() + prioritarios.size() + seguimientos.size() + yaContactados.size();
+        int totalTareas = nuevos.size() + prioritarios.size() + seguimientosUnicos.size() + yaContactados.size();
         int completadas = yaContactados.size();
 
-        return new LeadsHoyResponse(nuevos, prioritarios, seguimientos, yaContactados, totalTareas, completadas);
+        return new LeadsHoyResponse(
+                nuevos.stream().map(LeadMapper::toHoyDTO).toList(),
+                prioritarios.stream().map(LeadMapper::toHoyDTO).toList(),
+                seguimientosUnicos.stream().map(LeadMapper::toHoyDTO).toList(),
+                yaContactados.stream().map(LeadMapper::toHoyDTO).toList(),
+                totalTareas,
+                completadas
+        );
     }
 
     public Lead establecerLeadInactivo(Long id, String emailAgente) {

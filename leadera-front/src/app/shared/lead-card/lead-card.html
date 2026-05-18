@@ -1,12 +1,6 @@
 <div class="lead-card" [routerLink]="['/leads', lead().id]">
   <div class="lead-card-header">
     <h3 class="lead-name">{{ nombreCompleto() }}</h3>
-
-    @if (completado()) {
-      <div class="contactado-badge">
-        ✓ Contactado
-      </div>
-    }
   </div>
 
   <div class="lead-meta">
@@ -28,14 +22,9 @@
 
   <div class="lead-actions">
     <button
-    class="btn-principal"
-    (click)="irANuevaInteraccion()">
-
-      @if (!completado()) {
-        Registrar interacción
-      } @else {
-        Contactado
-      }
+      class="btn-principal"
+      (click)="irANuevaInteraccion()">
+      Registrar interacción
     </button>
   </div>
 </div>

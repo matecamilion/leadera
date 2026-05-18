@@ -9,7 +9,7 @@ import {
   DashboardPeriodo,
 } from '../../core/services/agente-service';
 import { LeadService } from '../../core/services/lead-service';
-import { Lead } from '../../core/models/lead';
+import { LeadHoy } from '../../core/models/lead-hoy';
 
 const DONUT_RADIUS = 56;
 const ORIGEN_COLORS = [
@@ -35,7 +35,7 @@ export class Perfil {
   private router = inject(Router);
 
   dashboard = signal<DashboardData | null>(null);
-  leadsHoy = signal<Lead[]>([]);
+  leadsHoy = signal<LeadHoy[]>([]);
   actividadReciente = signal<ActividadReciente[]>([]);
 
   periodoActivo = signal<DashboardPeriodo>('30d');
@@ -271,7 +271,7 @@ export class Perfil {
     setTimeout(() => window.print(), 50);
   }
 
-  calcularScore(lead: Lead): number {
+  calcularScore(lead: LeadHoy): number {
     let score = 0;
     if (lead.estado === 'CALIENTE') score += 40;
     else if (lead.estado === 'TIBIO') score += 20;
@@ -288,7 +288,7 @@ export class Perfil {
     return Math.min(score, 100);
   }
 
-  getAccionLabel(lead: Lead): string {
+  getAccionLabel(lead: LeadHoy): string {
     if (!lead.ultimoContacto) return 'Contactar';
     const dias = (Date.now() - new Date(lead.ultimoContacto).getTime()) / 86400000;
     if (lead.estado === 'CALIENTE' && dias < 1) return 'Preparar';
@@ -297,7 +297,7 @@ export class Perfil {
     return 'Llamar';
   }
 
-  getSubtituloLead(lead: Lead): string {
+  getSubtituloLead(lead: LeadHoy): string {
     if (!lead.ultimoContacto) return 'Nunca contactado';
     const dias = Math.floor((Date.now() - new Date(lead.ultimoContacto).getTime()) / 86400000);
     if (dias === 0) return 'Contactado hoy';
@@ -305,7 +305,7 @@ export class Perfil {
     return `Hace ${dias} días`;
   }
 
-  inicialesLead(lead: Lead): string {
+  inicialesLead(lead: LeadHoy): string {
     const n = (lead.nombre || '?')[0];
     const a = (lead.apellido || '')[0] || '';
     return (n + a).toUpperCase();

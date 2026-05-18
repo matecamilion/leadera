@@ -1,6 +1,5 @@
 package com.leadera.leadera.dto;
 
-import com.leadera.leadera.entity.Lead;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,11 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 public class LeadsHoyResponse {
 
-    private List<Lead> nuevosSinContacto;
-    private List<Lead> prioritarios;
-    private List<Lead> seguimientosDeHoy;
+    private List<LeadHoyDTO> nuevosSinContacto;
+    private List<LeadHoyDTO> prioritarios;
+    private List<LeadHoyDTO> seguimientosDeHoy;
 
-    private List<Lead> contactadosHoy;
+    private List<LeadHoyDTO> contactadosHoy;
 
     private int totalTareasDelDia;
     private int tareasCompletadasDelDia;

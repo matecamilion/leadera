@@ -4,7 +4,7 @@
   } @else {
 
     <div class="home-header">
-      <h1>Hoy tenés <span class="highlight">{{ totalPendientes() }}</span> tareas</h1>
+      <h1>Hoy te quedan <span class="highlight">{{ totalPendientes() }}</span> tareas</h1>
       <p class="subtitle">Gestioná tus contactos y hacé crecer tu cartera</p>
     </div>
 
@@ -23,8 +23,7 @@
       subtitle="Atención inmediata requerida por falta de contacto"
       badgeText="urgentes"
       variant="prioritarios"
-      [leads]="leadsHoy()?.prioritarios || []"
-      (tareaCompletada)="actualizarVista($event)">
+      [leads]="leadsHoy()?.prioritarios || []">
     </app-lead-section>
 
     <app-lead-section
@@ -32,8 +31,7 @@
       subtitle="Personas que consultaron recientemente y esperan respuesta"
       badgeText="nuevos"
       variant="nuevos"
-      [leads]="leadsHoy()?.nuevosSinContacto || []"
-      (tareaCompletada)="actualizarVista($event)">
+      [leads]="leadsHoy()?.nuevosSinContacto || []">
     </app-lead-section>
 
     <app-lead-section
@@ -41,8 +39,7 @@
       subtitle="Contactos activos que necesitan un recordatorio hoy"
       badgeText="pendientes"
       variant="seguimientos"
-      [leads]="leadsHoy()?.seguimientosDeHoy || []"
-      (tareaCompletada)="actualizarVista($event)">
+      [leads]="leadsHoy()?.seguimientosDeHoy || []">
     </app-lead-section>
   }
 </section>

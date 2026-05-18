@@ -1,5 +1,5 @@
-import { Component, computed, input, output, signal } from '@angular/core';
-import { Lead } from '../../core/models/lead';
+import { Component, computed, input } from '@angular/core';
+import { LeadHoy } from '../../core/models/lead-hoy';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -9,84 +9,48 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './lead-card.css',
 })
 export class LeadCard {
-  lead = input.required<Lead>();
-  tareaCompletada = output<number>();
-  contactado = input<boolean>(false);
-
-  completado = signal(false);
+  lead = input.required<LeadHoy>();
 
   nombreCompleto = computed(() => {
     const l = this.lead();
     return `${l.nombre} ${l.apellido}`;
-  })
+  });
 
   ultimaInteraccion = computed(() => {
-    const interacciones = this.lead().interacciones ?? [];
-    if(interacciones.length === 0) return 'Sin interacciones registradas';
-
-    const ultima = interacciones[interacciones.length - 1];
-    return ultima.detalle ?? 'Sin detalle';
+    return this.lead().ultimaInteraccion ?? 'Sin interacciones registradas';
   });
 
   tiempoDesdeUltimoContacto = computed(() => {
     const ultimoContacto = this.lead().ultimoContacto;
-    if(!ultimoContacto) return 'Sin contacto';
+    if (!ultimoContacto) return 'Sin contacto';
 
     const fecha = new Date(ultimoContacto);
     const ahora = new Date();
 
-    const diffMes = ahora.getTime() - fecha.getTime();
-    const diffHoras = Math.floor(diffMes / (1000 * 60 * 60));
-    const diffDias = Math.floor(diffHoras / 24 );
+    const diffMs = ahora.getTime() - fecha.getTime();
+    const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDias = Math.floor(diffHoras / 24);
 
-    if(diffHoras < 24){
-      return `Hace ${diffHoras} horas`;
-    }
-
-    if(diffDias === 1){
-      return `Hace 1 dia`;
-    }
-
+    if (diffHoras < 24) return `Hace ${diffHoras} horas`;
+    if (diffDias === 1) return 'Hace 1 dia';
     return `Hace ${diffDias} dias`;
-
   });
 
   claseEstado = computed(() => {
     switch (this.lead().estado) {
-      case 'CALIENTE':
-        return 'estado-caliente';
-      case 'TIBIO':
-        return 'estado-tibio';
-      case 'FRIO':
-        return 'estado-frio';
-      case 'INACTIVO':
-        return 'estado-inactivo';
-      default:
-        return '';
+      case 'CALIENTE': return 'estado-caliente';
+      case 'TIBIO': return 'estado-tibio';
+      case 'FRIO': return 'estado-frio';
+      case 'INACTIVO': return 'estado-inactivo';
+      default: return '';
     }
   });
 
-  textoEstado = computed(() => {
-    switch (this.lead().estado) {
-      case 'CALIENTE':
-        return 'CALIENTE';
-      case 'TIBIO':
-        return 'TIBIO';
-      case 'FRIO':
-        return 'FRIO';
-      case 'INACTIVO':
-        return 'INACTIVO';
-      default:
-        return this.lead().estado;
-    }
-  });
+  textoEstado = computed(() => this.lead().estado);
 
-   constructor(private router: Router) {}
+  constructor(private router: Router) {}
 
-irANuevaInteraccion() {
-  this.router.navigate(['/leads', this.lead().id, 'interaccion']);
-}
-
-
-
+  irANuevaInteraccion() {
+    this.router.navigate(['/leads', this.lead().id, 'interaccion']);
+  }
 }

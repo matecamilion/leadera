@@ -37,11 +37,7 @@
 
   <div class="cards-grid">
     @for (lead of leads(); track lead.id) {
-       <app-lead-card
-        [lead]="lead"
-        [contactado]="leadsContactados().includes(lead.id)"
-        (tareaCompletada)="reenviarTareaCompletada($event)">
-      </app-lead-card>
+      <app-lead-card [lead]="lead"></app-lead-card>
     }
   </div>
 
