@@ -397,17 +397,43 @@ export class Perfil {
   }
 
   private buildPath(values: number[], w: number, h: number, max: number, fill: boolean): string {
-    const n = values.length;
-    const step = n > 1 ? w / (n - 1) : 0;
-    let d = '';
-    for (let i = 0; i < n; i++) {
-      const x = +(i * step).toFixed(2);
-      const y = this.scaleY(values[i], max, h);
-      d += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
-    }
-    if (fill) d += ` L ${w} ${h} L 0 ${h} Z`;
-    return d;
+  const n = values.length;
+  if (n === 0) return '';
+  if (n === 1) {
+    const x = w / 2;
+    const y = this.scaleY(values[0], max, h);
+    return fill ? `M 0 ${h} L 0 ${y} L ${w} ${y} L ${w} ${h} Z` : `M 0 ${y} L ${w} ${y}`;
   }
+
+  const step = w / (n - 1);
+  const points = values.map((v, i) => ({
+    x: +(i * step).toFixed(2),
+    y: this.scaleY(v, max, h),
+  }));
+
+  // Tensión de la curva (0.3 = suave pero fiel a los datos)
+  const t = 0.3;
+
+  let d = `M ${points[0].x} ${points[0].y}`;
+
+  for (let i = 1; i < points.length; i++) {
+    const prev = points[i - 1];
+    const curr = points[i];
+
+    const cp1x = +(prev.x + (curr.x - prev.x) * t).toFixed(2);
+    const cp1y = +prev.y.toFixed(2);
+    const cp2x = +(curr.x - (curr.x - prev.x) * t).toFixed(2);
+    const cp2y = +curr.y.toFixed(2);
+
+    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`;
+  }
+
+  if (fill) {
+    d += ` L ${points[n - 1].x} ${h} L ${points[0].x} ${h} Z`;
+  }
+
+  return d;
+}
 
   private scaleY(v: number, max: number, h: number): number {
     const padTop = 4;
