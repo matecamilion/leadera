@@ -27,13 +27,18 @@ export class LeadCard {
     const fecha = new Date(ultimoContacto);
     const ahora = new Date();
 
-    const diffMs = ahora.getTime() - fecha.getTime();
-    const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
+    // Si por desfase de zona horaria la fecha quedó en el "futuro", lo
+    // tratamos como recién — nunca mostramos negativos.
+    const diffMs = Math.max(0, ahora.getTime() - fecha.getTime());
+    const diffMin = Math.floor(diffMs / (1000 * 60));
+    const diffHoras = Math.floor(diffMin / 60);
     const diffDias = Math.floor(diffHoras / 24);
 
-    if (diffHoras < 24) return `Hace ${diffHoras} horas`;
-    if (diffDias === 1) return 'Hace 1 dia';
-    return `Hace ${diffDias} dias`;
+    if (diffMin < 1) return 'Recién';
+    if (diffMin < 60) return `Hace ${diffMin} min`;
+    if (diffHoras < 24) return diffHoras === 1 ? 'Hace 1 hora' : `Hace ${diffHoras} horas`;
+    if (diffDias === 1) return 'Hace 1 día';
+    return `Hace ${diffDias} días`;
   });
 
   claseEstado = computed(() => {
