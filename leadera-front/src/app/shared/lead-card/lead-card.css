@@ -80,7 +80,6 @@
 .estado-caliente { background: #ffe5e5; color: red; border: 1px solid #f74d4d; }
 .estado-tibio    { background: #fff3bf; color: #a16207; border: 1px solid #f4df7b; }
 .estado-frio     { background: #dbeafe; color: #2563eb; border: 1px solid #bfdbfe; }
-.estado-ganado   { background: #8de085; color: #3c6731; }
 .estado-inactivo { background-color: #f3f4f6; color: #4b5563; border: 1px solid #8b8d91; }
 
 .tiempo-contacto {

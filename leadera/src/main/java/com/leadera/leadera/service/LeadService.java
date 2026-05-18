@@ -135,7 +135,7 @@ public class LeadService {
         List<Lead> prioritarios = leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimitePrioritarios, email);
 
         List<Lead> seguimientos = leadRepository.findSeguimientosPendientes(
-                ahora, email, EstadoLead.INACTIVO, EstadoLead.INACTIVO
+                ahora, email, EstadoLead.INACTIVO
         );
 
         List<Lead> yaContactados = leadRepository.findByUltimoContactoAfterAndAgenteEmail(inicioHoy, email);

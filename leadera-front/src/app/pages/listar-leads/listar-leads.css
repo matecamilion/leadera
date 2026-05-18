@@ -176,7 +176,6 @@
 .badge-estado.tibio { background: #fef9c3; color: #854d0e; }
 .badge-estado.frio { background: #dbeafe; color: #1e40af; }
 .badge-estado.inactivo { background-color: #f3f4f6; color: #4b5563; }
-.badge-estado.ganado { background: #8de085; color: #3c6731; }
 
 .fila-contacto {
   display: flex;

@@ -52,6 +52,10 @@
   cursor: pointer;
 }
 
+.icono-lapiz{
+  cursor: pointer;
+}
+
 /* Badges de Estado */
 .badge-estado {
   padding: 4px 12px;
@@ -62,7 +66,6 @@
   display: inline-block;
 }
 
-.badge-estado.ganado { background: #8de085; color: #3c6731; }
 .badge-estado.caliente { background-color: #fee2e2; color: #b91c1c; }
 .badge-estado.tibio { background: #fef3c7; color: #d97706; }
 .badge-estado.frio { background-color: #dbeafe; color: #1e40af; }
@@ -279,45 +282,6 @@
 .btn-opcion.frio { background: #e0f2fe; color: #0369a1; }
 .btn-opcion.tibio { background: #fef3c7; color: #92400e; }
 .btn-opcion.caliente { background: #fee2e2; color: #b91c1c; }
-.btn-opcion.ganado { background: #8de085; color: #3c6731; }
-
-.btn-ganado {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: #22c55e;
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  cursor: pointer;
-  margin-bottom: 16px;
-  transition: all 0.25s ease;
-}
-
-.btn-ganado:hover {
-  background: #16a34a;
-  transform: translateY(-2px);
-}
-
-.badge-ganado-final {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: #dcfce7;
-  color: #16a34a;
-  padding: 14px;
-  border-radius: 12px;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
 
 .campo-edicion {
   display: flex;

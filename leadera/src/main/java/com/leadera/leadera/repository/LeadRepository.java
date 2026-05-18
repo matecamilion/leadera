@@ -29,17 +29,15 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
     List<Lead> findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead estado, LocalDateTime fechaLimite, String email);
 
     @Query("""
-    SELECT l FROM Lead l 
+    SELECT l FROM Lead l
     WHERE l.fechaProximoSeguimiento IS NOT NULL
     AND l.fechaProximoSeguimiento <= :ahora
-    AND l.estado <> :ganado
     AND l.estado <> :inactivo
     AND l.agente.email = :email
 """)
     List<Lead> findSeguimientosPendientes(
             @Param("ahora") LocalDateTime ahora,
             @Param("email") String email,
-            @Param("ganado") EstadoLead ganado,
             @Param("inactivo") EstadoLead inactivo
     );
 
@@ -68,10 +66,8 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
     boolean existsByAgenteEmailAndEmailAndIdNot(String agenteEmail, String email, Long id);
 
 
-    // Traer nuevos que NO estén ganados (por si acaso se ganó uno sin contacto previo)
     List<Lead> findByUltimoContactoIsNullAndAgenteEmailAndEstadoNot(String email, EstadoLead estado);
 
-    // Traer los contactados hoy (aquí sí podrías querer ver los que ganaste hoy como "tarea cumplida")
     List<Lead> findByUltimoContactoAfterAndAgenteEmail(LocalDateTime fecha, String email);
 
     // ---- Dashboard ----
