@@ -41,7 +41,7 @@ export class KanbanBoardComponent implements OnInit {
   cargarPipeline(): void {
     this.cargando.set(true);
     this.error.set('');
-    this.operacionService.obtenerPipeline().subscribe({
+    this.operacionService.obtenerTodasLasOperaciones().subscribe({
       next: (data) => {
         this.columnas.set(
           this.estados.map((estado) => ({

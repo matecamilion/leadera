@@ -1,0 +1,48 @@
+<div class="page">
+  <header class="page-header">
+    <a routerLink="/operaciones" class="btn-volver">← Volver al pipeline</a>
+    <h1 class="page-title">Operaciones: {{ estadoLabel() }}</h1>
+    <p class="page-count">{{ operaciones().length }} operaciones</p>
+  </header>
+
+  @if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  }
+
+  @if (cargando()) {
+    <p class="loading">Cargando operaciones…</p>
+  } @else if (operaciones().length === 0) {
+    <p class="empty">No hay operaciones en este estado.</p>
+  } @else {
+    <ul class="lista">
+      @for (op of operaciones(); track op.id) {
+        <li class="tarjeta">
+          <div class="tarjeta-head">
+            <h2 class="tarjeta-titulo">{{ op.titulo || (op.nombreLead + ' ' + op.apellidoLead) }}</h2>
+            <span [class]="tipoClass(op.tipoOperacion)">{{ op.tipoOperacion }}</span>
+          </div>
+          <p class="tarjeta-desc">{{ op.descripcionPropiedad }}</p>
+          <div class="tarjeta-meta">
+            @if (op.fechaCreacion) {
+              <span class="tarjeta-fecha">
+                <span class="material-symbols-outlined">event</span>
+                {{ op.fechaCreacion | date: "d 'de' MMMM, yyyy" }}
+              </span>
+            }
+            @if (op.precioEstimado) {
+              <span class="tarjeta-precio">{{ op.precioEstimado }}</span>
+            }
+          </div>
+          @if (op.leadId) {
+            <a
+              class="tarjeta-link"
+              [routerLink]="['/leads', op.leadId, 'operaciones', op.id]"
+            >
+              Ver detalle →
+            </a>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

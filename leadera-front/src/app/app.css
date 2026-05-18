@@ -1,6 +1,12 @@
 main.with-sidebar {
   margin-left: 220px;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main.with-sidebar > router-outlet + * {
+  flex: 1;
 }
 
 @media (max-width: 768px) {
@@ -8,4 +14,30 @@ main.with-sidebar {
     margin-left: 0;
     padding-top: 60px;
   }
+}
+
+.app-footer {
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 14px 32px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.footer-brand {
+  font-weight: 700;
+  color: #14b8a6;
+  letter-spacing: -0.01em;
+}
+
+.footer-sep {
+  margin: 0 8px;
+  color: #cbd5e1;
+}
+
+.footer-version {
+  font-weight: 500;
+  color: #cbd5e1;
 }

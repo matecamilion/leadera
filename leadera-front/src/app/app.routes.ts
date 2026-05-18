@@ -17,6 +17,7 @@ import { PropiedadesComponent } from './pages/propiedades/propiedades';
 import { OperacionesLead } from './pages/operaciones-lead/operaciones-lead';
 import { InteraccionesLead } from './pages/interacciones-lead/interacciones-lead';
 import { OperacionesCerradasComponent } from './pages/operaciones-cerradas/operaciones-cerradas';
+import { OperacionesPorEstado } from './pages/operaciones-por-estado/operaciones-por-estado';
 
 export const routes: Routes = [
     // 1. Rutas de Autenticación (Públicas)
@@ -36,7 +37,9 @@ export const routes: Routes = [
   { path: 'leads/:id/operaciones', component: OperacionesLead, canActivate: [authGuard], title: 'LeadEra - Operaciones del Lead' },
   { path: 'leads/:id/interacciones', component: InteraccionesLead, canActivate: [authGuard], title: 'LeadEra - Interacciones del Lead' },
   { path: 'pipeline', component: KanbanBoardComponent, canActivate: [authGuard], title: 'LeadEra - Pipeline' },
+  { path: 'operaciones', component: KanbanBoardComponent, canActivate: [authGuard], title: 'LeadEra - Operaciones' },
   { path: 'operaciones/cerradas', component: OperacionesCerradasComponent, canActivate: [authGuard], title: 'LeadEra - Operaciones cerradas' },
+  { path: 'operaciones/estado/:estado', component: OperacionesPorEstado, canActivate: [authGuard], title: 'LeadEra - Operaciones por estado' },
   { path: 'propiedades', component: PropiedadesComponent, canActivate: [authGuard], title: 'LeadEra - Propiedades' },
 
   { path: '', redirectTo: '/login', pathMatch: 'full' },

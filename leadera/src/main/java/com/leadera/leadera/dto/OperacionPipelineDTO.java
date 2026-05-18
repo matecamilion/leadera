@@ -24,6 +24,7 @@ public class OperacionPipelineDTO {
     private String apellidoLead;
     private String descripcionPropiedad;
     private String precioEstimado;
+    private LocalDateTime fechaCreacion;
     private LocalDateTime fechaCierre;
 
     public static OperacionPipelineDTO fromEntity(Operacion operacion) {
@@ -41,6 +42,7 @@ public class OperacionPipelineDTO {
 
         dto.setDescripcionPropiedad(armarDescripcion(operacion));
         dto.setPrecioEstimado(calcularPrecioEstimado(operacion));
+        dto.setFechaCreacion(operacion.getFechaCreacion());
         dto.setFechaCierre(operacion.getFechaCierre());
         return dto;
     }

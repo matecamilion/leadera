@@ -1,15 +1,6 @@
 <div class="kanban-page">
   <header class="kanban-header">
     <h1>Pipeline de operaciones</h1>
-    <div class="kanban-actions">
-      <a class="btn-cerradas" routerLink="/operaciones/cerradas">
-        <span class="material-symbols-outlined">archive</span>
-        Ver cerradas
-      </a>
-      <button class="btn-refresh" (click)="cargarPipeline()" [disabled]="cargando()">
-        Refrescar
-      </button>
-    </div>
   </header>
 
   @if (error()) {
@@ -19,7 +10,7 @@
   @if (cargando()) {
     <p class="estado-vacio">Cargando pipeline…</p>
   } @else {
-    <div class="kanban-board">
+    <div class="pipeline-columnas">
       @for (columna of columnas(); track trackByEstado($index, columna)) {
         <section class="columna" [attr.data-estado]="columna.estado">
           <header class="columna-header">
@@ -35,7 +26,7 @@
             [cdkDropListConnectedTo]="estados"
             (cdkDropListDropped)="onDrop($event, columna.estado)"
           >
-            @for (op of columna.operaciones; track trackById($index, op)) {
+            @for (op of columna.operaciones.slice(0, 5); track trackById($index, op)) {
               <article class="card" cdkDrag>
                 <div class="card-body">
                   <div class="card-lead">{{ op.nombreLead }} {{ op.apellidoLead }}</div>
@@ -52,6 +43,15 @@
               </article>
             } @empty {
               <p class="columna-vacia">Sin operaciones</p>
+            }
+
+            @if (columna.operaciones.length > 5) {
+              <a
+                [routerLink]="['/operaciones/estado', columna.estado]"
+                class="btn-ver-todas"
+              >
+                Ver todas ({{ columna.operaciones.length }})
+              </a>
             }
           </div>
         </section>

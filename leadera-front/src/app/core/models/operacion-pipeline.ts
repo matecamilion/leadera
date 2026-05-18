@@ -10,6 +10,7 @@ export interface OperacionPipeline {
   apellidoLead: string;
   descripcionPropiedad: string;
   precioEstimado: string;
+  fechaCreacion?: string | null;
   fechaCierre?: string | null;
 }
 
@@ -17,6 +18,8 @@ export const ESTADOS_PIPELINE: EstadoOperacion[] = [
   'ABIERTA',
   'EN_GESTION',
   'RESERVADA',
+  'CERRADA_GANADA',
+  'CANCELADA',
 ];
 
 export const TRANSICIONES_PERMITIDAS: Record<EstadoOperacion, EstadoOperacion[]> = {

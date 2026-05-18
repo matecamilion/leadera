@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { Propiedad } from '../models/propiedad';
 import { Busqueda } from '../models/busqueda';
 import { OperacionPipeline } from '../models/operacion-pipeline';
@@ -74,6 +74,13 @@ obtenerPipeline(): Observable<OperacionPipeline[]> {
 
 obtenerOperacionesCerradas(): Observable<OperacionPipeline[]> {
   return this.http.get<OperacionPipeline[]>(`${this.apiUrl}/operaciones/cerradas`);
+}
+
+obtenerTodasLasOperaciones(): Observable<OperacionPipeline[]> {
+  return forkJoin({
+    abiertas: this.obtenerPipeline(),
+    cerradas: this.obtenerOperacionesCerradas(),
+  }).pipe(map(({ abiertas, cerradas }) => [...abiertas, ...cerradas]));
 }
 
 obtenerEventos(leadId: number, operacionId: number): Observable<EventoOperacion[]> {
