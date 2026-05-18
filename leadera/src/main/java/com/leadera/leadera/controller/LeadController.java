@@ -2,6 +2,7 @@ package com.leadera.leadera.controller;
 
 import com.leadera.leadera.dto.ActividadRecienteDTO;
 import com.leadera.leadera.dto.AgenteDashboardDTO;
+import com.leadera.leadera.dto.DashboardDTO;
 import com.leadera.leadera.dto.LeadRequestDTO;
 import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
@@ -9,6 +10,7 @@ import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Interaccion;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.enums.EstadoLead;
+import com.leadera.leadera.service.DashboardService;
 import com.leadera.leadera.service.LeadService;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -24,9 +26,11 @@ import java.util.List;
 @RequestMapping("/leads")
 public class LeadController {
     private final LeadService leadService;
+    private final DashboardService dashboardService;
 
-    public LeadController(LeadService leadService) {
+    public LeadController(LeadService leadService, DashboardService dashboardService) {
         this.leadService = leadService;
+        this.dashboardService = dashboardService;
     }
 
     //Crear lead
@@ -102,6 +106,13 @@ public class LeadController {
     @GetMapping("/agente/{id}/actividad-reciente")
     public ResponseEntity<List<ActividadRecienteDTO>> getActividadReciente(@PathVariable Long id) {
         return ResponseEntity.ok(leadService.obtenerActividadReciente(id, 5));
+    }
+
+    @GetMapping("/agente/{id}/dashboard")
+    public ResponseEntity<DashboardDTO> getDashboard(
+            @PathVariable Long id,
+            @RequestParam(name = "periodo", defaultValue = "30d") String periodo) {
+        return ResponseEntity.ok(dashboardService.obtenerDashboard(id, periodo));
     }
 
     @PutMapping("/{id}/editar-contacto")

@@ -73,4 +73,37 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
 
     // Traer los contactados hoy (aquí sí podrías querer ver los que ganaste hoy como "tarea cumplida")
     List<Lead> findByUltimoContactoAfterAndAgenteEmail(LocalDateTime fecha, String email);
+
+    // ---- Dashboard ----
+
+    // Leads ingresados en un rango
+    @Query("SELECT l.fechaEntrada FROM Lead l WHERE l.agente.id = :agenteId " +
+            "AND l.fechaEntrada >= :desde AND l.fechaEntrada < :hasta")
+    List<LocalDateTime> findFechasIngresoEnRango(@Param("agenteId") Long agenteId,
+                                                 @Param("desde") LocalDateTime desde,
+                                                 @Param("hasta") LocalDateTime hasta);
+
+    long countByAgenteIdAndFechaEntradaGreaterThanEqualAndFechaEntradaLessThan(
+            Long agenteId, LocalDateTime desde, LocalDateTime hasta);
+
+    // Origen agrupado en un rango (NULL/vacío -> "Sin origen")
+    @Query("SELECT COALESCE(NULLIF(TRIM(l.origen), ''), 'Sin origen') as origen, COUNT(l) " +
+            "FROM Lead l WHERE l.agente.id = :agenteId " +
+            "AND l.fechaEntrada >= :desde AND l.fechaEntrada < :hasta " +
+            "GROUP BY COALESCE(NULLIF(TRIM(l.origen), ''), 'Sin origen') " +
+            "ORDER BY COUNT(l) DESC")
+    List<Object[]> contarOrigenesEnRango(@Param("agenteId") Long agenteId,
+                                         @Param("desde") LocalDateTime desde,
+                                         @Param("hasta") LocalDateTime hasta);
+
+    // Embudo: leads con al menos una interacción
+    @Query("SELECT COUNT(DISTINCT l) FROM Lead l " +
+            "WHERE l.agente.id = :agenteId AND SIZE(l.interacciones) > 0")
+    long countContactados(@Param("agenteId") Long agenteId);
+
+    // Embudo: leads calificados (no FRIO ni INACTIVO)
+    @Query("SELECT COUNT(l) FROM Lead l WHERE l.agente.id = :agenteId " +
+            "AND l.estado <> com.leadera.leadera.enums.EstadoLead.FRIO " +
+            "AND l.estado <> com.leadera.leadera.enums.EstadoLead.INACTIVO")
+    long countCalificados(@Param("agenteId") Long agenteId);
 }

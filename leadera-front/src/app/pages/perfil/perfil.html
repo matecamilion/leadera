@@ -46,7 +46,7 @@
     </div>
   </div>
 
-  @if (stats(); as s) {
+  @if (dashboard(); as d) {
 
     <!-- GREETING -->
     <section class="greeting">
@@ -56,10 +56,10 @@
       <p class="greeting-sub">
         <span class="cap">{{ mesActual }}</span> · quedan {{ diasRestantesMes() }} días del mes
       </p>
-      @if (s.calientes > 0) {
+      @if (d.snapshot.calientes > 0) {
         <span class="pill-attention">
           <span class="pulse"></span>
-          {{ s.calientes }} leads calientes requieren tu atención
+          {{ d.snapshot.calientes }} leads calientes requieren tu atención
         </span>
       }
     </section>
@@ -69,27 +69,30 @@
       <div class="kpi-card">
         <div class="kpi-head">
           <span class="kpi-label">Leads activos</span>
-          <span class="delta up">↑</span>
+          <span class="delta" [class]="deltaClase(kpiActivos()?.direccion)">
+            {{ deltaSimbolo(kpiActivos()?.direccion) }} {{ formatDelta(kpiActivos()?.deltaPct) }}
+          </span>
         </div>
-        <div class="kpi-value">{{ s.activos }}</div>
-        <div class="kpi-context">{{ s.calientes }} calientes · {{ s.tibios }} tibios · {{ s.frios }} fríos</div>
+        <div class="kpi-value">{{ d.snapshot.activos }}</div>
+        <div class="kpi-context">{{ d.snapshot.calientes }} calientes · {{ d.snapshot.tibios }} tibios · {{ d.snapshot.frios }} fríos</div>
         <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 26 L15 22 L30 24 L45 18 L60 20 L75 12 L90 14 L105 8 L120 6"
+          <path [attr.d]="sparkActivos()"
                 fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M0 26 L15 22 L30 24 L45 18 L60 20 L75 12 L90 14 L105 8 L120 6 L120 32 L0 32 Z"
-                fill="var(--brand-softer)" />
+          <path [attr.d]="sparkActivosArea()" fill="var(--brand-softer)" />
         </svg>
       </div>
 
       <div class="kpi-card">
         <div class="kpi-head">
           <span class="kpi-label">Tasa de conversión</span>
-          <span class="delta up">↑</span>
+          <span class="delta" [class]="deltaClase(kpiTasa()?.direccion)">
+            {{ deltaSimbolo(kpiTasa()?.direccion) }} {{ formatDelta(kpiTasa()?.deltaPct) }}
+          </span>
         </div>
-        <div class="kpi-value">{{ s.tasaConversion }}<span class="kpi-unit">%</span></div>
-        <div class="kpi-context">{{ s.ganadosMes }} ganados de {{ s.nuevosDelMes }} nuevos</div>
+        <div class="kpi-value">{{ kpiTasa()?.actual ?? 0 }}<span class="kpi-unit">%</span></div>
+        <div class="kpi-context">vs. {{ kpiTasa()?.anterior ?? 0 }}% período anterior</div>
         <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 22 L15 20 L30 16 L45 18 L60 14 L75 10 L90 12 L105 8 L120 4"
+          <path [attr.d]="sparkTasa()"
                 fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
@@ -97,28 +100,31 @@
       <div class="kpi-card">
         <div class="kpi-head">
           <span class="kpi-label">Tiempo de respuesta</span>
-          <span class="delta down">↓</span>
+          <span class="delta" [class]="deltaClase(kpiTiempo()?.direccion, true)">
+            {{ deltaSimbolo(kpiTiempo()?.direccion) }} {{ formatDelta(kpiTiempo()?.deltaPct) }}
+          </span>
         </div>
-        <div class="kpi-value">{{ s.tiempoRespuesta }}<span class="kpi-unit">d</span></div>
-        <div class="kpi-context">Promedio en leads calientes</div>
+        <div class="kpi-value">{{ kpiTiempo()?.actual ?? 0 }}<span class="kpi-unit">d</span></div>
+        <div class="kpi-context">Promedio del período</div>
         <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 6 L15 10 L30 8 L45 14 L60 12 L75 18 L90 16 L105 22 L120 24"
+          <path [attr.d]="sparkTiempo()"
                 fill="none" stroke="var(--warm)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
 
       <div class="kpi-card">
         <div class="kpi-head">
-          <span class="kpi-label">Ganados este mes</span>
-          <span class="delta up">↑</span>
+          <span class="kpi-label">Ganados del período</span>
+          <span class="delta" [class]="deltaClase(kpiGanados()?.direccion)">
+            {{ deltaSimbolo(kpiGanados()?.direccion) }} {{ formatDelta(kpiGanados()?.deltaPct) }}
+          </span>
         </div>
-        <div class="kpi-value">{{ s.ganadosMes }}</div>
-        <div class="kpi-context">Operaciones cerradas</div>
+        <div class="kpi-value">{{ kpiGanados()?.actual ?? 0 }}</div>
+        <div class="kpi-context">vs. {{ kpiGanados()?.anterior ?? 0 }} período anterior</div>
         <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 28 L15 26 L30 24 L45 18 L60 20 L75 14 L90 12 L105 8 L120 6"
+          <path [attr.d]="sparkGanados()"
                 fill="none" stroke="var(--brand-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M0 28 L15 26 L30 24 L45 18 L60 20 L75 14 L90 12 L105 8 L120 6 L120 32 L0 32 Z"
-                fill="var(--brand-softer)" />
+          <path [attr.d]="sparkGanadosArea()" fill="var(--brand-softer)" />
         </svg>
       </div>
     </section>
@@ -131,12 +137,12 @@
         <header class="card-head">
           <div>
             <h2 class="card-title">Evolución de leads</h2>
-            <p class="card-sub">Últimos 30 días</p>
+            <p class="card-sub">{{ evolSubtitulo() }}</p>
           </div>
           <div class="evol-counters">
-            <div><span class="dot dot-brand"></span>Nuevos <b>{{ s.nuevosDelMes }}</b></div>
-            <div><span class="dot dot-brand-deep"></span>Ganados <b>{{ s.ganadosMes }}</b></div>
-            <div><span class="dot dot-mute"></span>Perdidos <b>{{ s.perdidos }}</b></div>
+            <div><span class="dot dot-brand"></span>Nuevos <b>{{ totalNuevosPeriodo() }}</b></div>
+            <div><span class="dot dot-brand-deep"></span>Ganados <b>{{ totalGanadosPeriodo() }}</b></div>
+            <div><span class="dot dot-mute"></span>Perdidos <b>{{ totalPerdidosPeriodo() }}</b></div>
           </div>
         </header>
 
@@ -154,27 +160,21 @@
               <line x1="0" y1="140" x2="720" y2="140" />
               <line x1="0" y1="190" x2="720" y2="190" />
             </g>
-            <!-- Nuevos -->
-            <path d="M0 160 L60 150 L120 140 L180 120 L240 130 L300 110 L360 100 L420 90 L480 80 L540 70 L600 60 L660 50 L720 40 L720 220 L0 220 Z"
-                  fill="url(#areaBrand)" />
-            <path d="M0 160 L60 150 L120 140 L180 120 L240 130 L300 110 L360 100 L420 90 L480 80 L540 70 L600 60 L660 50 L720 40"
+            <path [attr.d]="evolNuevosArea()" fill="url(#areaBrand)" />
+            <path [attr.d]="evolNuevosLinea()"
                   fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            <!-- Ganados -->
-            <path d="M0 200 L60 195 L120 190 L180 188 L240 180 L300 178 L360 170 L420 165 L480 150 L540 140 L600 130 L660 125 L720 110"
+            <path [attr.d]="evolGanadosLinea()"
                   fill="none" stroke="var(--brand-deep)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            <!-- Perdidos -->
-            <path d="M0 205 L60 205 L120 200 L180 200 L240 198 L300 198 L360 197 L420 196 L480 196 L540 195 L600 195 L660 195 L720 195"
+            <path [attr.d]="evolPerdidosLinea()"
                   fill="none" stroke="var(--ink-4)" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round" />
 
-            <!-- Marker Hoy -->
             <line x1="720" y1="0" x2="720" y2="220" stroke="var(--ink-4)" stroke-dasharray="2 4" />
-            <circle cx="720" cy="40" r="4" fill="var(--brand)" />
+            <circle cx="720" [attr.cy]="evolUltimoNuevoY()" r="4" fill="var(--brand)" />
           </svg>
           <div class="evol-xaxis">
-            <span>1 {{ mesActual }}</span>
-            <span>8 {{ mesActual }}</span>
-            <span>15 {{ mesActual }}</span>
-            <span>22 {{ mesActual }}</span>
+            @for (etiq of evolEjeX(); track $index) {
+              <span>{{ etiq }}</span>
+            }
             <span class="today">Hoy</span>
           </div>
         </div>
@@ -200,7 +200,7 @@
                 [attr.stroke-dashoffset]="(2 * 3.14159265 * 64) * (1 - metaProgreso() / 100)" />
             </svg>
             <div class="ring-content">
-              <div class="ring-value">{{ s.ganadosMes }}<span class="ring-meta">/{{ metaMes }}</span></div>
+              <div class="ring-value">{{ d.snapshot.ganadosMes }}<span class="ring-meta">/{{ metaMes() }}</span></div>
               <div class="ring-label">cierres</div>
             </div>
           </div>
@@ -245,17 +245,17 @@
             <li>
               <span class="dot dot-hot"></span>
               <span class="leg-name">Caliente</span>
-              <span class="leg-val">{{ s.calientes }} · {{ porcCaliente() }}%</span>
+              <span class="leg-val">{{ d.snapshot.calientes }} · {{ porcCaliente() }}%</span>
             </li>
             <li>
               <span class="dot dot-warm"></span>
               <span class="leg-name">Tibio</span>
-              <span class="leg-val">{{ s.tibios }} · {{ porcTibio() }}%</span>
+              <span class="leg-val">{{ d.snapshot.tibios }} · {{ porcTibio() }}%</span>
             </li>
             <li>
               <span class="dot dot-cool"></span>
               <span class="leg-name">Frío</span>
-              <span class="leg-val">{{ s.frios }} · {{ porcFrio() }}%</span>
+              <span class="leg-val">{{ d.snapshot.frios }} · {{ porcFrio() }}%</span>
             </li>
           </ul>
         </div>
@@ -288,32 +288,37 @@
           }
         </ul>
 
-        <p class="insight">
-          <span class="material-symbols-outlined">tips_and_updates</span>
-          La mayor caída suele estar entre <b>Calificados</b> y <b>Visita agendada</b>. Apuntá esfuerzo de contacto ahí.
-        </p>
+        @if (insightEmbudo(); as ins) {
+          <p class="insight">
+            <span class="material-symbols-outlined">tips_and_updates</span>
+            La mayor caída está entre <b>{{ ins.desde }}</b> y <b>{{ ins.hasta }}</b> ({{ ins.porc }}%). Apuntá esfuerzo de contacto ahí.
+          </p>
+        }
       </div>
 
       <!-- Origen -->
-      <!-- TODO: reemplazar con GET /leads/agente/{id}/origen cuando se agregue campo 'origen' al Lead -->
       <div class="card origen-card">
         <header class="card-head">
           <h2 class="card-title">Origen de leads</h2>
-          <span class="badge-mock">mock</span>
+          <p class="card-sub">{{ evolSubtitulo() }}</p>
         </header>
-        <ul class="origen-list">
-          @for (o of origenesMock; track o.nombre) {
-            <li>
-              <div class="origen-row">
-                <span class="origen-name">{{ o.nombre }}</span>
-                <span class="origen-porc">{{ o.porcentaje }}%</span>
-              </div>
-              <div class="origen-bar">
-                <span class="origen-fill" [style.width.%]="o.porcentaje" [style.background]="o.color"></span>
-              </div>
-            </li>
-          }
-        </ul>
+        @if (origenes().length === 0) {
+          <p class="empty">No hay leads en este período.</p>
+        } @else {
+          <ul class="origen-list">
+            @for (o of origenes(); track o.nombre) {
+              <li>
+                <div class="origen-row">
+                  <span class="origen-name">{{ o.nombre }}</span>
+                  <span class="origen-porc">{{ o.porcentaje }}%</span>
+                </div>
+                <div class="origen-bar">
+                  <span class="origen-fill" [style.width.%]="o.porcentaje" [style.background]="o.color"></span>
+                </div>
+              </li>
+            }
+          </ul>
+        }
       </div>
     </section>
 

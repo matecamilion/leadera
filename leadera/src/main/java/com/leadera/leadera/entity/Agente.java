@@ -4,6 +4,7 @@ package com.leadera.leadera.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +32,10 @@ public class Agente implements UserDetails{
 
     private String nombre;
     private String apellido;
+
+    @Column(name = "meta_mensual_cierres", nullable = false)
+    @ColumnDefault("12")
+    private Integer metaMensualCierres = 12;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL)

@@ -55,4 +55,46 @@ public interface OperacionRepository extends JpaRepository<Operacion, Long> {
             "AND MONTH(o.fechaCierre) = MONTH(CURRENT_DATE) " +
             "AND YEAR(o.fechaCierre) = YEAR(CURRENT_DATE)")
     long countOperacionesGanadasDelMes(@Param("agenteId") Long agenteId);
+
+    // ---- Dashboard ----
+
+    // Fechas de cierre en un rango para un estado dado
+    @Query("SELECT o.fechaCierre FROM Operacion o " +
+            "WHERE o.agente.id = :agenteId " +
+            "AND o.estadoOperacion = :estado " +
+            "AND o.fechaCierre IS NOT NULL " +
+            "AND o.fechaCierre >= :desde " +
+            "AND o.fechaCierre < :hasta")
+    List<java.time.LocalDateTime> findFechasCierreEnRango(
+            @Param("agenteId") Long agenteId,
+            @Param("estado") EstadoOperacion estado,
+            @Param("desde") java.time.LocalDateTime desde,
+            @Param("hasta") java.time.LocalDateTime hasta);
+
+    @Query("SELECT COUNT(o) FROM Operacion o " +
+            "WHERE o.agente.id = :agenteId " +
+            "AND o.estadoOperacion = :estado " +
+            "AND o.fechaCierre IS NOT NULL " +
+            "AND o.fechaCierre >= :desde " +
+            "AND o.fechaCierre < :hasta")
+    long countCierresEnRango(
+            @Param("agenteId") Long agenteId,
+            @Param("estado") EstadoOperacion estado,
+            @Param("desde") java.time.LocalDateTime desde,
+            @Param("hasta") java.time.LocalDateTime hasta);
+
+    // Embudo: leads distintos con operación en alguno de los estados dados
+    @Query("SELECT COUNT(DISTINCT o.lead.id) FROM Operacion o " +
+            "WHERE o.agente.id = :agenteId " +
+            "AND o.estadoOperacion IN :estados")
+    long countLeadsDistintosConOperacionEnEstados(
+            @Param("agenteId") Long agenteId,
+            @Param("estados") List<EstadoOperacion> estados);
+
+    // Embudo: leads con al menos un EventoOperacion del tipo dado
+    @Query("SELECT COUNT(DISTINCT o.lead.id) FROM EventoOperacion e " +
+            "JOIN e.operacion o " +
+            "WHERE o.agente.id = :agenteId " +
+            "AND e.tipo = com.leadera.leadera.enums.TipoEvento.VISITA")
+    long countLeadsConVisita(@Param("agenteId") Long agenteId);
 }

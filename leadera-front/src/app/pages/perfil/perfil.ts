@@ -2,31 +2,24 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
-import { AgenteService, ActividadReciente } from '../../core/services/agente-service';
+import {
+  AgenteService,
+  ActividadReciente,
+  DashboardData,
+  DashboardPeriodo,
+} from '../../core/services/agente-service';
 import { LeadService } from '../../core/services/lead-service';
 import { Lead } from '../../core/models/lead';
 
-interface OrigenMock {
-  nombre: string;
-  porcentaje: number;
-  color: string;
-}
-
-interface DashboardStats {
-  activos: number;
-  calientes: number;
-  tibios: number;
-  frios: number;
-  ganadosMes: number;
-  nuevosDelMes: number;
-  perdidos: number;
-  interacciones7d: number;
-  tasaConversion: number;
-  tiempoRespuesta: number;
-}
-
-const META_MES = 12;
 const DONUT_RADIUS = 56;
+const ORIGEN_COLORS = [
+  'var(--brand)',
+  'var(--brand-deep)',
+  'var(--cool)',
+  'var(--warm)',
+  'var(--ink-3)',
+  'var(--ink-4)',
+];
 
 @Component({
   selector: 'app-perfil',
@@ -41,11 +34,11 @@ export class Perfil {
   private leadService = inject(LeadService);
   private router = inject(Router);
 
-  stats = signal<DashboardStats | null>(null);
+  dashboard = signal<DashboardData | null>(null);
   leadsHoy = signal<Lead[]>([]);
   actividadReciente = signal<ActividadReciente[]>([]);
 
-  periodoActivo = signal<'7d' | '30d' | '90d' | 'ano'>('30d');
+  periodoActivo = signal<DashboardPeriodo>('30d');
   fechaExportacion = signal<string>('');
 
   agenteNombre = computed(() => this.authService.getNombreAgente() || 'Agente');
@@ -65,24 +58,22 @@ export class Perfil {
   });
 
   mesActual = new Date().toLocaleString('es-AR', { month: 'long' });
-  diasRestantesMes = computed(() => {
-    const hoy = new Date();
-    const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate();
-    return ultimoDia - hoy.getDate();
-  });
 
-  metaMes = META_MES;
+  diasRestantesMes = computed(() => this.dashboard()?.snapshot.diasRestantesMes ?? 0);
+  metaMes = computed(() => this.dashboard()?.snapshot.metaMensual ?? 12);
+
   metaProgreso = computed(() => {
-    const s = this.stats();
+    const s = this.dashboard()?.snapshot;
     if (!s) return 0;
-    return Math.min((s.ganadosMes / this.metaMes) * 100, 100);
+    const meta = s.metaMensual || 1;
+    return Math.min((s.ganadosMes / meta) * 100, 100);
   });
 
   ritmoNecesario = computed(() => {
-    const s = this.stats();
+    const s = this.dashboard()?.snapshot;
     if (!s) return 0;
-    const faltan = Math.max(this.metaMes - s.ganadosMes, 0);
-    const dias = Math.max(this.diasRestantesMes(), 1);
+    const faltan = Math.max(s.metaMensual - s.ganadosMes, 0);
+    const dias = Math.max(s.diasRestantesMes, 1);
     return +(faltan / dias).toFixed(1);
   });
 
@@ -91,45 +82,130 @@ export class Perfil {
   donutRadius = DONUT_RADIUS;
 
   totalTemperatura = computed(() => {
-    const s = this.stats();
+    const s = this.dashboard()?.snapshot;
     if (!s) return 0;
     return s.calientes + s.tibios + s.frios;
   });
 
-  arcoCaliente = computed(() => this.arcoDe(this.stats()?.calientes ?? 0));
-  arcoTibio = computed(() => this.arcoDe(this.stats()?.tibios ?? 0));
-  arcoFrio = computed(() => this.arcoDe(this.stats()?.frios ?? 0));
+  arcoCaliente = computed(() => this.arcoDe(this.dashboard()?.snapshot.calientes ?? 0));
+  arcoTibio = computed(() => this.arcoDe(this.dashboard()?.snapshot.tibios ?? 0));
+  arcoFrio = computed(() => this.arcoDe(this.dashboard()?.snapshot.frios ?? 0));
 
   offsetTibio = computed(() => this.arcoCaliente());
   offsetFrio = computed(() => this.arcoCaliente() + this.arcoTibio());
 
-  porcCaliente = computed(() => this.porcentajeDe(this.stats()?.calientes ?? 0));
-  porcTibio = computed(() => this.porcentajeDe(this.stats()?.tibios ?? 0));
-  porcFrio = computed(() => this.porcentajeDe(this.stats()?.frios ?? 0));
+  porcCaliente = computed(() => this.porcentajeDe(this.dashboard()?.snapshot.calientes ?? 0));
+  porcTibio = computed(() => this.porcentajeDe(this.dashboard()?.snapshot.tibios ?? 0));
+  porcFrio = computed(() => this.porcentajeDe(this.dashboard()?.snapshot.frios ?? 0));
 
-  // Embudo
+  // Embudo real desde backend
   embudoEtapas = computed(() => {
-    const s = this.stats();
-    if (!s) return [];
-    const contactados = s.activos;
-    const calificados = s.calientes + s.tibios;
-    const visita = s.calientes;
-    const oferta = Math.round(s.calientes * 0.6);
-    const cerrado = s.ganadosMes;
-    const base = Math.max(contactados, 1);
-
-    return [
-      { num: '01', nombre: 'Contactados', valor: contactados },
-      { num: '02', nombre: 'Calificados', valor: calificados },
-      { num: '03', nombre: 'Visita agendada', valor: visita },
-      { num: '04', nombre: 'Oferta', valor: oferta },
-      { num: '05', nombre: 'Cerrado', valor: cerrado },
-    ].map(e => ({
+    const f = this.dashboard()?.snapshot.funnel;
+    if (!f) return [];
+    const base = Math.max(f.contactados, 1);
+    const etapas = [
+      { num: '01', nombre: 'Contactados', valor: f.contactados },
+      { num: '02', nombre: 'Calificados', valor: f.calificados },
+      { num: '03', nombre: 'Visita agendada', valor: f.visita },
+      { num: '04', nombre: 'Oferta', valor: f.oferta },
+      { num: '05', nombre: 'Cerrado', valor: f.cerrado },
+    ];
+    return etapas.map(e => ({
       ...e,
       ancho: Math.min(100, (e.valor / base) * 100),
       porc: Math.round((e.valor / base) * 100),
     }));
   });
+
+  // Insight dinámico del embudo: mayor caída en %
+  insightEmbudo = computed(() => {
+    const etapas = this.embudoEtapas();
+    if (etapas.length < 2) return null;
+    let peorIdx = 1;
+    let peorCaida = -1;
+    for (let i = 1; i < etapas.length; i++) {
+      const prev = etapas[i - 1].valor;
+      const curr = etapas[i].valor;
+      if (prev === 0) continue;
+      const caida = (prev - curr) / prev;
+      if (caida > peorCaida) {
+        peorCaida = caida;
+        peorIdx = i;
+      }
+    }
+    if (peorCaida <= 0) return null;
+    return {
+      desde: etapas[peorIdx - 1].nombre,
+      hasta: etapas[peorIdx].nombre,
+      porc: Math.round(peorCaida * 100),
+    };
+  });
+
+  origenes = computed(() => {
+    const list = this.dashboard()?.origenes ?? [];
+    return list.map((o, i) => ({ ...o, color: ORIGEN_COLORS[i % ORIGEN_COLORS.length] }));
+  });
+
+  // Sparklines (paths SVG)
+  sparkActivos = computed(() => this.linePath(this.dashboard()?.kpis.leadsActivos.sparkline ?? [], 120, 32));
+  sparkActivosArea = computed(() => this.areaPath(this.dashboard()?.kpis.leadsActivos.sparkline ?? [], 120, 32));
+  sparkTasa = computed(() => this.linePath(this.dashboard()?.kpis.tasaConversion.sparkline ?? [], 120, 32));
+  sparkTiempo = computed(() => this.linePath(this.dashboard()?.kpis.tiempoRespuesta.sparkline ?? [], 120, 32));
+  sparkGanados = computed(() => this.linePath(this.dashboard()?.kpis.ganados.sparkline ?? [], 120, 32));
+  sparkGanadosArea = computed(() => this.areaPath(this.dashboard()?.kpis.ganados.sparkline ?? [], 120, 32));
+
+  // Evolución (líneas y área)
+  private evolMaxY = computed(() => {
+    const ev = this.dashboard()?.evolucion;
+    if (!ev) return 1;
+    const all = [...ev.nuevos, ...ev.ganados, ...ev.perdidos];
+    return Math.max(1, ...all);
+  });
+
+  evolNuevosLinea = computed(() =>
+    this.linePathScaled(this.dashboard()?.evolucion.nuevos ?? [], 720, 220, this.evolMaxY())
+  );
+  evolNuevosArea = computed(() =>
+    this.areaPathScaled(this.dashboard()?.evolucion.nuevos ?? [], 720, 220, this.evolMaxY())
+  );
+  evolGanadosLinea = computed(() =>
+    this.linePathScaled(this.dashboard()?.evolucion.ganados ?? [], 720, 220, this.evolMaxY())
+  );
+  evolPerdidosLinea = computed(() =>
+    this.linePathScaled(this.dashboard()?.evolucion.perdidos ?? [], 720, 220, this.evolMaxY())
+  );
+
+  evolUltimoNuevoY = computed(() => {
+    const arr = this.dashboard()?.evolucion.nuevos ?? [];
+    if (arr.length === 0) return 110;
+    const v = arr[arr.length - 1];
+    const max = this.evolMaxY();
+    return this.scaleY(v, max, 220);
+  });
+
+  totalNuevosPeriodo = computed(() => (this.dashboard()?.evolucion.nuevos ?? []).reduce((a, b) => a + b, 0));
+  totalGanadosPeriodo = computed(() => (this.dashboard()?.evolucion.ganados ?? []).reduce((a, b) => a + b, 0));
+  totalPerdidosPeriodo = computed(() => (this.dashboard()?.evolucion.perdidos ?? []).reduce((a, b) => a + b, 0));
+
+  evolEjeX = computed(() => {
+    const fechas = this.dashboard()?.evolucion.fechas ?? [];
+    if (fechas.length === 0) return [];
+    const idx = [0, Math.floor(fechas.length * 0.25), Math.floor(fechas.length * 0.5), Math.floor(fechas.length * 0.75)];
+    return idx.map(i => this.formatFechaCorta(fechas[i]));
+  });
+
+  evolSubtitulo = computed(() => {
+    const d = this.dashboard();
+    if (!d) return '';
+    if (d.periodo === 'ano') return 'Últimos 365 días';
+    return `Últimos ${d.diasPeriodo} días`;
+  });
+
+  // Acceso rápido a KPIs para el template
+  kpiActivos = computed(() => this.dashboard()?.kpis.leadsActivos);
+  kpiTasa = computed(() => this.dashboard()?.kpis.tasaConversion);
+  kpiTiempo = computed(() => this.dashboard()?.kpis.tiempoRespuesta);
+  kpiGanados = computed(() => this.dashboard()?.kpis.ganados);
 
   // Próximas acciones
   proximasAcciones = computed(() => {
@@ -140,24 +216,31 @@ export class Perfil {
       .slice(0, 5);
   });
 
-  // Origen de leads — mock. TODO: reemplazar con GET /leads/agente/{id}/origen
-  origenesMock: OrigenMock[] = [
-    { nombre: 'Zonaprop', porcentaje: 38, color: 'var(--brand)' },
-    { nombre: 'WhatsApp directo', porcentaje: 24, color: 'var(--brand-deep)' },
-    { nombre: 'Instagram', porcentaje: 18, color: 'var(--cool)' },
-    { nombre: 'Referidos', porcentaje: 12, color: 'var(--warm)' },
-    { nombre: 'Cartel en propiedad', porcentaje: 8, color: 'var(--ink-3)' },
-  ];
-
   ngOnInit() {
+    this.cargarDashboard();
+    this.cargarActividad();
+    this.cargarLeadsHoy();
+  }
+
+  private cargarDashboard() {
     const id = this.authService.getIdAgente();
-    if (id) {
-      this.agenteService.getDashboardStats(id).subscribe(data => this.stats.set(data));
-      this.agenteService.getActividadReciente(id).subscribe({
-        next: data => this.actividadReciente.set(data),
-        error: () => this.actividadReciente.set([]),
-      });
-    }
+    if (!id) return;
+    this.agenteService.getDashboard(id, this.periodoActivo()).subscribe({
+      next: data => this.dashboard.set(data),
+      error: () => this.dashboard.set(null),
+    });
+  }
+
+  private cargarActividad() {
+    const id = this.authService.getIdAgente();
+    if (!id) return;
+    this.agenteService.getActividadReciente(id).subscribe({
+      next: data => this.actividadReciente.set(data),
+      error: () => this.actividadReciente.set([]),
+    });
+  }
+
+  private cargarLeadsHoy() {
     this.leadService.getLeadsHoy().subscribe(data => {
       const combinados = [
         ...(data.prioritarios || []),
@@ -174,8 +257,10 @@ export class Perfil {
     });
   }
 
-  setPeriodo(p: '7d' | '30d' | '90d' | 'ano') {
+  setPeriodo(p: DashboardPeriodo) {
+    if (this.periodoActivo() === p) return;
     this.periodoActivo.set(p);
+    this.cargarDashboard();
   }
 
   exportarPdf() {
@@ -268,6 +353,69 @@ export class Perfil {
     this.router.navigate(['/leads', id]);
   }
 
+  deltaSimbolo(dir: 'up' | 'down' | 'flat' | undefined): string {
+    if (dir === 'up') return '↑';
+    if (dir === 'down') return '↓';
+    return '·';
+  }
+
+  deltaClase(dir: 'up' | 'down' | 'flat' | undefined, invertido = false): string {
+    if (!dir || dir === 'flat') return 'flat';
+    // up = bueno por default; si invertido (tiempo de respuesta), up = malo
+    if (invertido) return dir === 'up' ? 'down' : 'up';
+    return dir;
+  }
+
+  formatDelta(pct: number | undefined): string {
+    if (pct === undefined || pct === null) return '';
+    const sign = pct > 0 ? '+' : '';
+    return `${sign}${pct.toFixed(1)}%`;
+  }
+
+  // ---- helpers SVG ----
+
+  private linePath(values: number[], w: number, h: number): string {
+    if (values.length === 0) return '';
+    const max = Math.max(1, ...values);
+    return this.buildPath(values, w, h, max, false);
+  }
+
+  private areaPath(values: number[], w: number, h: number): string {
+    if (values.length === 0) return '';
+    const max = Math.max(1, ...values);
+    return this.buildPath(values, w, h, max, true);
+  }
+
+  private linePathScaled(values: number[], w: number, h: number, maxY: number): string {
+    if (values.length === 0) return '';
+    return this.buildPath(values, w, h, maxY, false);
+  }
+
+  private areaPathScaled(values: number[], w: number, h: number, maxY: number): string {
+    if (values.length === 0) return '';
+    return this.buildPath(values, w, h, maxY, true);
+  }
+
+  private buildPath(values: number[], w: number, h: number, max: number, fill: boolean): string {
+    const n = values.length;
+    const step = n > 1 ? w / (n - 1) : 0;
+    let d = '';
+    for (let i = 0; i < n; i++) {
+      const x = +(i * step).toFixed(2);
+      const y = this.scaleY(values[i], max, h);
+      d += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
+    }
+    if (fill) d += ` L ${w} ${h} L 0 ${h} Z`;
+    return d;
+  }
+
+  private scaleY(v: number, max: number, h: number): number {
+    const padTop = 4;
+    const usable = h - padTop;
+    if (max <= 0) return h;
+    return +(h - (v / max) * usable).toFixed(2);
+  }
+
   private arcoDe(valor: number): number {
     const total = this.totalTemperatura();
     if (total === 0) return 0;
@@ -278,5 +426,11 @@ export class Perfil {
     const total = this.totalTemperatura();
     if (total === 0) return 0;
     return Math.round((valor / total) * 100);
+  }
+
+  private formatFechaCorta(iso: string | undefined): string {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
   }
 }

@@ -25,4 +25,13 @@ public interface InteraccionRepository extends JpaRepository<Interaccion, Long> 
     // Últimas interacciones del agente, ordenadas por fecha desc
     @Query("SELECT i FROM Interaccion i WHERE i.lead.agente.id = :agenteId ORDER BY i.fechaInteraccion DESC")
     List<Interaccion> findUltimasInteracciones(@Param("agenteId") Long agenteId, Pageable pageable);
+
+    // Interacciones en un rango cerrado-abierto [desde, hasta)
+    @Query("SELECT COUNT(i) FROM Interaccion i " +
+            "WHERE i.lead.agente.id = :agenteId " +
+            "AND i.fechaInteraccion >= :desde " +
+            "AND i.fechaInteraccion < :hasta")
+    long countInteraccionesEnRango(@Param("agenteId") Long agenteId,
+                                   @Param("desde") LocalDateTime desde,
+                                   @Param("hasta") LocalDateTime hasta);
 }
