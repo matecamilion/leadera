@@ -24,15 +24,16 @@ public class PropiedadService {
     private final PropiedadRepository propiedadRepository;
     private final LeadRepository leadRepository;
     private final EventoOperacionRepository eventoOperacionRepository;
-
-    private static final ZoneId ZONA_ARGENTINA = ZoneId.of("America/Argentina/Buenos_Aires");
+    private final ZoneId zonaHoraria;
 
     public PropiedadService(PropiedadRepository propiedadRepository,
                             LeadRepository leadRepository,
-                            EventoOperacionRepository eventoOperacionRepository) {
+                            EventoOperacionRepository eventoOperacionRepository,
+                            ZoneId zonaHoraria) {
         this.propiedadRepository = propiedadRepository;
         this.leadRepository = leadRepository;
         this.eventoOperacionRepository = eventoOperacionRepository;
+        this.zonaHoraria = zonaHoraria;
     }
 
     public Propiedad agregarPropiedad(Long leadId, Propiedad propiedad, String emailAgente) {
@@ -44,7 +45,7 @@ public class PropiedadService {
         }
 
         propiedad.setLead(lead);
-        propiedad.setFechaPublicacion(LocalDateTime.now(ZONA_ARGENTINA));
+        propiedad.setFechaPublicacion(LocalDateTime.now(zonaHoraria));
         return propiedadRepository.save(propiedad);
     }
 
@@ -65,9 +66,16 @@ public class PropiedadService {
                 .collect(Collectors.toList());
     }
 
-    public Propiedad actualizarEstado(Long id, String estado) {
+    public Propiedad actualizarEstado(Long id, String estado, String emailAgente) {
         Propiedad propiedad = propiedadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
+
+        if (propiedad.getLead() == null
+                || propiedad.getLead().getAgente() == null
+                || !propiedad.getLead().getAgente().getEmail().equals(emailAgente)) {
+            throw new UnauthorizedActionException("No tenés permiso para modificar esta propiedad.");
+        }
+
         try {
             propiedad.setEstado(EstadoPropiedad.valueOf(estado));
         } catch (IllegalArgumentException ex) {

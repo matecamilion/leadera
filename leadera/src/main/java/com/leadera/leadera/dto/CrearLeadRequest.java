@@ -3,7 +3,6 @@ package com.leadera.leadera.dto;
 import com.leadera.leadera.enums.EstadoLead;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,26 +17,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CrearLeadRequest {
 
-    @NotBlank
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotBlank
+    @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
 
-    @NotBlank
+    @NotBlank(message = "El teléfono es obligatorio")
     private String telefono;
 
-    @Email
+    @Email(message = "El email debe tener formato válido")
     private String email;
 
-    @NotNull
+    // Opcional: default FRIO en el service si viene null
     private EstadoLead estado;
 
-    @Size(max = 500)
-    private String descripcionInicial;
-
-    @Size(max = 100)
+    @Size(max = 100, message = "El origen no puede superar los 100 caracteres")
     private String origen;
+
+    @Size(max = 500, message = "La descripción no puede superar los 500 caracteres")
+    private String descripcionInicial;
 
     private LocalDateTime fechaProximoSeguimiento;
 }

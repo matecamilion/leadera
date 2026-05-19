@@ -2,7 +2,8 @@ package com.leadera.leadera.service;
 
 import com.leadera.leadera.dto.ActividadRecienteDTO;
 import com.leadera.leadera.dto.AgenteDashboardDTO;
-import com.leadera.leadera.dto.LeadRequestDTO;
+import com.leadera.leadera.dto.CrearLeadRequest;
+import com.leadera.leadera.dto.LeadDetalleResponse;
 import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
@@ -19,11 +20,17 @@ import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,16 +41,26 @@ public class LeadService {
     private final AgenteRepository agenteRepository;
     private final InteraccionRepository interaccionRepository;
     private final OperacionRepository operacionRepository;
+    private final ZoneId zonaHoraria;
 
-    public LeadService(LeadRepository leadRepository, AgenteRepository agenteRepository, InteraccionRepository interaccionRepository, OperacionRepository operacionRepository) {
+    public LeadService(LeadRepository leadRepository,
+                       AgenteRepository agenteRepository,
+                       InteraccionRepository interaccionRepository,
+                       OperacionRepository operacionRepository,
+                       ZoneId zonaHoraria) {
         this.leadRepository = leadRepository;
         this.agenteRepository = agenteRepository;
         this.interaccionRepository = interaccionRepository;
         this.operacionRepository = operacionRepository;
+        this.zonaHoraria = zonaHoraria;
     }
 
 
-    public LeadResponseDTO crearLead(LeadRequestDTO request, String email) {
+    // allEntries=true: el método recibe el email del agente, no su id; resolverlo
+    // para un evict por key implicaría una query extra. Invalidar todo el cache
+    // es seguro porque la entrada se rehidrata bajo demanda con TTL de 5 min.
+    @CacheEvict(value = "estadisticasAgente", allEntries = true)
+    public LeadResponseDTO crearLead(CrearLeadRequest request, String email) {
 
         Agente agente = agenteRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Agente no encontrado"));
@@ -54,8 +71,11 @@ public class LeadService {
         }
 
         Lead lead = LeadMapper.toEntity(request);
+        if (lead.getEstado() == null) {
+            lead.setEstado(EstadoLead.FRIO);
+        }
         lead.setAgente(agente);
-        lead.setFechaEntrada(LocalDateTime.now());
+        lead.setFechaEntrada(LocalDateTime.now(zonaHoraria));
 
         return LeadMapper.toDTO(leadRepository.save(lead));
     }
@@ -79,13 +99,13 @@ public class LeadService {
     }
 
     public List<Lead> obtenerLeadsInactivos(int dias, String email) { // <--- Agregamos email
-        LocalDateTime fechaLimite = LocalDateTime.now().minusDays(dias);
+        LocalDateTime fechaLimite = LocalDateTime.now(zonaHoraria).minusDays(dias);
         // Usamos el nuevo método del repo con filtro de email
         return leadRepository.findByUltimoContactoBeforeAndUltimoContactoIsNotNullAndAgenteEmail(fechaLimite, email);
     }
 
 
-    public Lead obtenerLeadsPorId(Long id, String email) {
+    public LeadDetalleResponse obtenerLeadsPorId(Long id, String email) {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con el id: " + id));
 
@@ -93,11 +113,11 @@ public class LeadService {
             throw new UnauthorizedActionException("No tenés permiso para ver este lead.");
         }
 
-        return lead;
+        return LeadMapper.toDetalleResponse(lead);
     }
 
     public List<Lead> obtenerLeadsPrioritarios(int dias, String email) { // <--- Agregamos email
-        LocalDateTime fechaLimite = LocalDateTime.now().minusDays(dias);
+        LocalDateTime fechaLimite = LocalDateTime.now(zonaHoraria).minusDays(dias);
         // Usamos el nuevo método del repo con filtro de email
         return leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimite, email);
     }
@@ -112,6 +132,7 @@ public class LeadService {
 
 
 
+    @CacheEvict(value = "estadisticasAgente", allEntries = true)
     public Lead cambiarEstado(Long id, EstadoLead nuevoEstado, String emailAgente) {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
@@ -126,7 +147,7 @@ public class LeadService {
 
 
     public LeadsHoyResponse obtenerLeadsDeHoy(String email) {
-        LocalDateTime ahora = LocalDateTime.now();
+        LocalDateTime ahora = LocalDateTime.now(zonaHoraria);
         LocalDateTime inicioHoy = ahora.toLocalDate().atStartOfDay();
 
         List<Lead> nuevos = leadRepository.findByUltimoContactoIsNullAndAgenteEmailAndEstadoNot(email, EstadoLead.INACTIVO);
@@ -160,6 +181,7 @@ public class LeadService {
         );
     }
 
+    @CacheEvict(value = "estadisticasAgente", allEntries = true)
     public Lead establecerLeadInactivo(Long id, String emailAgente) {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
@@ -172,6 +194,7 @@ public class LeadService {
          return leadRepository.save(lead);
     }
 
+    @Cacheable(value = "estadisticasAgente", key = "#agenteId")
     public AgenteDashboardDTO obtenerEstadisticasAgente(Long agenteId){
         long activos = leadRepository.countByAgenteIdAndEstadoNot(agenteId, EstadoLead.INACTIVO);
         long calientes = leadRepository.countByAgenteIdAndEstado(agenteId, EstadoLead.CALIENTE);
@@ -182,7 +205,7 @@ public class LeadService {
         long perdidos = leadRepository.countByAgenteIdAndEstado(agenteId, EstadoLead.INACTIVO);
 
         long interacciones7d = interaccionRepository.countInteraccionesDesde(
-                agenteId, LocalDateTime.now().minusDays(7)
+                agenteId, LocalDateTime.now(zonaHoraria).minusDays(7)
         );
 
         double tasaConversion = nuevosDelMes > 0
@@ -239,21 +262,32 @@ public class LeadService {
     }
 
     public List<LeadResumenDTO> obtenerResumenLeadsPorAgente(String email) {
-        List<Lead> leads = leadRepository.findByAgenteEmail(email);
-        return leads.stream().map(lead -> {
-            long ventas = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.VENTA);
-            long compras = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.COMPRA);
-            long interacciones = lead.getInteracciones().size();
-            String ultimaInteraccion = lead.getInteracciones().isEmpty() ? null :
-                    lead.getInteracciones().get(lead.getInteracciones().size() - 1).getDetalle();
-            return new LeadResumenDTO(
-                    lead.getId(), lead.getNombre(), lead.getApellido(),
-                    lead.getTelefono(), lead.getEmail(), lead.getEstado(),
-                    lead.getFechaEntrada(), lead.getUltimoContacto(),
-                    lead.getFechaProximoSeguimiento(),
-                    ventas, compras, interacciones, ultimaInteraccion
-            );
-        }).toList();
+        List<Lead> leads = leadRepository.findByAgenteEmailConInteracciones(email);
+        return leads.stream().map(this::toResumenDTO).toList();
+    }
+
+    public Page<LeadResumenDTO> obtenerResumenLeadsPorAgente(String email, Pageable pageable) {
+        Pageable efectivo = pageable.getSort().isSorted()
+                ? pageable
+                : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                                 Sort.by(Sort.Direction.DESC, "fechaEntrada"));
+        return leadRepository.findByAgenteEmailConInteraccionesPaginado(email, efectivo)
+                .map(this::toResumenDTO);
+    }
+
+    private LeadResumenDTO toResumenDTO(Lead lead) {
+        long ventas = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.VENTA);
+        long compras = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.COMPRA);
+        long interacciones = lead.getInteracciones().size();
+        String ultimaInteraccion = lead.getInteracciones().isEmpty() ? null :
+                lead.getInteracciones().get(lead.getInteracciones().size() - 1).getDetalle();
+        return new LeadResumenDTO(
+                lead.getId(), lead.getNombre(), lead.getApellido(),
+                lead.getTelefono(), lead.getEmail(), lead.getEstado(),
+                lead.getFechaEntrada(), lead.getUltimoContacto(),
+                lead.getFechaProximoSeguimiento(),
+                ventas, compras, interacciones, ultimaInteraccion
+        );
     }
 
 }

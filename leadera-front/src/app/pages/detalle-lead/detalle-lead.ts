@@ -8,6 +8,7 @@ import { Propiedad } from '../../core/models/propiedad';
 import { Busqueda } from '../../core/models/busqueda';
 import { PropiedadDetalle } from '../propiedad-detalle/propiedad-detalle';
 import { OperacionService, Operacion, CrearOperacionRequest } from '../../core/services/operacion-service';
+import { Lead } from '../../core/models/lead';
 
 @Component({
   selector: 'app-detalle-lead',
@@ -22,7 +23,7 @@ export class DetalleLead implements OnInit {
   private propiedadService = inject(PropiedadService);
   private operacionService = inject(OperacionService);
 
-  public lead = signal<any>(null);
+  public lead = signal<Lead | null>(null);
   public id: number = 0;
   operaciones = signal<Operacion[]>([]);
   errorGeneral = signal<string>('');

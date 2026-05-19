@@ -41,9 +41,10 @@ public class PropiedadController {
 
     @PatchMapping("/{id}/estado")
     public ResponseEntity<Propiedad> actualizarEstado(@PathVariable Long id,
-                                                      @RequestBody Map<String, String> body) {
+                                                      @RequestBody Map<String, String> body,
+                                                      Authentication authentication) {
         String estado = body.get("estado");
-        return ResponseEntity.ok(propiedadService.actualizarEstado(id, estado));
+        return ResponseEntity.ok(propiedadService.actualizarEstado(id, estado, authentication.getName()));
     }
 
     @GetMapping("/{id}")

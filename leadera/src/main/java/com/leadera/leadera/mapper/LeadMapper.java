@@ -1,7 +1,8 @@
 package com.leadera.leadera.mapper;
 
+import com.leadera.leadera.dto.CrearLeadRequest;
+import com.leadera.leadera.dto.LeadDetalleResponse;
 import com.leadera.leadera.dto.LeadHoyDTO;
-import com.leadera.leadera.dto.LeadRequestDTO;
 import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.entity.Interaccion;
 import com.leadera.leadera.entity.Lead;
@@ -47,7 +48,7 @@ public class LeadMapper {
         );
     }
 
-    public static Lead toEntity(LeadRequestDTO dto) {
+    public static Lead toEntity(CrearLeadRequest dto) {
         if (dto == null) return null;
         Lead lead = new Lead();
         lead.setNombre(dto.getNombre());
@@ -59,5 +60,24 @@ public class LeadMapper {
         lead.setOrigen(dto.getOrigen());
         lead.setDescripcionInicial(dto.getDescripcionInicial());
         return lead;
+    }
+
+    public static LeadDetalleResponse toDetalleResponse(Lead lead) {
+        if (lead == null) return null;
+        return new LeadDetalleResponse(
+                lead.getId(),
+                lead.getNombre(),
+                lead.getApellido(),
+                lead.getTelefono(),
+                lead.getEmail(),
+                lead.getEstado(),
+                lead.getFechaEntrada(),
+                lead.getUltimoContacto(),
+                lead.getFechaProximoSeguimiento(),
+                lead.getOrigen(),
+                lead.getDescripcionInicial(),
+                lead.getInteracciones(),
+                lead.getPropiedades()
+        );
     }
 }

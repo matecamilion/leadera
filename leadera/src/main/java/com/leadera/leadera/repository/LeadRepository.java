@@ -4,6 +4,8 @@ import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Interaccion;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.enums.EstadoLead;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +13,9 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
+// ÍNDICES DB: idx_leads_agente_estado, idx_leads_agente_ultimo_contacto,
+//             idx_leads_proximo_seguimiento, idx_leads_fecha_entrada
+// Ver: src/main/resources/db/leadera_indexes.sql
 public interface LeadRepository extends JpaRepository<Lead, Long> {
 
     boolean existsByEmail(String email);
@@ -23,6 +28,25 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
     List<Lead> findByUltimoContactoIsNullAndAgenteEmail(String email);
 
     List<Lead> findByAgenteEmail(String email);
+
+    @Query("""
+        SELECT DISTINCT l FROM Lead l
+        LEFT JOIN FETCH l.interacciones
+        WHERE l.agente.email = :email
+        ORDER BY l.fechaEntrada DESC
+    """)
+    List<Lead> findByAgenteEmailConInteracciones(@Param("email") String email);
+
+    @Query(
+        value = """
+            SELECT DISTINCT l FROM Lead l
+            LEFT JOIN FETCH l.interacciones
+            WHERE l.agente.email = :email
+        """,
+        countQuery = "SELECT COUNT(l) FROM Lead l WHERE l.agente.email = :email"
+    )
+    Page<Lead> findByAgenteEmailConInteraccionesPaginado(@Param("email") String email, Pageable pageable);
+
     long countByAgenteIdAndEstadoNot(Long agenteId, EstadoLead estado);
 
     // 2. PRIORITARIOS + FILTRO AGENTE

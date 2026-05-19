@@ -1,4 +1,8 @@
 import { Interaccion } from './interaccion';
+import { Propiedad } from './propiedad';
+import { Operacion } from '../services/operacion-service';
+
+export type EstadoLead = 'CALIENTE' | 'TIBIO' | 'FRIO' | 'INACTIVO';
 
 export interface Lead {
   id: number;
@@ -6,12 +10,13 @@ export interface Lead {
   apellido: string;
   telefono: string;
   email: string;
-  estado: string;
-
+  estado: EstadoLead;
   fechaEntrada?: string;
   ultimoContacto?: string | null;
-
+  fechaProximoSeguimiento?: string | null;
+  origen?: string;
+  descripcionInicial?: string;
   interacciones?: Interaccion[];
-
-  operaciones?: any[];
+  propiedades?: Propiedad[];
+  operaciones?: Operacion[];
 }

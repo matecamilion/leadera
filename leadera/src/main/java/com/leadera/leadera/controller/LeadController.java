@@ -2,8 +2,9 @@ package com.leadera.leadera.controller;
 
 import com.leadera.leadera.dto.ActividadRecienteDTO;
 import com.leadera.leadera.dto.AgenteDashboardDTO;
+import com.leadera.leadera.dto.CrearLeadRequest;
 import com.leadera.leadera.dto.DashboardDTO;
-import com.leadera.leadera.dto.LeadRequestDTO;
+import com.leadera.leadera.dto.LeadDetalleResponse;
 import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
@@ -15,6 +16,8 @@ import com.leadera.leadera.service.LeadService;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,20 +38,24 @@ public class LeadController {
 
     //Crear lead
     @PostMapping
-    public ResponseEntity<LeadResponseDTO> crearLead(@Valid @RequestBody LeadRequestDTO request, Authentication authentication) {
+    public ResponseEntity<LeadResponseDTO> crearLead(@Valid @RequestBody CrearLeadRequest request, Authentication authentication) {
         LeadResponseDTO creado = leadService.crearLead(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
-    // Obtener mis leads
+    // Obtener mis leads (paginado)
     @GetMapping
-    public List<LeadResumenDTO> listarLeads(Authentication authentication) {
-        return leadService.obtenerResumenLeadsPorAgente(authentication.getName());
+    public Page<LeadResumenDTO> listarLeads(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return leadService.obtenerResumenLeadsPorAgente(authentication.getName(), PageRequest.of(page, size));
     }
 
     // Obtener lead por id (Le pasamos el email para verificar que sea el dueño)
     @GetMapping("/{id}")
-    public Lead obtenerLeadPorId(@PathVariable Long id, Authentication authentication) {
+    public LeadDetalleResponse obtenerLeadPorId(@PathVariable Long id, Authentication authentication) {
         return leadService.obtenerLeadsPorId(id, authentication.getName());
     }
 

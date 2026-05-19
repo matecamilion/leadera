@@ -36,8 +36,7 @@ public class OperacionService {
     private final PropiedadRepository propiedadRepository;
     private final BusquedaRepository busquedaRepository;
     private final EventoOperacionRepository eventoOperacionRepository;
-
-    private static final ZoneId ZONA_ARGENTINA = ZoneId.of("America/Argentina/Buenos_Aires");
+    private final ZoneId zonaHoraria;
 
     private static final Map<EstadoOperacion, Set<EstadoOperacion>> TRANSICIONES_VALIDAS = Map.of(
             EstadoOperacion.ABIERTA,        EnumSet.of(EstadoOperacion.EN_GESTION, EstadoOperacion.CANCELADA),
@@ -52,13 +51,15 @@ public class OperacionService {
             LeadRepository leadRepository,
             PropiedadRepository propiedadRepository,
             BusquedaRepository busquedaRepository,
-            EventoOperacionRepository eventoOperacionRepository
+            EventoOperacionRepository eventoOperacionRepository,
+            ZoneId zonaHoraria
     ) {
         this.operacionRepository = operacionRepository;
         this.leadRepository = leadRepository;
         this.propiedadRepository = propiedadRepository;
         this.busquedaRepository = busquedaRepository;
         this.eventoOperacionRepository = eventoOperacionRepository;
+        this.zonaHoraria = zonaHoraria;
     }
 
     @Transactional
@@ -78,7 +79,7 @@ public class OperacionService {
         operacion.setTipoOperacion(operacionRequest.getTipoOperacion());
         operacion.setDescripcion(operacionRequest.getDescripcion());
         operacion.setEstadoOperacion(EstadoOperacion.ABIERTA);
-        operacion.setFechaCreacion(LocalDateTime.now(ZONA_ARGENTINA));
+        operacion.setFechaCreacion(LocalDateTime.now(zonaHoraria));
 
         if (operacionRequest.getTipoOperacion() == TipoOperacion.VENTA) {
             asociarPropiedadAVenta(operacion, operacionRequest, leadId);
@@ -200,7 +201,7 @@ public class OperacionService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe la operación o no tenés permiso para modificarla"));
 
-        evento.setFecha(LocalDateTime.now(ZONA_ARGENTINA));
+        evento.setFecha(LocalDateTime.now(zonaHoraria));
         evento.setOperacion(operacion);
 
         return eventoOperacionRepository.save(evento);
@@ -238,7 +239,7 @@ public class OperacionService {
         operacion.setEstadoOperacion(nuevoEstado);
 
         if (nuevoEstado == EstadoOperacion.CERRADA_GANADA || nuevoEstado == EstadoOperacion.CANCELADA) {
-            operacion.setFechaCierre(LocalDateTime.now(ZONA_ARGENTINA));
+            operacion.setFechaCierre(LocalDateTime.now(zonaHoraria));
         } else {
             operacion.setFechaCierre(null);
         }

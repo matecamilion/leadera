@@ -53,10 +53,7 @@ export class ListadoLeadsComponent implements OnInit {
     this.cargando.set(true);
     this.servicioLead.getLeads().subscribe({
       next: (resultado) => {
-        console.log('LEADS RECIBIDOS:', resultado);
-        console.log('PRIMER LEAD:', resultado[0]);
-
-        this.leads.set(resultado);
+        this.leads.set(resultado.content);
         this.cargando.set(false);
       },
       error: () => this.cargando.set(false),

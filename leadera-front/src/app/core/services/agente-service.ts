@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { AgenteDashboard } from '../models/agente-dashboard';
 
 export interface ActividadReciente {
   tipoInteraccion: string;
@@ -88,5 +89,9 @@ export class AgenteService {
 
   getActividadReciente(agenteId: number): Observable<ActividadReciente[]> {
     return this.http.get<ActividadReciente[]>(`${this.apiUrl}/leads/agente/${agenteId}/actividad-reciente`);
+  }
+
+  getDashboardStats(agenteId: number): Observable<AgenteDashboard> {
+    return this.http.get<AgenteDashboard>(`${this.apiUrl}/leads/agente/${agenteId}/stats`);
   }
 }

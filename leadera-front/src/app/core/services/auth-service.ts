@@ -3,6 +3,9 @@ import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { LoginRequest } from '../models/login-request';
+import { RegistroRequest } from '../models/registro-request';
+import { LoginResponse } from '../models/page';
 
 @Injectable({
   providedIn: 'root',
@@ -12,46 +15,41 @@ export class AuthService {
 
   currentUserSig = signal<string | null>(localStorage.getItem('agente_nombre'));
 
-  constructor(private http: HttpClient){};
+  constructor(private http: HttpClient) {}
 
-  registrar(agente: any): Observable<any>{
-    return this.http.post(`${this.apiUrl}/register`, agente);
+  registrar(agente: RegistroRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/register`, agente);
   }
 
-  
-
- login(credentials: any): Observable<any> {
-  return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
-    tap(res => {
-      const nombreCompleto = `${res.nombre} ${res.apellido}`;
+  login(credentials: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      tap(res => {
+        const nombreCompleto = `${res.nombre} ${res.apellido}`;
         localStorage.setItem('token', res.token);
         localStorage.setItem('agente_nombre', nombreCompleto);
         localStorage.setItem('agente_email', res.email);
 
-      this.currentUserSig.set(nombreCompleto);
-    })
-  );
-}
+        this.currentUserSig.set(nombreCompleto);
+      })
+    );
+  }
 
-
- getNombreAgente() { return this.currentUserSig(); }
+  getNombreAgente() { return this.currentUserSig(); }
   getEmailAgente() { return localStorage.getItem('agente_email'); }
 
   getIdAgente(): number | null {
-  const token = localStorage.getItem('token');
-  if (!token) return null;
-  
-  const payload = JSON.parse(atob(token.split('.')[1]));
-  return payload.id; // una vez que agregues el claim en el backend
-}
+    const token = localStorage.getItem('token');
+    if (!token) return null;
 
-  // Método de logout para limpiar todo
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.id;
+  }
+
   logout(): void {
-    localStorage.clear(); // Borra todo para evitar conflictos
+    localStorage.clear();
   }
 
   getToken() {
     return localStorage.getItem('token');
   }
-
 }
