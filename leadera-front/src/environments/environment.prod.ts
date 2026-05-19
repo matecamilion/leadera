@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '${API_URL}',
+  apiUrl: 'https://leadera-42po.onrender.com',
 };
