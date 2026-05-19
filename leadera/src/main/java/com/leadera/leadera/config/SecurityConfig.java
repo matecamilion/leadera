@@ -67,8 +67,12 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No guardamos sesiones en el servidor
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // Ponemos nuestro filtro antes que el de Spring
+                // El rate limit va antes que el JWT filter. Ambos se anclan al
+                // UsernamePasswordAuthenticationFilter (filtro nativo con orden
+                // conocido). El orden entre ellos lo determina el orden de estas
+                // dos llamadas: el primer addFilterBefore queda primero.
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
