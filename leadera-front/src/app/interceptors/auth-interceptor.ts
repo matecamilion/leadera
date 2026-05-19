@@ -1,10 +1,14 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
- // 1. Buscamos el token que se guarda en el login
+  // Las rutas de /auth/** son públicas y rompen si reciben un token
+  // viejo o firmado con un secret distinto al actual.
+  if (req.url.includes('/auth/')) {
+    return next(req);
+  }
+
   const token = localStorage.getItem('token');
 
-  // 2. Si el token existe, clonamos la petición y le pegamos el Header
   if (token) {
     const cloned = req.clone({
       setHeaders: {
@@ -14,6 +18,5 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(cloned);
   }
 
-  // 3. Si no hay token (ej: en el login), la petición sigue viaje normal
   return next(req);
 };
