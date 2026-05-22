@@ -47,6 +47,18 @@
   aspect-ratio: 1 / 1;
   background: #f1f5f9;
   border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.foto-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+}
+
+.foto-card:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
 }
 
 .foto-card img {
@@ -139,4 +151,107 @@
   color: #94a3b8;
   margin: 8px 0 0 0;
   text-align: center;
+}
+
+/* ===== Lightbox ===== */
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.88);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: lightbox-fade-in 0.18s ease;
+}
+
+@keyframes lightbox-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  cursor: default;
+}
+
+.lightbox-btn {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: scale(1.06);
+}
+
+.lightbox-btn .material-symbols-outlined {
+  font-size: 28px;
+}
+
+.lightbox-cerrar {
+  top: 20px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+}
+
+.lightbox-prev,
+.lightbox-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  transform: translateY(-50%) scale(1.06);
+}
+
+.lightbox-prev { left: 24px; }
+.lightbox-next { right: 24px; }
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 600px) {
+  .lightbox-prev,
+  .lightbox-next {
+    width: 42px;
+    height: 42px;
+  }
+  .lightbox-prev { left: 10px; }
+  .lightbox-next { right: 10px; }
+  .lightbox-cerrar {
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+  }
 }

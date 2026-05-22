@@ -6,13 +6,13 @@
 
   @if (fotos().length > 0) {
     <div class="fotos-grid">
-      @for (foto of fotos(); track foto.id) {
-        <div class="foto-card">
+      @for (foto of fotos(); track foto.id; let i = $index) {
+        <div class="foto-card" (click)="abrirLightbox(i)" role="button" tabindex="0">
           <img [src]="foto.url" alt="Foto propiedad" loading="lazy" />
           <button
             type="button"
             class="btn-eliminar-foto"
-            (click)="eliminar(foto)"
+            (click)="eliminar(foto, $event)"
             aria-label="Eliminar foto">
             <span class="material-symbols-outlined">delete</span>
           </button>
@@ -29,14 +29,58 @@
 
   <label class="btn-subir-foto" [class.disabled]="subiendo() || fotos().length >= 10">
     <span class="material-symbols-outlined">add_photo_alternate</span>
-    {{ subiendo() ? 'Subiendo...' : 'Agregar foto' }}
+    @if (subiendo() && progreso(); as p) {
+      Subiendo {{ p.actual }} de {{ p.total }}...
+    } @else {
+      Agregar fotos
+    }
     <input
       type="file"
       accept="image/*"
+      multiple
       hidden
       [disabled]="subiendo() || fotos().length >= 10"
       (change)="onArchivoSeleccionado($event)" />
   </label>
 
-  <p class="fotos-hint">Formato imagen, máximo 5 MB por archivo.</p>
+  <p class="fotos-hint">Formato imagen, máximo 5 MB por archivo. Hasta 10 fotos.</p>
 </section>
+
+@if (lightboxIndex() !== null && fotoActual(); as foto) {
+  <div class="lightbox-overlay" (click)="cerrarLightbox()" role="dialog" aria-modal="true">
+    <button
+      type="button"
+      class="lightbox-btn lightbox-cerrar"
+      (click)="cerrarLightbox(); $event.stopPropagation()"
+      aria-label="Cerrar">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+
+    @if (fotos().length > 1) {
+      <button
+        type="button"
+        class="lightbox-btn lightbox-prev"
+        (click)="anteriorFoto($event)"
+        aria-label="Anterior">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button
+        type="button"
+        class="lightbox-btn lightbox-next"
+        (click)="siguienteFoto($event)"
+        aria-label="Siguiente">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    }
+
+    <img
+      [src]="foto.url"
+      alt="Foto propiedad"
+      class="lightbox-img"
+      (click)="$event.stopPropagation()" />
+
+    <div class="lightbox-counter">
+      {{ lightboxIndex()! + 1 }} / {{ fotos().length }}
+    </div>
+  </div>
+}
