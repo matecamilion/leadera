@@ -1,0 +1,6 @@
+{
+  "buildCommand": "node scripts/generate-environment.js && ng build",
+  "outputDirectory": "dist/leadera-front/browser",
+  "installCommand": "npm install",
+  "framework": null
+}
