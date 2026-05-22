@@ -1,0 +1,104 @@
+<div class="contenedor-perfil">
+  <header class="header-perfil">
+    <h1>Mi perfil</h1>
+    <p class="subtitulo">Datos de tu cuenta de agente.</p>
+  </header>
+
+  @if (cargando()) {
+    <div class="tarjeta-perfil estado">Cargando perfil...</div>
+  } @else if (error() && !perfil()) {
+    <div class="tarjeta-perfil estado error">{{ error() }}</div>
+  } @else if (perfil(); as p) {
+
+    @if (mensajeExito(); as ok) {
+      <div class="banner-exito">{{ ok }}</div>
+    }
+
+    <section class="tarjeta-perfil">
+      @if (!editando()) {
+        <div class="fila-info">
+          <span class="label">Nombre</span>
+          <span class="valor">{{ p.nombre }}</span>
+        </div>
+        <div class="fila-info">
+          <span class="label">Apellido</span>
+          <span class="valor">{{ p.apellido }}</span>
+        </div>
+        <div class="fila-info">
+          <span class="label">Email</span>
+          <span class="valor email">{{ p.email }}</span>
+        </div>
+        <div class="fila-info">
+          <span class="label">Meta mensual de cierres</span>
+          <span class="valor">{{ p.metaMensualCierres }}</span>
+        </div>
+
+        <div class="acciones">
+          <button type="button" class="btn-editar" (click)="iniciarEdicion()">
+            Editar
+          </button>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="guardar()" class="form-edicion">
+          <div class="fila-input">
+            <label for="nombre">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              formControlName="nombre"
+              [class.input-error]="esInvalido('nombre')"
+              placeholder="Tu nombre" />
+            @if (esInvalido('nombre')) {
+              <span class="msj-error">El nombre es obligatorio</span>
+            }
+          </div>
+
+          <div class="fila-input">
+            <label for="apellido">Apellido</label>
+            <input
+              id="apellido"
+              type="text"
+              formControlName="apellido"
+              [class.input-error]="esInvalido('apellido')"
+              placeholder="Tu apellido" />
+            @if (esInvalido('apellido')) {
+              <span class="msj-error">El apellido es obligatorio</span>
+            }
+          </div>
+
+          <div class="fila-input">
+            <label>Email</label>
+            <input type="email" [value]="p.email" disabled class="input-disabled" />
+            <span class="hint">El email no se puede modificar.</span>
+          </div>
+
+          <div class="fila-input">
+            <label for="meta">Meta mensual de cierres</label>
+            <input
+              id="meta"
+              type="number"
+              min="1"
+              formControlName="metaMensualCierres"
+              [class.input-error]="esInvalido('metaMensualCierres')" />
+            @if (esInvalido('metaMensualCierres')) {
+              <span class="msj-error">Tiene que ser un número mayor o igual a 1</span>
+            }
+          </div>
+
+          @if (error(); as err) {
+            <p class="error-msg">{{ err }}</p>
+          }
+
+          <div class="acciones">
+            <button type="button" class="btn-cancelar" (click)="cancelar()" [disabled]="guardando()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-guardar" [disabled]="guardando()">
+              {{ guardando() ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+      }
+    </section>
+  }
+</div>

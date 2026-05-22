@@ -71,6 +71,20 @@ export interface DashboardData {
   origenes: DashboardOrigen[];
 }
 
+export interface AgentePerfilDTO {
+  id: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+  metaMensualCierres: number;
+}
+
+export interface ActualizarPerfilRequest {
+  nombre: string;
+  apellido: string;
+  metaMensualCierres: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -93,5 +107,13 @@ export class AgenteService {
 
   getDashboardStats(agenteId: number): Observable<AgenteDashboard> {
     return this.http.get<AgenteDashboard>(`${this.apiUrl}/leads/agente/${agenteId}/stats`);
+  }
+
+  getPerfil(): Observable<AgentePerfilDTO> {
+    return this.http.get<AgentePerfilDTO>(`${this.apiUrl}/agente/perfil`);
+  }
+
+  actualizarPerfil(data: ActualizarPerfilRequest): Observable<AgentePerfilDTO> {
+    return this.http.patch<AgentePerfilDTO>(`${this.apiUrl}/agente/perfil`, data);
   }
 }

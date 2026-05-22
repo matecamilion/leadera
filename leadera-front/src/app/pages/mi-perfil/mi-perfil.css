@@ -1,0 +1,235 @@
+.contenedor-perfil {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 3rem 2rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.header-perfil {
+  margin-bottom: 2rem;
+}
+
+.header-perfil h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.subtitulo {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 4px 0 0 0;
+}
+
+.tarjeta-perfil {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.tarjeta-perfil.estado {
+  text-align: center;
+  color: #64748b;
+}
+
+.tarjeta-perfil.estado.error {
+  color: #b91c1c;
+}
+
+.banner-exito {
+  background: #dcfce7;
+  color: #166534;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  border: 1px solid #86efac;
+}
+
+/* ===== Modo lectura ===== */
+
+.fila-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.fila-info:last-of-type {
+  border-bottom: none;
+}
+
+.fila-info .label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fila-info .valor {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.fila-info .valor.email {
+  color: #475569;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== Modo edición ===== */
+
+.form-edicion .fila-input {
+  margin-bottom: 1.25rem;
+}
+
+.form-edicion label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.form-edicion input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #1e293b;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.form-edicion input:focus {
+  outline: none;
+  border-color: #34d399;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+}
+
+.form-edicion input.input-error {
+  border-color: #ef4444;
+}
+
+.form-edicion .input-disabled {
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.form-edicion .hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.form-edicion .msj-error {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #b91c1c;
+}
+
+.form-edicion .error-msg {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin: 0 0 1rem 0;
+}
+
+/* ===== Acciones ===== */
+
+.acciones {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.btn-editar {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-editar:hover {
+  background-color: #059669;
+}
+
+.btn-guardar {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-guardar:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.btn-guardar:disabled,
+.btn-cancelar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-cancelar {
+  background: white;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancelar:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+@media (max-width: 600px) {
+  .contenedor-perfil {
+    padding: 2rem 1rem;
+  }
+
+  .acciones {
+    flex-direction: column-reverse;
+  }
+
+  .btn-editar,
+  .btn-guardar,
+  .btn-cancelar {
+    width: 100%;
+  }
+}
