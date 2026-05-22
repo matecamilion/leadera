@@ -63,11 +63,10 @@ export class NuevaInteraccion implements OnInit {
     const nuevaInteraccion: CrearInteraccionRequest = {
       tipoInteraccion: tipo,
       detalle: detalle,
-    
+      proximoContacto: fechaProximoContacto || undefined,
     };
 
-    // Fíjate que ahora pasamos el tercer parámetro al servicio
-    this.interaccionService.crearInteraccion(this.leadId, nuevaInteraccion, fechaProximoContacto).subscribe({
+    this.interaccionService.crearInteraccion(this.leadId, nuevaInteraccion).subscribe({
       next: () => {
         this.router.navigate(['/gestion-del-dia']); // O a donde prefieras volver
       },

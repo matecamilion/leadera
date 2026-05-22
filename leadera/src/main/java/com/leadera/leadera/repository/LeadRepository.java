@@ -52,15 +52,17 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
     // 2. PRIORITARIOS + FILTRO AGENTE
     List<Lead> findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead estado, LocalDateTime fechaLimite, String email);
 
+    // finDelDia es exclusivo: pasar inicioDeMañana (hoy 00:00 + 1 día) para incluir
+    // todo el día actual aunque el seguimiento esté programado para "más tarde hoy".
     @Query("""
     SELECT l FROM Lead l
     WHERE l.fechaProximoSeguimiento IS NOT NULL
-    AND l.fechaProximoSeguimiento <= :ahora
+    AND l.fechaProximoSeguimiento < :finDelDia
     AND l.estado <> :inactivo
     AND l.agente.email = :email
 """)
     List<Lead> findSeguimientosPendientes(
-            @Param("ahora") LocalDateTime ahora,
+            @Param("finDelDia") LocalDateTime finDelDia,
             @Param("email") String email,
             @Param("inactivo") EstadoLead inactivo
     );

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Interaccion } from '../models/interaccion';
@@ -7,6 +7,8 @@ import { Interaccion } from '../models/interaccion';
 export interface CrearInteraccionRequest {
   detalle: string;
   tipoInteraccion: string;
+  // ISO local sin zona (YYYY-MM-DDTHH:mm[:ss]). Jackson lo parsea a LocalDateTime.
+  proximoContacto?: string;
 }
 
 @Injectable({
@@ -21,19 +23,7 @@ export class InteraccionService {
     return this.http.get<Interaccion[]>(`${this.apiUrl}/${leadId}/interacciones`);
   }
 
-  crearInteraccion(
-    leadId: number,
-    body: CrearInteraccionRequest,
-    proximoContacto?: string,
-  ): Observable<any> {
-    let params = new HttpParams();
-
-    // Si viene la fecha, la agregamos a los parámetros de la URL
-    if (proximoContacto) {
-      const fecha = proximoContacto.length === 16 ? proximoContacto + ':00' : proximoContacto;
-      params = params.append('proximoContacto', fecha);
-    }
-
-    return this.http.post(`${this.apiUrl}/${leadId}/interacciones`, body, { params });
+  crearInteraccion(leadId: number, body: CrearInteraccionRequest): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${leadId}/interacciones`, body);
   }
 }

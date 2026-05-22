@@ -155,8 +155,11 @@ public class LeadService {
         LocalDateTime fechaLimitePrioritarios = ahora.minusDays(7);
         List<Lead> prioritarios = leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimitePrioritarios, email);
 
+        // Incluye todos los seguimientos programados para hoy aunque la hora exacta
+        // sea futura dentro del mismo día (ej: agendado 18:00, el usuario entra 09:00).
+        LocalDateTime finDeHoy = inicioHoy.plusDays(1);
         List<Lead> seguimientos = leadRepository.findSeguimientosPendientes(
-                ahora, email, EstadoLead.INACTIVO
+                finDeHoy, email, EstadoLead.INACTIVO
         );
 
         // Dedup: un lead que ya está en "prioritarios" no debe duplicarse en "seguimientos".
