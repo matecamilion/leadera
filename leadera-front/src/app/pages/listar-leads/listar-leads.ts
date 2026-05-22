@@ -7,7 +7,7 @@ import { TiempoTranscurridoPipe } from '../../pipes/tiempo-transcurrido-pipe';
 import { RouterModule } from '@angular/router';
 import { LeadResumen } from '../../core/models/lead-resumen';
 import { AuthService } from '../../core/services/auth-service';
-import { PdfService } from '../../core/services/pdf-service';
+import { ExcelService } from '../../core/services/excel-service';
 
 @Component({
   selector: 'app-listado-leads',
@@ -19,9 +19,9 @@ import { PdfService } from '../../core/services/pdf-service';
 export class ListadoLeadsComponent implements OnInit {
   private servicioLead = inject(LeadService);
   private authService = inject(AuthService);
-  private pdfService = inject(PdfService);
+  private excelService = inject(ExcelService);
 
-  exportandoPdf = signal<boolean>(false);
+  exportandoExcel = signal<boolean>(false);
 
   // Signals
   leads = signal<LeadResumen[]>([]);
@@ -79,20 +79,20 @@ export class ListadoLeadsComponent implements OnInit {
     return lead.operacionesCompra;
   }
 
-  exportarPdf(): void {
-    if (this.exportandoPdf()) return;
+  exportarExcel(): void {
+    if (this.exportandoExcel()) return;
     const filtrados = this.leadsFiltrados();
     if (filtrados.length === 0) return;
 
-    this.exportandoPdf.set(true);
+    this.exportandoExcel.set(true);
     // Diferido un tick para que el DOM repinte el estado "Generando..." antes
-    // de la generación síncrona del PDF (que puede congelar el UI con muchos leads).
+    // de la generación síncrona del archivo (puede congelar el UI con muchos leads).
     setTimeout(() => {
       try {
         const nombre = this.authService.getNombreAgente() || 'Agente';
-        this.pdfService.exportarLeads(filtrados, nombre);
+        this.excelService.exportarLeads(filtrados, nombre);
       } finally {
-        this.exportandoPdf.set(false);
+        this.exportandoExcel.set(false);
       }
     }, 0);
   }

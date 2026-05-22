@@ -17,11 +17,11 @@
 
       <button
         type="button"
-        class="btn-exportar-pdf"
-        (click)="exportarPdf()"
-        [disabled]="exportandoPdf() || leadsFiltrados().length === 0">
-        <span class="material-symbols-outlined">picture_as_pdf</span>
-        {{ exportandoPdf() ? 'Generando...' : 'Exportar PDF' }}
+        class="btn-exportar-excel"
+        (click)="exportarExcel()"
+        [disabled]="exportandoExcel() || leadsFiltrados().length === 0">
+        <span class="material-symbols-outlined">table_view</span>
+        {{ exportandoExcel() ? 'Generando...' : 'Exportar Excel' }}
       </button>
     </div>
   </header>
