@@ -4,15 +4,15 @@
     <button (click)="errorGeneral.set('')">✕</button>
   </div>
 }
-@if (lead()) {
+@if (lead(); as l) {
   <div class="contenedor-detalle">
     <aside class="columna-info">
       <div class="tarjeta-perfil tarjeta-blanca">
         <div class="header-nombre">
-          <h2>{{ lead().nombre }} {{ lead().apellido }}</h2>
+          <h2>{{ l.nombre }} {{ l.apellido }}</h2>
           <div class="estado-interactivo" (click)="modalEstado.showModal()">
-            <span class="badge-estado" [ngClass]="lead().estado?.toLowerCase()">
-              {{ lead().estado }}
+            <span class="badge-estado" [ngClass]="l.estado?.toLowerCase()">
+              {{ l.estado }}
             </span>
             <span class="material-symbols-outlined icono-lapiz">edit</span>
           </div>
@@ -23,7 +23,7 @@
           <div class="modal-content">
             <h3>Actualizar Estado</h3>
             <p>
-              ¿En qué etapa se encuentra <strong>{{ lead().nombre }}</strong
+              ¿En qué etapa se encuentra <strong>{{ l.nombre }}</strong
               >?
             </p>
             <div class="opciones-estado">
@@ -53,13 +53,13 @@
           <span
             >Lead desde el
             <strong>{{
-              lead().fechaEntrada ? (lead().fechaEntrada | date: 'dd/MM/yyyy') : 'Sin fecha'
+              l.fechaEntrada ? (l.fechaEntrada | date: 'dd/MM/yyyy') : 'Sin fecha'
             }}</strong></span
           >
         </div>
         <div class="info-linea">
           <span class="material-symbols-outlined">insights</span>
-          <span>{{ lead().interacciones?.length || 0 }} interacciones registradas</span>
+          <span>{{ l.interacciones?.length || 0 }} interacciones registradas</span>
         </div>
       </div>
 
@@ -75,11 +75,11 @@
         </div>
         <div class="info-linea">
           <span class="material-symbols-outlined">call</span>
-          <span>{{ lead().telefono }}</span>
+          <span>{{ l.telefono }}</span>
         </div>
         <div class="info-linea">
           <span class="material-symbols-outlined">mail</span>
-          <span>{{ lead().email }}</span>
+          <span>{{ l.email }}</span>
         </div>
       </div>
 
@@ -88,11 +88,11 @@
           <h3>Editar contacto</h3>
           <div class="campo-edicion">
             <label>Teléfono</label>
-            <input type="text" [(ngModel)]="nuevoTelefono" placeholder="{{ lead().telefono }}" />
+            <input type="text" [(ngModel)]="nuevoTelefono" placeholder="{{ l.telefono }}" />
           </div>
           <div class="campo-edicion">
             <label>Email</label>
-            <input type="email" [(ngModel)]="nuevoEmail" placeholder="{{ lead().email }}" />
+            <input type="email" [(ngModel)]="nuevoEmail" placeholder="{{ l.email }}" />
           </div>
           @if (errorContacto) {
             <p class="error-msg">{{ errorContacto }}</p>
@@ -198,7 +198,7 @@
       <section class="seccion-resumen seccion-resumen-interacciones">
         <div class="resumen-header">
           <div>
-            <h2>Interacciones <span class="resumen-contador">{{ lead().interacciones?.length || 0 }}</span></h2>
+            <h2>Interacciones <span class="resumen-contador">{{ l.interacciones?.length || 0 }}</span></h2>
             <p class="subtitulo-seccion">Última conversación registrada con el lead.</p>
           </div>
           <button class="btn-nueva" [routerLink]="['/leads', id, 'interaccion']">
@@ -206,22 +206,20 @@
           </button>
         </div>
 
-        @if (!ultimaInteraccion()) {
-          <p class="sin-datos">Aún no hay interacciones registradas para este lead.</p>
-        } @else {
+        @if (ultimaInteraccion(); as ui) {
           <div class="resumen-item-interaccion">
             <div class="resumen-interaccion-header">
               <span class="tipo">
                 <span class="material-symbols-outlined icon-blue">
-                  {{ ultimaInteraccion().tipoInteraccion === 'WHATSAPP' ? 'chat_bubble' : 'schedule' }}
+                  {{ ui.tipoInteraccion === 'WHATSAPP' ? 'chat_bubble' : 'schedule' }}
                 </span>
-                {{ ultimaInteraccion().tipoInteraccion }}
+                {{ ui.tipoInteraccion }}
               </span>
               <span class="fecha">
-                {{ ultimaInteraccion().fechaInteraccion | date: "d 'de' MMMM, HH:mm" }}
+                {{ ui.fechaInteraccion | date: "d 'de' MMMM, HH:mm" }}
               </span>
             </div>
-            <p class="resumen-interaccion-detalle">{{ ultimaInteraccion().detalle }}</p>
+            <p class="resumen-interaccion-detalle">{{ ui.detalle }}</p>
           </div>
 
           <div class="resumen-footer">
@@ -234,6 +232,8 @@
               <span class="material-symbols-outlined">arrow_forward</span>
             </button>
           </div>
+        } @else {
+          <p class="sin-datos">Aún no hay interacciones registradas para este lead.</p>
         }
       </section>
     </main>
