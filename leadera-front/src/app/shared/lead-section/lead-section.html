@@ -35,9 +35,27 @@
 
   </div>
 
-  <div class="cards-grid">
-    @for (lead of leads(); track lead.id) {
-      <app-lead-card [lead]="lead"></app-lead-card>
+  <div class="cards-carousel">
+    @if (canScrollLeft()) {
+      <button type="button" class="carousel-arrow prev" (click)="scrollPrev()" aria-label="Anterior">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+    }
+
+    <div class="cards-viewport" #viewport (scroll)="onScroll()">
+      <div class="cards-track">
+        @for (lead of leads(); track lead.id) {
+          <div class="card-slide">
+            <app-lead-card [lead]="lead"></app-lead-card>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (canScrollRight()) {
+      <button type="button" class="carousel-arrow next" (click)="scrollNext()" aria-label="Siguiente">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
     }
   </div>
 

@@ -107,23 +107,84 @@
 }
 
 /* ========================= */
-/* GRILLA DE CARDS */
+/* CARRUSEL DE CARDS */
 /* ========================= */
 
-.cards-grid {
-  display: grid;
-  /* auto-fill con mínimo 280px: 
-     - En pantallas anchas: 2 columnas
-     - En tablet angosta (~600px): 1 columna sola
-     - En mobile: 1 columna
-     Sin necesidad de múltiples breakpoints */
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+.cards-carousel {
+  position: relative;
+}
+
+/* Viewport: ventana visible. Scroll real pero sin scrollbar (manejado solo
+   por las flechas). overflow-y: visible para no recortar la sombra del hover. */
+.cards-viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  padding: 4px 2px 8px; /* aire para sombras */
+}
+
+.cards-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.cards-track {
+  display: flex;
   gap: 16px;
 }
+
+.card-slide {
+  flex: 0 0 320px; /* ancho fijo por slot en desktop */
+  min-width: 0;
+}
+
+.card-slide > app-lead-card {
+  display: block;
+  height: 100%;
+}
+
+/* Flechas: solo aparecen cuando hay overflow (controlado desde el TS) */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(15, 23, 42, 0.88);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.carousel-arrow:hover {
+  background: #0f172a;
+  transform: translateY(-50%) scale(1.06);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.25);
+}
+
+.carousel-arrow .material-symbols-outlined {
+  font-size: 24px;
+}
+
+.carousel-arrow.prev { left: -10px; }
+.carousel-arrow.next { right: -10px; }
 
 /* ========================= */
 /* RESPONSIVE */
 /* ========================= */
+
+@media (max-width: 768px) {
+  .card-slide {
+    flex: 0 0 66%; /* ~1.5 cards visibles en tablet/mobile */
+  }
+}
 
 @media (max-width: 600px) {
   .section-block {
@@ -134,10 +195,21 @@
     font-size: 1.2rem;
   }
 
-  .cards-grid {
-    grid-template-columns: 1fr; /* 1 columna siempre en mobile */
+  .cards-track {
     gap: 12px;
   }
+
+  .card-slide {
+    flex: 0 0 78%; /* en mobile chico, una card + asomo de la próxima */
+  }
+
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .carousel-arrow.prev { left: -6px; }
+  .carousel-arrow.next { right: -6px; }
 
   .urgent-box {
     padding: 8px 12px;
