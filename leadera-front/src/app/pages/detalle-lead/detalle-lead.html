@@ -68,7 +68,7 @@
           <h3>Información de contacto</h3>
           <span
             class="material-symbols-outlined icono-lapiz"
-            (click)="modalContacto.showModal()"
+            (click)="abrirModalContacto(modalContacto)"
             style="cursor: pointer; color: #94a3b8"
             >edit</span
           >
@@ -88,11 +88,11 @@
           <h3>Editar contacto</h3>
           <div class="campo-edicion">
             <label>Teléfono</label>
-            <input type="text" [(ngModel)]="nuevoTelefono" placeholder="{{ l.telefono }}" />
+            <input type="text" [(ngModel)]="nuevoTelefono" placeholder="Ej: 11 4444-5555" />
           </div>
           <div class="campo-edicion">
             <label>Email</label>
-            <input type="email" [(ngModel)]="nuevoEmail" placeholder="{{ l.email }}" />
+            <input type="email" [(ngModel)]="nuevoEmail" placeholder="nombre@dominio.com" />
           </div>
           @if (errorContacto) {
             <p class="error-msg">{{ errorContacto }}</p>

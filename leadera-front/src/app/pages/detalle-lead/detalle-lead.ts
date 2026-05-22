@@ -97,8 +97,21 @@ export class DetalleLead implements OnInit {
   });
 }
 
+  abrirModalContacto(modal: HTMLDialogElement) {
+    const actual = this.lead();
+    if (!actual) return;
+    this.nuevoTelefono = actual.telefono ?? '';
+    this.nuevoEmail = actual.email ?? '';
+    this.errorContacto = '';
+    modal.showModal();
+  }
+
   guardarContacto(modal: HTMLDialogElement) {
     this.errorContacto = '';
+    if (!this.nuevoTelefono?.trim()) {
+      this.errorContacto = 'El teléfono es obligatorio.';
+      return;
+    }
     this.leadService.editarContacto(this.lead()!.id, this.nuevoTelefono, this.nuevoEmail).subscribe({
       next: (leadActualizado) => {
         this.lead.set(leadActualizado);
