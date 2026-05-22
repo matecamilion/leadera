@@ -45,6 +45,63 @@
           <button class="btn-estado-prop vendida" (click)="cambiarEstado('VENDIDA')">Vendida</button>
         </div>
       </div>
+
+      @if (propiedad()!.estado === 'DISPONIBLE') {
+        <div class="tarjeta-blanca panel-compradores">
+          <button type="button" class="btn-matching" (click)="togglePanelCompradores()">
+            <span class="material-symbols-outlined">people</span>
+            {{ panelAbierto() ? 'Ocultar compradores' : 'Ver compradores potenciales' }}
+            <span class="material-symbols-outlined chevron">
+              {{ panelAbierto() ? 'expand_less' : 'expand_more' }}
+            </span>
+          </button>
+
+          @if (panelAbierto()) {
+            <div class="panel-resultados">
+              @if (cargandoMatch()) {
+                <p class="match-info">Buscando coincidencias...</p>
+              } @else if (errorMatch()) {
+                <p class="match-error">{{ errorMatch() }}</p>
+              } @else if (compradores().length === 0) {
+                <p class="match-info">No hay compradores que coincidan con esta propiedad por ahora.</p>
+              } @else {
+                @for (c of compradores(); track c.operacionId) {
+                  <div class="comprador-card">
+                    <div class="comprador-header">
+                      <span class="comprador-nombre">{{ c.leadNombre }}</span>
+                      <span class="badge-estado-lead" [ngClass]="c.leadEstado.toLowerCase()">
+                        {{ c.leadEstado }}
+                      </span>
+                    </div>
+                    <div class="comprador-data">
+                      <span><strong>Zona:</strong> {{ c.busquedaZona }}</span>
+                      <span>
+                        <strong>Presupuesto:</strong>
+                        @if (c.busquedaPrecioMin && c.busquedaPrecioMax) {
+                          USD {{ c.busquedaPrecioMin | number }} – {{ c.busquedaPrecioMax | number }}
+                        } @else if (c.busquedaPrecioMax) {
+                          hasta USD {{ c.busquedaPrecioMax | number }}
+                        } @else if (c.busquedaPrecioMin) {
+                          desde USD {{ c.busquedaPrecioMin | number }}
+                        } @else {
+                          sin tope
+                        }
+                      </span>
+                      @if (c.busquedaAmbientes) {
+                        <span><strong>Ambientes:</strong> {{ c.busquedaAmbientes }}+</span>
+                      }
+                      @if (c.busquedaMetros) {
+                        <span><strong>Metros:</strong> {{ c.busquedaMetros }}+ m²</span>
+                      }
+                    </div>
+                    <a class="link-ver-lead" [routerLink]="['/leads', c.leadId]">Ver lead →</a>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
     </aside>
 
     <main class="columna-historial">

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { PropiedadService } from '../../core/services/propiedad-service';
 import { Propiedad } from '../../core/models/propiedad';
 import { FotosPropiedadComponent } from '../../components/fotos-propiedad/fotos-propiedad';
+import { MatchingService, CompradorPotencial } from '../../core/services/matching-service';
 
 @Component({
   selector: 'app-propiedad-detalle',
@@ -16,6 +17,7 @@ import { FotosPropiedadComponent } from '../../components/fotos-propiedad/fotos-
 export class PropiedadDetalle implements OnInit {
   private route = inject(ActivatedRoute);
   private propiedadService = inject(PropiedadService);
+  private matchingService = inject(MatchingService);
 
   propiedad = signal<Propiedad | null>(null);
 
@@ -23,6 +25,12 @@ export class PropiedadDetalle implements OnInit {
   edicion: Partial<Propiedad> = {};
   guardandoEdicion = signal<boolean>(false);
   errorEdicion = signal<string>('');
+
+  // Matching de compradores potenciales
+  compradores = signal<CompradorPotencial[]>([]);
+  cargandoMatch = signal<boolean>(false);
+  panelAbierto = signal<boolean>(false);
+  errorMatch = signal<string>('');
 
   readonly tiposVivienda = ['CASA', 'DEPTO', 'PH', 'DUPLEX', 'TERRENO', 'OFICINA', 'LOCAL', 'GALPON'];
 
@@ -83,6 +91,36 @@ export class PropiedadDetalle implements OnInit {
     };
     this.errorEdicion.set('');
     modal.showModal();
+  }
+
+  togglePanelCompradores() {
+    if (this.panelAbierto()) {
+      // Al cerrar, limpiamos los resultados para no mostrar datos viejos al re-abrir.
+      this.panelAbierto.set(false);
+      this.compradores.set([]);
+      this.errorMatch.set('');
+      return;
+    }
+
+    const p = this.propiedad();
+    if (!p) return;
+
+    this.panelAbierto.set(true);
+    this.cargandoMatch.set(true);
+    this.errorMatch.set('');
+
+    this.matchingService.obtenerCompradores(p.id).subscribe({
+      next: (lista) => {
+        this.compradores.set(lista);
+        this.cargandoMatch.set(false);
+      },
+      error: (err) => {
+        this.cargandoMatch.set(false);
+        this.errorMatch.set(
+          err?.error?.message ?? 'No se pudieron cargar los compradores potenciales.',
+        );
+      },
+    });
   }
 
   guardarEdicion(modal: HTMLDialogElement) {

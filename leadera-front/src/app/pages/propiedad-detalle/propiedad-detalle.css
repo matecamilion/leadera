@@ -90,6 +90,99 @@
 .sin-datos { color: #94a3b8; font-size: 0.9rem; }
 .loading { display: flex; justify-content: center; align-items: center; height: 100vh; color: #64748b; }
 
+/* ===== Compradores potenciales (matching) ===== */
+.panel-compradores { display: flex; flex-direction: column; gap: 14px; }
+
+.btn-matching {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  background: #f0fdfa;
+  color: #0f766e;
+  border: 1px solid #14b8a6;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-matching:hover { background: #ccfbf1; }
+
+.btn-matching .material-symbols-outlined { font-size: 20px; }
+.btn-matching .chevron { margin-left: auto; }
+
+.panel-resultados {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.match-info { color: #64748b; font-size: 0.88rem; margin: 0; }
+.match-error {
+  color: #991b1b;
+  background: #fee2e2;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.comprador-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comprador-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.comprador-nombre { font-weight: 700; color: #0f172a; font-size: 0.95rem; }
+
+.badge-estado-lead {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.badge-estado-lead.caliente { background: #fee2e2; color: #dc2626; }
+.badge-estado-lead.tibio    { background: #fef3c7; color: #d97706; }
+.badge-estado-lead.frio     { background: #dbeafe; color: #2563eb; }
+.badge-estado-lead.inactivo { background: #f1f5f9; color: #64748b; }
+
+.comprador-data {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.comprador-data strong { color: #1e293b; font-weight: 600; }
+
+.link-ver-lead {
+  align-self: flex-end;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #14b8a6;
+  text-decoration: none;
+}
+.link-ver-lead:hover { text-decoration: underline; }
+
 @media (max-width: 900px) {
   .contenedor-detalle { display: flex; flex-direction: column; padding: 16px; }
 }
