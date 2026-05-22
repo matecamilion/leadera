@@ -4,11 +4,12 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { OperacionService, Operacion } from '../../core/services/operacion-service';
 import { EventoOperacion } from '../../core/models/evento-operacion';
+import { FotosPropiedadComponent } from '../../components/fotos-propiedad/fotos-propiedad';
 
 
 @Component({
   selector: 'app-detalle-operacion',
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, FotosPropiedadComponent],
   templateUrl: './detalle-operacion.html',
   styleUrl: './detalle-operacion.css',
 })

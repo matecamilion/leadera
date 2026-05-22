@@ -18,6 +18,7 @@ export class FotosPropiedadComponent implements OnInit {
   private fotoService = inject(FotoPropiedadService);
 
   @Input({ required: true }) propiedadId!: number;
+  @Input() readonly = false;
 
   fotos = signal<FotoPropiedad[]>([]);
   subiendo = signal(false);

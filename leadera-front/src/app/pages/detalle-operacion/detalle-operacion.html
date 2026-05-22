@@ -109,6 +109,11 @@
             <strong>{{ operacion()!.propiedad!.estado }}</strong>
           </div>
         </div>
+
+        <app-fotos-propiedad
+          [propiedadId]="operacion()!.propiedad!.id"
+          [readonly]="true">
+        </app-fotos-propiedad>
       </section>
     }
 

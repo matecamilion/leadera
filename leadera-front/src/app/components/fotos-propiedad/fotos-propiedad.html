@@ -1,50 +1,59 @@
-<section class="fotos-block">
-  <header class="fotos-header">
-    <h3>Fotos de la propiedad</h3>
-    <span class="fotos-contador">{{ fotos().length }} / 10</span>
-  </header>
-
-  @if (fotos().length > 0) {
-    <div class="fotos-grid">
-      @for (foto of fotos(); track foto.id; let i = $index) {
-        <div class="foto-card" (click)="abrirLightbox(i)" role="button" tabindex="0">
-          <img [src]="foto.url" alt="Foto propiedad" loading="lazy" />
-          <button
-            type="button"
-            class="btn-eliminar-foto"
-            (click)="eliminar(foto, $event)"
-            aria-label="Eliminar foto">
-            <span class="material-symbols-outlined">delete</span>
-          </button>
-        </div>
+<!-- Si está en modo readonly y no hay fotos, no renderizamos nada (sin empty state). -->
+@if (!readonly || fotos().length > 0) {
+  <section class="fotos-block">
+    <header class="fotos-header">
+      <h3>Fotos de la propiedad</h3>
+      @if (!readonly) {
+        <span class="fotos-contador">{{ fotos().length }} / 10</span>
       }
-    </div>
-  } @else {
-    <p class="sin-fotos">Aún no hay fotos cargadas.</p>
-  }
+    </header>
 
-  @if (error(); as msg) {
-    <p class="foto-error">{{ msg }}</p>
-  }
-
-  <label class="btn-subir-foto" [class.disabled]="subiendo() || fotos().length >= 10">
-    <span class="material-symbols-outlined">add_photo_alternate</span>
-    @if (subiendo() && progreso(); as p) {
-      Subiendo {{ p.actual }} de {{ p.total }}...
-    } @else {
-      Agregar fotos
+    @if (fotos().length > 0) {
+      <div class="fotos-grid">
+        @for (foto of fotos(); track foto.id; let i = $index) {
+          <div class="foto-card" (click)="abrirLightbox(i)" role="button" tabindex="0">
+            <img [src]="foto.url" alt="Foto propiedad" loading="lazy" />
+            @if (!readonly) {
+              <button
+                type="button"
+                class="btn-eliminar-foto"
+                (click)="eliminar(foto, $event)"
+                aria-label="Eliminar foto">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    } @else if (!readonly) {
+      <p class="sin-fotos">Aún no hay fotos cargadas.</p>
     }
-    <input
-      type="file"
-      accept="image/*"
-      multiple
-      hidden
-      [disabled]="subiendo() || fotos().length >= 10"
-      (change)="onArchivoSeleccionado($event)" />
-  </label>
 
-  <p class="fotos-hint">Formato imagen, máximo 5 MB por archivo. Hasta 10 fotos.</p>
-</section>
+    @if (error(); as msg) {
+      <p class="foto-error">{{ msg }}</p>
+    }
+
+    @if (!readonly) {
+      <label class="btn-subir-foto" [class.disabled]="subiendo() || fotos().length >= 10">
+        <span class="material-symbols-outlined">add_photo_alternate</span>
+        @if (subiendo() && progreso(); as p) {
+          Subiendo {{ p.actual }} de {{ p.total }}...
+        } @else {
+          Agregar fotos
+        }
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+          [disabled]="subiendo() || fotos().length >= 10"
+          (change)="onArchivoSeleccionado($event)" />
+      </label>
+
+      <p class="fotos-hint">Formato imagen, máximo 5 MB por archivo. Hasta 10 fotos.</p>
+    }
+  </section>
+}
 
 @if (lightboxIndex() !== null && fotoActual(); as foto) {
   <div class="lightbox-overlay" (click)="cerrarLightbox()" role="dialog" aria-modal="true">
