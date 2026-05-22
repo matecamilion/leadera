@@ -144,7 +144,7 @@
             <h2>Operaciones <span class="resumen-contador">{{ operaciones().length }}</span></h2>
             <p class="subtitulo-seccion">Negocios activos o históricos asociados a este lead.</p>
           </div>
-          <button class="btn-nueva-propiedad" type="button" (click)="modalNuevaOperacion.showModal()">
+          <button class="btn-accion-header verde" type="button" (click)="modalNuevaOperacion.showModal()">
             + Agregar operación
           </button>
         </div>
@@ -201,7 +201,7 @@
             <h2>Interacciones <span class="resumen-contador">{{ l.interacciones?.length || 0 }}</span></h2>
             <p class="subtitulo-seccion">Última conversación registrada con el lead.</p>
           </div>
-          <button class="btn-nueva" [routerLink]="['/leads', id, 'interaccion']">
+          <button class="btn-accion-header azul" [routerLink]="['/leads', id, 'interaccion']">
             + Nueva interacción
           </button>
         </div>
