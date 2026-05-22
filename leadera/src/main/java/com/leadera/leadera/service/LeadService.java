@@ -281,15 +281,17 @@ public class LeadService {
     private LeadResumenDTO toResumenDTO(Lead lead) {
         long ventas = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.VENTA);
         long compras = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.COMPRA);
+        long alquileres = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.ALQUILER);
         long interacciones = lead.getInteracciones().size();
         String ultimaInteraccion = lead.getInteracciones().isEmpty() ? null :
                 lead.getInteracciones().get(lead.getInteracciones().size() - 1).getDetalle();
         return new LeadResumenDTO(
                 lead.getId(), lead.getNombre(), lead.getApellido(),
                 lead.getTelefono(), lead.getEmail(), lead.getEstado(),
+                lead.getOrigen(),
                 lead.getFechaEntrada(), lead.getUltimoContacto(),
                 lead.getFechaProximoSeguimiento(),
-                ventas, compras, interacciones, ultimaInteraccion
+                ventas, compras, alquileres, interacciones, ultimaInteraccion
         );
     }
 

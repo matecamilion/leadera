@@ -13,11 +13,13 @@ public class LeadResumenDTO {
     private String telefono;
     private String email;
     private EstadoLead estado;
+    private String origen;
     private java.time.LocalDateTime fechaEntrada;
     private java.time.LocalDateTime ultimoContacto;
     private java.time.LocalDateTime fechaProximoSeguimiento;
     private long operacionesVenta;
     private long operacionesCompra;
+    private long operacionesAlquiler;
     private long cantidadInteracciones;
     private String ultimaInteraccion;
 }

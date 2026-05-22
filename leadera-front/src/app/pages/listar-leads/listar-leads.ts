@@ -6,6 +6,8 @@ import { Lead } from '../../core/models/lead';
 import { TiempoTranscurridoPipe } from '../../pipes/tiempo-transcurrido-pipe';
 import { RouterModule } from '@angular/router';
 import { LeadResumen } from '../../core/models/lead-resumen';
+import { AuthService } from '../../core/services/auth-service';
+import { PdfService } from '../../core/services/pdf-service';
 
 @Component({
   selector: 'app-listado-leads',
@@ -16,6 +18,10 @@ import { LeadResumen } from '../../core/models/lead-resumen';
 })
 export class ListadoLeadsComponent implements OnInit {
   private servicioLead = inject(LeadService);
+  private authService = inject(AuthService);
+  private pdfService = inject(PdfService);
+
+  exportandoPdf = signal<boolean>(false);
 
   // Signals
   leads = signal<LeadResumen[]>([]);
@@ -71,5 +77,23 @@ export class ListadoLeadsComponent implements OnInit {
 
   contarOperacionesCompra(lead: LeadResumen): number {
     return lead.operacionesCompra;
+  }
+
+  exportarPdf(): void {
+    if (this.exportandoPdf()) return;
+    const filtrados = this.leadsFiltrados();
+    if (filtrados.length === 0) return;
+
+    this.exportandoPdf.set(true);
+    // Diferido un tick para que el DOM repinte el estado "Generando..." antes
+    // de la generación síncrona del PDF (que puede congelar el UI con muchos leads).
+    setTimeout(() => {
+      try {
+        const nombre = this.authService.getNombreAgente() || 'Agente';
+        this.pdfService.exportarLeads(filtrados, nombre);
+      } finally {
+        this.exportandoPdf.set(false);
+      }
+    }, 0);
   }
 }

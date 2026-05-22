@@ -5,13 +5,24 @@
       <span class="contador-leads">{{ leadsFiltrados().length }} leads encontrados</span>
     </div>
 
-    <div class="buscador-wrapper">
-      <input
-        type="text"
-        placeholder="Buscar por nombre, email, teléfono o propiedad..."
-        [ngModel]="filtroBusqueda()"
-        (ngModelChange)="filtroBusqueda.set($event)"
-      />
+    <div class="acciones-header">
+      <div class="buscador-wrapper">
+        <input
+          type="text"
+          placeholder="Buscar por nombre, email, teléfono o propiedad..."
+          [ngModel]="filtroBusqueda()"
+          (ngModelChange)="filtroBusqueda.set($event)"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="btn-exportar-pdf"
+        (click)="exportarPdf()"
+        [disabled]="exportandoPdf() || leadsFiltrados().length === 0">
+        <span class="material-symbols-outlined">picture_as_pdf</span>
+        {{ exportandoPdf() ? 'Generando...' : 'Exportar PDF' }}
+      </button>
     </div>
   </header>
 
