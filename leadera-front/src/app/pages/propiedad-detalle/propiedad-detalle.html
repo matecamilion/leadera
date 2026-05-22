@@ -47,13 +47,17 @@
       </div>
     </aside>
 
-    <main class="columna-historial tarjeta-blanca">
-      <div class="header-historial">
-        <h2>Actividad de la propiedad</h2>
+    <main class="columna-historial">
+      <app-fotos-propiedad [propiedadId]="propiedad()!.id"></app-fotos-propiedad>
+
+      <div class="tarjeta-blanca">
+        <div class="header-historial">
+          <h2>Actividad de la propiedad</h2>
+        </div>
+        <p class="sin-datos">
+          Las visitas y consultas se registran desde la operación de venta asociada.
+        </p>
       </div>
-      <p class="sin-datos">
-        Las visitas y consultas se registran desde la operación de venta asociada.
-      </p>
     </main>
 
   </div>

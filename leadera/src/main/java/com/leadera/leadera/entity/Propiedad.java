@@ -1,6 +1,7 @@
 package com.leadera.leadera.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.leadera.leadera.enums.EstadoPropiedad;
 import com.leadera.leadera.enums.TipoVivienda;
 import jakarta.persistence.*;
@@ -12,6 +13,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "propiedad")
@@ -44,6 +47,13 @@ public class Propiedad {
 
     @Enumerated(EnumType.STRING)
     private EstadoPropiedad estado = EstadoPropiedad.DISPONIBLE;
+
+    // Las fotos se serializan dentro de Propiedad en el GET de detalle.
+    // JsonManagedReference evita el loop infinito con el JsonBackReference de FotoPropiedad.
+    @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orden ASC")
+    @JsonManagedReference("propiedad-fotos")
+    private List<FotoPropiedad> fotos = new ArrayList<>();
 
     @Transient
     public long getDiasEnMercado() {

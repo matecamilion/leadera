@@ -1,0 +1,142 @@
+.fotos-block {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.fotos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.fotos-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.fotos-contador {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.fotos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 600px) {
+  .fotos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.foto-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+.foto-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.btn-eliminar-foto {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(15, 23, 42, 0.85);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.btn-eliminar-foto:hover {
+  background: #dc2626;
+  transform: scale(1.06);
+}
+
+.btn-eliminar-foto .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.sin-fotos {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0 0 1rem 0;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px dashed #e2e8f0;
+}
+
+.foto-error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem 0;
+}
+
+.btn-subir-foto {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  color: #1e293b;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-subir-foto:hover:not(.disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.btn-subir-foto.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-subir-foto .material-symbols-outlined {
+  font-size: 20px;
+  color: #10b981;
+}
+
+.fotos-hint {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 8px 0 0 0;
+  text-align: center;
+}

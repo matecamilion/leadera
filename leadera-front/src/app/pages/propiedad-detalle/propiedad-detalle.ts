@@ -4,11 +4,12 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PropiedadService } from '../../core/services/propiedad-service';
 import { Propiedad } from '../../core/models/propiedad';
+import { FotosPropiedadComponent } from '../../components/fotos-propiedad/fotos-propiedad';
 
 @Component({
   selector: 'app-propiedad-detalle',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, FotosPropiedadComponent],
   templateUrl: './propiedad-detalle.html',
   styleUrl: './propiedad-detalle.css'
 })

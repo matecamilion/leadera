@@ -1,0 +1,42 @@
+<section class="fotos-block">
+  <header class="fotos-header">
+    <h3>Fotos de la propiedad</h3>
+    <span class="fotos-contador">{{ fotos().length }} / 10</span>
+  </header>
+
+  @if (fotos().length > 0) {
+    <div class="fotos-grid">
+      @for (foto of fotos(); track foto.id) {
+        <div class="foto-card">
+          <img [src]="foto.url" alt="Foto propiedad" loading="lazy" />
+          <button
+            type="button"
+            class="btn-eliminar-foto"
+            (click)="eliminar(foto)"
+            aria-label="Eliminar foto">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="sin-fotos">Aún no hay fotos cargadas.</p>
+  }
+
+  @if (error(); as msg) {
+    <p class="foto-error">{{ msg }}</p>
+  }
+
+  <label class="btn-subir-foto" [class.disabled]="subiendo() || fotos().length >= 10">
+    <span class="material-symbols-outlined">add_photo_alternate</span>
+    {{ subiendo() ? 'Subiendo...' : 'Agregar foto' }}
+    <input
+      type="file"
+      accept="image/*"
+      hidden
+      [disabled]="subiendo() || fotos().length >= 10"
+      (change)="onArchivoSeleccionado($event)" />
+  </label>
+
+  <p class="fotos-hint">Formato imagen, máximo 5 MB por archivo.</p>
+</section>
