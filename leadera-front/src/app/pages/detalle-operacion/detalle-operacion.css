@@ -10,12 +10,19 @@
 }
 
 .btn-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: transparent;
   border: none;
   color: #2563eb;
   font-weight: 700;
   cursor: pointer;
   margin-bottom: 16px;
+}
+
+.btn-volver .material-symbols-outlined {
+  font-size: 18px;
 }
 
 .header-operacion h1 {

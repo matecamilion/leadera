@@ -1,6 +1,9 @@
 <div class="page">
   <header class="page-header">
-    <a routerLink="/operaciones" class="btn-volver">← Volver al pipeline</a>
+    <a routerLink="/operaciones" class="btn-volver">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver al pipeline
+    </a>
     <h1 class="page-title">Operaciones: {{ estadoLabel() }}</h1>
     <p class="page-count">{{ operaciones().length }} operaciones</p>
   </header>

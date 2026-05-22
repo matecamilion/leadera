@@ -16,12 +16,18 @@
 }
 
 .btn-volver {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: #14b8a6;
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 12px;
+}
+
+.btn-volver .material-symbols-outlined {
+  font-size: 18px;
 }
 
 .btn-volver:hover {

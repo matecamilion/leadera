@@ -2,7 +2,10 @@
   <div class="contenedor-operacion">
     <div class="header-operacion">
       <div>
-        <button class="btn-volver" [routerLink]="['/leads', leadId]">← Volver al lead</button>
+        <button class="btn-volver" [routerLink]="['/leads', leadId]">
+          <span class="material-symbols-outlined">arrow_back</span>
+          Volver al lead
+        </button>
 
         <h1>{{ operacion()!.titulo }}</h1>
 

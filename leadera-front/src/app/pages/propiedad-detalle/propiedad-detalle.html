@@ -3,7 +3,10 @@
 
     <aside class="columna-info">
       <div class="tarjeta-blanca">
-        <a [routerLink]="['/leads', propiedad()!.lead?.id]" class="btn-volver">← Volver al lead</a>
+        <a [routerLink]="['/leads', propiedad()!.lead?.id]" class="btn-volver">
+          <span class="material-symbols-outlined">arrow_back</span>
+          Volver al lead
+        </a>
       </div>
 
       <div class="tarjeta-blanca">
