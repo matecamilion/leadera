@@ -20,6 +20,7 @@ import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,9 @@ public class LeadService {
     private final InteraccionRepository interaccionRepository;
     private final OperacionRepository operacionRepository;
     private final ZoneId zonaHoraria;
+
+    @Value("${leadera.prioritarios.dias-sin-contacto:3}")
+    private int diasSinContactoPrioritario;
 
     public LeadService(LeadRepository leadRepository,
                        AgenteRepository agenteRepository,
@@ -152,7 +156,7 @@ public class LeadService {
 
         List<Lead> nuevos = leadRepository.findByUltimoContactoIsNullAndAgenteEmailAndEstadoNot(email, EstadoLead.INACTIVO);
 
-        LocalDateTime fechaLimitePrioritarios = ahora.minusDays(7);
+        LocalDateTime fechaLimitePrioritarios = ahora.minusDays(diasSinContactoPrioritario);
         List<Lead> prioritarios = leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimitePrioritarios, email);
 
         // Incluye todos los seguimientos programados para hoy aunque la hora exacta
@@ -163,7 +167,8 @@ public class LeadService {
         );
 
         // Dedup: un lead que ya está en "prioritarios" no debe duplicarse en "seguimientos".
-        // Prioritario manda porque marca un atraso > 7 días que requiere atención inmediata.
+        // Prioritario manda porque marca un atraso mayor al umbral configurado
+        // (leadera.prioritarios.dias-sin-contacto) y requiere atención inmediata.
         Set<Long> idsPrioritarios = prioritarios.stream().map(Lead::getId).collect(Collectors.toSet());
         List<Lead> seguimientosUnicos = seguimientos.stream()
                 .filter(l -> !idsPrioritarios.contains(l.getId()))
