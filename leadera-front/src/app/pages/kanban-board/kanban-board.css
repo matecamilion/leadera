@@ -53,8 +53,9 @@
 }
 
 .columna[data-estado='ABIERTA']        { border-top: 4px solid #3b82f6; }
-.columna[data-estado='EN_GESTION']     { border-top: 4px solid #f59e0b; }
+.columna[data-estado='PUBLICADA']      { border-top: 4px solid #0ea5e9; }
 .columna[data-estado='RESERVADA']      { border-top: 4px solid #8b5cf6; }
+.columna[data-estado='EN_NEGOCIACION'] { border-top: 4px solid #f59e0b; }
 .columna[data-estado='CERRADA_GANADA'] { border-top: 4px solid #10b981; }
 .columna[data-estado='CANCELADA']      { border-top: 4px solid #ef4444; }
 

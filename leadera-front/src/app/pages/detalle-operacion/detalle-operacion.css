@@ -65,7 +65,7 @@
   color: #334155;
 }
 
-.badge-estado.en_gestion {
+.badge-estado.publicada {
   background: #e0f2fe;
   color: #0369a1;
 }
@@ -73,6 +73,11 @@
 .badge-estado.reservada {
   background: #fef3c7;
   color: #b45309;
+}
+
+.badge-estado.en_negociacion {
+  background: #ffedd5;
+  color: #c2410c;
 }
 
 .badge-estado.cerrada_ganada {

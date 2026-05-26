@@ -19,7 +19,18 @@
       "PowerShell(npx --no-install tsc --noEmit -p tsconfig.json 2>&1 | Select-Object -First 80)",
       "PowerShell(npx ng build --configuration=development 2>&1 | Select-Object -Last 60)",
       "Bash(git *)",
-      "PowerShell(npx ng build --configuration=development 2>&1 | Select-Object -Last 80)"
+      "PowerShell(npx ng build --configuration=development 2>&1 | Select-Object -Last 80)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(npx --no-install tsc --noEmit -p tsconfig.app.json)",
+      "Bash(./mvnw -DskipTests -q compile)",
+      "Bash(cmd.exe /c \"mvnw.cmd -q -DskipTests compile\")",
+      "Bash(npx --no-install ng build --configuration=development)",
+      "Bash(Select-Object -Last 60)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\mateo\\\\OneDrive\\\\Escritorio\\\\crm-inmobiliario\\\\leadera-front\"; $out = npx --no-install ng build --configuration=development 2>&1; \\($out | Select-String -Pattern \"TS\\\\d+|ERROR\" | Select-Object -First 30\\) -join \"`n\")",
+      "Bash(npm uninstall *)",
+      "Bash(rm leadera-front/src/app/core/services/pdf-service.ts)",
+      "Read(//c/c/Users/mateo/OneDrive/Escritorio/crm-inmobiliario/leadera-front/src/app/core/**)",
+      "Bash(Select-Object FullName)"
     ]
   }
 }

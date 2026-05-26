@@ -127,7 +127,7 @@ Al crear una interacción (`POST /leads/{id}/interacciones`), el backend ejecuta
 Lead (vendedor)
   └── Propiedad (la que quiere vender)
         └── Operacion VENTA
-              └── estado: ABIERTA → EN_GESTION → RESERVADA → CERRADA_GANADA
+              └── estado: ABIERTA → PUBLICADA → RESERVADA → EN_NEGOCIACION → CERRADA_GANADA
 ```
 
 Para `COMPRA`, en lugar de propiedad existe una `Busqueda` con: tipo de vivienda, zona, precio mínimo, precio máximo, ambientes, metros.

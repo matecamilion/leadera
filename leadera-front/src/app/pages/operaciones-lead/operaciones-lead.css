@@ -146,8 +146,9 @@
 .badge-tipo.alquiler { background: #fef3c7; color: #b45309; }
 
 .badge-estado.abierta { background: #f1f5f9; color: #334155; }
-.badge-estado.en_gestion { background: #e0f2fe; color: #0369a1; }
+.badge-estado.publicada { background: #e0f2fe; color: #0369a1; }
 .badge-estado.reservada { background: #fef3c7; color: #b45309; }
+.badge-estado.en_negociacion { background: #ffedd5; color: #c2410c; }
 .badge-estado.cerrada_ganada { background: #dcfce7; color: #15803d; }
 .badge-estado.cancelada { background: #fee2e2; color: #b91c1c; }
 

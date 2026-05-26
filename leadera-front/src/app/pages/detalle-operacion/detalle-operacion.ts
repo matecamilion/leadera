@@ -32,8 +32,9 @@ errorEvento = signal<string>('');
 
 estadosOperacion = [
   'ABIERTA',
-  'EN_GESTION',
+  'PUBLICADA',
   'RESERVADA',
+  'EN_NEGOCIACION',
   'CERRADA_GANADA',
   'CANCELADA'
 ];

@@ -2,8 +2,9 @@ package com.leadera.leadera.enums;
 
 public enum EstadoOperacion {
     ABIERTA,
-    EN_GESTION,
+    PUBLICADA,
     RESERVADA,
+    EN_NEGOCIACION,
     CERRADA_GANADA,
     CANCELADA
 }

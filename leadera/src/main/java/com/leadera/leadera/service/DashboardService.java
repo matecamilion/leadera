@@ -97,7 +97,7 @@ public class DashboardService {
         long visita = operacionRepository.countLeadsConVisita(agenteId);
         long oferta = operacionRepository.countLeadsDistintosConOperacionEnEstados(
                 agenteId,
-                List.of(EstadoOperacion.EN_GESTION, EstadoOperacion.RESERVADA));
+                List.of(EstadoOperacion.PUBLICADA, EstadoOperacion.RESERVADA, EstadoOperacion.EN_NEGOCIACION));
         long cerrado = operacionRepository.countLeadsDistintosConOperacionEnEstados(
                 agenteId,
                 List.of(EstadoOperacion.CERRADA_GANADA));

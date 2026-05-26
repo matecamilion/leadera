@@ -32,8 +32,9 @@ export class OperacionesLead implements OnInit {
 
   readonly estados: EstadoOperacion[] = [
     'ABIERTA',
-    'EN_GESTION',
+    'PUBLICADA',
     'RESERVADA',
+    'EN_NEGOCIACION',
     'CERRADA_GANADA',
     'CANCELADA',
   ];

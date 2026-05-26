@@ -516,7 +516,7 @@
   color: #334155;
 }
 
-.badge-estado-operacion.en_gestion {
+.badge-estado-operacion.publicada {
   background: #e0f2fe;
   color: #0369a1;
 }
@@ -524,6 +524,11 @@
 .badge-estado-operacion.reservada {
   background: #fef3c7;
   color: #b45309;
+}
+
+.badge-estado-operacion.en_negociacion {
+  background: #ffedd5;
+  color: #c2410c;
 }
 
 .badge-estado-operacion.cerrada_ganada {

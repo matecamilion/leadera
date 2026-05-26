@@ -39,11 +39,12 @@ public class OperacionService {
     private final ZoneId zonaHoraria;
 
     private static final Map<EstadoOperacion, Set<EstadoOperacion>> TRANSICIONES_VALIDAS = Map.of(
-            EstadoOperacion.ABIERTA,        EnumSet.of(EstadoOperacion.EN_GESTION, EstadoOperacion.CANCELADA),
-            EstadoOperacion.EN_GESTION,     EnumSet.of(EstadoOperacion.ABIERTA, EstadoOperacion.RESERVADA, EstadoOperacion.CANCELADA),
-            EstadoOperacion.RESERVADA,      EnumSet.of(EstadoOperacion.EN_GESTION, EstadoOperacion.CERRADA_GANADA, EstadoOperacion.CANCELADA),
-            EstadoOperacion.CERRADA_GANADA, EnumSet.noneOf(EstadoOperacion.class),
-            EstadoOperacion.CANCELADA,      EnumSet.noneOf(EstadoOperacion.class)
+            EstadoOperacion.ABIERTA,         EnumSet.of(EstadoOperacion.PUBLICADA, EstadoOperacion.CANCELADA),
+            EstadoOperacion.PUBLICADA,       EnumSet.of(EstadoOperacion.ABIERTA, EstadoOperacion.RESERVADA, EstadoOperacion.CANCELADA),
+            EstadoOperacion.RESERVADA,       EnumSet.of(EstadoOperacion.PUBLICADA, EstadoOperacion.EN_NEGOCIACION, EstadoOperacion.CANCELADA),
+            EstadoOperacion.EN_NEGOCIACION,  EnumSet.of(EstadoOperacion.RESERVADA, EstadoOperacion.CERRADA_GANADA, EstadoOperacion.CANCELADA),
+            EstadoOperacion.CERRADA_GANADA,  EnumSet.noneOf(EstadoOperacion.class),
+            EstadoOperacion.CANCELADA,       EnumSet.noneOf(EstadoOperacion.class)
     );
 
     public OperacionService(
