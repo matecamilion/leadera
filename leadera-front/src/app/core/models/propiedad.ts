@@ -11,5 +11,5 @@ export interface Propiedad {
   fechaPublicacion: string;
   diasEnMercado: number;
   estado: 'DISPONIBLE' | 'RESERVADA' | 'VENDIDA';
-  lead?: { id: number };
+  leadId?: number;
 }

@@ -3,7 +3,9 @@ package com.leadera.leadera.service;
 import com.leadera.leadera.dto.CompradorPotencialDTO;
 import com.leadera.leadera.dto.EditarPropiedadRequest;
 import com.leadera.leadera.dto.EventoOperacionResumenDTO;
+import com.leadera.leadera.dto.PropiedadDTO;
 import com.leadera.leadera.dto.PropiedadResumenDTO;
+import com.leadera.leadera.mapper.PropiedadMapper;
 import com.leadera.leadera.entity.Busqueda;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.entity.Operacion;
@@ -44,7 +46,7 @@ public class PropiedadService {
         this.zonaHoraria = zonaHoraria;
     }
 
-    public Propiedad agregarPropiedad(Long leadId, Propiedad propiedad, String emailAgente) {
+    public PropiedadDTO agregarPropiedad(Long leadId, Propiedad propiedad, String emailAgente) {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
@@ -54,10 +56,10 @@ public class PropiedadService {
 
         propiedad.setLead(lead);
         propiedad.setFechaPublicacion(LocalDateTime.now(zonaHoraria));
-        return propiedadRepository.save(propiedad);
+        return PropiedadMapper.toDTO(propiedadRepository.save(propiedad));
     }
 
-    public List<Propiedad> obtenerPropiedadesDeLead(Long leadId, String emailAgente) {
+    public List<PropiedadDTO> obtenerPropiedadesDeLead(Long leadId, String emailAgente) {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
@@ -65,7 +67,9 @@ public class PropiedadService {
             throw new UnauthorizedActionException("No tenés permiso para ver las propiedades de este lead.");
         }
 
-        return propiedadRepository.findByLeadId(leadId);
+        return propiedadRepository.findByLeadId(leadId).stream()
+                .map(PropiedadMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     public List<PropiedadResumenDTO> obtenerPropiedadesDelAgente(String emailAgente) {
@@ -74,7 +78,7 @@ public class PropiedadService {
                 .collect(Collectors.toList());
     }
 
-    public Propiedad actualizarEstado(Long id, String estado, String emailAgente) {
+    public PropiedadDTO actualizarEstado(Long id, String estado, String emailAgente) {
         Propiedad propiedad = propiedadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
@@ -89,10 +93,10 @@ public class PropiedadService {
         } catch (IllegalArgumentException ex) {
             throw new BadRequestException("Estado de propiedad inválido: " + estado);
         }
-        return propiedadRepository.save(propiedad);
+        return PropiedadMapper.toDTO(propiedadRepository.save(propiedad));
     }
 
-    public Propiedad obtenerPorId(Long id, String emailAgente) {
+    public PropiedadDTO obtenerPorId(Long id, String emailAgente) {
         Propiedad propiedad = propiedadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
@@ -102,10 +106,10 @@ public class PropiedadService {
             throw new UnauthorizedActionException("No tenés permiso para ver esta propiedad.");
         }
 
-        return propiedad;
+        return PropiedadMapper.toDTO(propiedad);
     }
 
-    public Propiedad editarPropiedad(Long propiedadId, EditarPropiedadRequest request, String emailAgente) {
+    public PropiedadDTO editarPropiedad(Long propiedadId, EditarPropiedadRequest request, String emailAgente) {
         Propiedad propiedad = propiedadRepository.findById(propiedadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
@@ -124,7 +128,7 @@ public class PropiedadService {
         if (request.getZona() != null) propiedad.setZona(request.getZona());
         if (request.getObservaciones() != null) propiedad.setObservaciones(request.getObservaciones());
 
-        return propiedadRepository.save(propiedad);
+        return PropiedadMapper.toDTO(propiedadRepository.save(propiedad));
     }
 
     // ---------- Matching ----------

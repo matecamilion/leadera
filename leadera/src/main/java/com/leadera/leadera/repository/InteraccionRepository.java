@@ -22,6 +22,12 @@ public interface InteraccionRepository extends JpaRepository<Interaccion, Long> 
             "WHERE i.lead.id = :leadId")
     LocalDateTime findPrimeraInteraccion(@Param("leadId") Long leadId);
 
+    // Primera interacción de TODOS los leads de un agente en una sola query (evita N+1 en el dashboard).
+    // Devuelve filas [leadId (Long), primeraFecha (LocalDateTime)].
+    @Query("SELECT i.lead.id, MIN(i.fechaInteraccion) FROM Interaccion i " +
+            "WHERE i.lead.agente.id = :agenteId GROUP BY i.lead.id")
+    List<Object[]> findPrimerasInteraccionesPorAgente(@Param("agenteId") Long agenteId);
+
     // Últimas interacciones del agente, ordenadas por fecha desc
     @Query("SELECT i FROM Interaccion i WHERE i.lead.agente.id = :agenteId ORDER BY i.fechaInteraccion DESC")
     List<Interaccion> findUltimasInteracciones(@Param("agenteId") Long agenteId, Pageable pageable);

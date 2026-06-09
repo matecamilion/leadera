@@ -50,6 +50,12 @@ public interface OperacionRepository extends JpaRepository<Operacion, Long> {
     @Query("SELECT COUNT(o) FROM Operacion o WHERE o.lead.id = :leadId AND o.tipoOperacion = :tipo")
     long countByLeadIdAndTipo(@Param("leadId") Long leadId, @Param("tipo") TipoOperacion tipo);
 
+    // Conteos de operaciones por tipo para varios leads en una sola query (evita N+1 en el listado).
+    // Devuelve filas [leadId (Long), tipoOperacion (TipoOperacion), count (Long)].
+    @Query("SELECT o.lead.id, o.tipoOperacion, COUNT(o) FROM Operacion o " +
+            "WHERE o.lead.id IN :leadIds GROUP BY o.lead.id, o.tipoOperacion")
+    List<Object[]> countByLeadIdsGroupedByTipo(@Param("leadIds") List<Long> leadIds);
+
     @Query("SELECT COUNT(o) FROM Operacion o WHERE o.agente.id = :agenteId " +
             "AND o.estadoOperacion = 'CERRADA_GANADA' " +
             "AND MONTH(o.fechaCierre) = MONTH(CURRENT_DATE) " +

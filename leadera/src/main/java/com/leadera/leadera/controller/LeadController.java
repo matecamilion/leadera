@@ -4,13 +4,18 @@ import com.leadera.leadera.dto.ActividadRecienteDTO;
 import com.leadera.leadera.dto.AgenteDashboardDTO;
 import com.leadera.leadera.dto.CrearLeadRequest;
 import com.leadera.leadera.dto.DashboardDTO;
+import com.leadera.leadera.dto.EditarContactoRequest;
 import com.leadera.leadera.dto.LeadDetalleResponse;
 import com.leadera.leadera.dto.LeadResponseDTO;
+import com.leadera.leadera.dto.InteraccionDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
-import com.leadera.leadera.entity.Interaccion;
+import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.enums.EstadoLead;
+import com.leadera.leadera.exception.ResourceNotFoundException;
+import com.leadera.leadera.mapper.LeadMapper;
+import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.service.DashboardService;
 import com.leadera.leadera.service.LeadService;
 import jakarta.validation.Valid;
@@ -30,10 +35,21 @@ import java.util.List;
 public class LeadController {
     private final LeadService leadService;
     private final DashboardService dashboardService;
+    private final AgenteRepository agenteRepository;
 
-    public LeadController(LeadService leadService, DashboardService dashboardService) {
+    public LeadController(LeadService leadService, DashboardService dashboardService,
+                          AgenteRepository agenteRepository) {
         this.leadService = leadService;
         this.dashboardService = dashboardService;
+        this.agenteRepository = agenteRepository;
+    }
+
+    // Resuelve el id del agente autenticado desde el email del token JWT.
+    // Evita confiar en un id recibido por path (IDOR).
+    private Long resolverAgenteId(Authentication authentication) {
+        Agente agente = agenteRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("Agente no encontrado"));
+        return agente.getId();
     }
 
     //Crear lead
@@ -72,9 +88,8 @@ public class LeadController {
     }
 
     @GetMapping("/{id}/interacciones")
-    public List<Interaccion> obtenerInteraccionesPorId(@PathVariable Long id) {
-        // Aquí podrías agregar seguridad también si quisieras
-        return leadService.obtenerHistorialInteracciones(id);
+    public List<InteraccionDTO> obtenerInteraccionesPorId(@PathVariable Long id, Authentication authentication) {
+        return leadService.obtenerHistorialInteracciones(id, authentication.getName());
     }
 
     @GetMapping("/inactivos")
@@ -101,31 +116,40 @@ public class LeadController {
     }
 
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<Lead> establecerLeadInactivo(@PathVariable Long id, Authentication authentication) {
-        return ResponseEntity.ok(leadService.establecerLeadInactivo(id, authentication.getName()));
+    public ResponseEntity<LeadResponseDTO> establecerLeadInactivo(@PathVariable Long id, Authentication authentication) {
+        Lead lead = leadService.establecerLeadInactivo(id, authentication.getName());
+        return ResponseEntity.ok(LeadMapper.toDTO(lead));
     }
 
-    @GetMapping("/agente/{id}/stats")
-    public ResponseEntity<AgenteDashboardDTO> getStats(@PathVariable Long id) {
-        return ResponseEntity.ok(leadService.obtenerEstadisticasAgente(id));
+    @GetMapping("/agente/me/stats")
+    public ResponseEntity<AgenteDashboardDTO> getStats(Authentication authentication) {
+        return ResponseEntity.ok(leadService.obtenerEstadisticasAgente(resolverAgenteId(authentication)));
     }
 
-    @GetMapping("/agente/{id}/actividad-reciente")
-    public ResponseEntity<List<ActividadRecienteDTO>> getActividadReciente(@PathVariable Long id) {
-        return ResponseEntity.ok(leadService.obtenerActividadReciente(id, 5));
+    @GetMapping("/agente/me/actividad-reciente")
+    public ResponseEntity<List<ActividadRecienteDTO>> getActividadReciente(Authentication authentication) {
+        return ResponseEntity.ok(leadService.obtenerActividadReciente(resolverAgenteId(authentication), 5));
     }
 
-    @GetMapping("/agente/{id}/dashboard")
+    @GetMapping("/agente/me/dashboard")
     public ResponseEntity<DashboardDTO> getDashboard(
-            @PathVariable Long id,
+            Authentication authentication,
             @RequestParam(name = "periodo", defaultValue = "30d") String periodo) {
-        return ResponseEntity.ok(dashboardService.obtenerDashboard(id, periodo));
+        return ResponseEntity.ok(dashboardService.obtenerDashboard(resolverAgenteId(authentication), periodo));
     }
 
     @PutMapping("/{id}/editar-contacto")
-    public ResponseEntity<Lead> editarContacto(@PathVariable Long id, @RequestBody Lead nuevosDatos, Authentication authentication) {
-        Lead leadActualizado = leadService.editarInfoContacto(id, nuevosDatos.getTelefono(), nuevosDatos.getEmail(), authentication.getName());
-        return ResponseEntity.ok(leadActualizado);
+    public ResponseEntity<LeadResponseDTO> editarContacto(@PathVariable Long id,
+                                                          @RequestBody EditarContactoRequest request,
+                                                          Authentication authentication) {
+        Lead leadActualizado = leadService.editarInfoContacto(id, request.telefono(), request.email(), authentication.getName());
+        return ResponseEntity.ok(LeadMapper.toDTO(leadActualizado));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarLead(@PathVariable Long id, Authentication authentication) {
+        leadService.eliminarLead(id, authentication.getName());
+        return ResponseEntity.noContent().build();
     }
 
 

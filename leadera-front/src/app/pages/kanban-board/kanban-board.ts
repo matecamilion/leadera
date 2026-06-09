@@ -88,7 +88,6 @@ export class KanbanBoardComponent implements OnInit {
           );
           op.estado = estadoOrigen;
           this.columnas.update((c) => [...c]);
-          alert('No se pudo cambiar el estado');
         },
       });
   }

@@ -93,20 +93,20 @@ export class AgenteService {
 
   constructor(private http: HttpClient) {}
 
-  getDashboard(agenteId: number, periodo: DashboardPeriodo): Observable<DashboardData> {
+  getDashboard(periodo: DashboardPeriodo): Observable<DashboardData> {
     const params = new HttpParams().set('periodo', periodo);
     return this.http.get<DashboardData>(
-      `${this.apiUrl}/leads/agente/${agenteId}/dashboard`,
+      `${this.apiUrl}/leads/agente/me/dashboard`,
       { params }
     );
   }
 
-  getActividadReciente(agenteId: number): Observable<ActividadReciente[]> {
-    return this.http.get<ActividadReciente[]>(`${this.apiUrl}/leads/agente/${agenteId}/actividad-reciente`);
+  getActividadReciente(): Observable<ActividadReciente[]> {
+    return this.http.get<ActividadReciente[]>(`${this.apiUrl}/leads/agente/me/actividad-reciente`);
   }
 
-  getDashboardStats(agenteId: number): Observable<AgenteDashboard> {
-    return this.http.get<AgenteDashboard>(`${this.apiUrl}/leads/agente/${agenteId}/stats`);
+  getDashboardStats(): Observable<AgenteDashboard> {
+    return this.http.get<AgenteDashboard>(`${this.apiUrl}/leads/agente/me/stats`);
   }
 
   getPerfil(): Observable<AgentePerfilDTO> {

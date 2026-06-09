@@ -931,3 +931,36 @@
     gap: 4px;
   }
 }
+/* Eliminar lead */
+.btn-eliminar-lead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  width: 100%;
+  padding: 9px 16px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  justify-content: center;
+}
+.btn-eliminar-lead:hover {
+  background: #fecaca;
+}
+.btn-eliminar-confirmar {
+  padding: 10px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+.btn-eliminar-confirmar:hover {
+  background: #dc2626;
+}

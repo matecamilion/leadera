@@ -223,18 +223,14 @@ export class Perfil {
   }
 
   private cargarDashboard() {
-    const id = this.authService.getIdAgente();
-    if (!id) return;
-    this.agenteService.getDashboard(id, this.periodoActivo()).subscribe({
+    this.agenteService.getDashboard(this.periodoActivo()).subscribe({
       next: data => this.dashboard.set(data),
       error: () => this.dashboard.set(null),
     });
   }
 
   private cargarActividad() {
-    const id = this.authService.getIdAgente();
-    if (!id) return;
-    this.agenteService.getActividadReciente(id).subscribe({
+    this.agenteService.getActividadReciente().subscribe({
       next: data => this.actividadReciente.set(data),
       error: () => this.actividadReciente.set([]),
     });

@@ -3,6 +3,7 @@ package com.leadera.leadera.controller;
 import com.leadera.leadera.dto.CompradorPotencialDTO;
 import com.leadera.leadera.dto.EditarPropiedadRequest;
 import com.leadera.leadera.dto.EventoOperacionResumenDTO;
+import com.leadera.leadera.dto.PropiedadDTO;
 import com.leadera.leadera.dto.PropiedadResumenDTO;
 import com.leadera.leadera.entity.Propiedad;
 import com.leadera.leadera.service.PropiedadService;
@@ -29,34 +30,34 @@ public class PropiedadController {
     }
 
     @PostMapping("/lead/{leadId}")
-    public ResponseEntity<Propiedad> agregarPropiedad(@PathVariable Long leadId,
-                                                      @RequestBody Propiedad propiedad,
-                                                      Authentication authentication) {
+    public ResponseEntity<PropiedadDTO> agregarPropiedad(@PathVariable Long leadId,
+                                                         @RequestBody Propiedad propiedad,
+                                                         Authentication authentication) {
         return ResponseEntity.ok(propiedadService.agregarPropiedad(leadId, propiedad, authentication.getName()));
     }
 
     @GetMapping("/lead/{leadId}")
-    public ResponseEntity<List<Propiedad>> listarPropiedades(@PathVariable Long leadId, Authentication authentication) {
+    public ResponseEntity<List<PropiedadDTO>> listarPropiedades(@PathVariable Long leadId, Authentication authentication) {
         return ResponseEntity.ok(propiedadService.obtenerPropiedadesDeLead(leadId, authentication.getName()));
     }
 
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<Propiedad> actualizarEstado(@PathVariable Long id,
-                                                      @RequestBody Map<String, String> body,
-                                                      Authentication authentication) {
+    public ResponseEntity<PropiedadDTO> actualizarEstado(@PathVariable Long id,
+                                                         @RequestBody Map<String, String> body,
+                                                         Authentication authentication) {
         String estado = body.get("estado");
         return ResponseEntity.ok(propiedadService.actualizarEstado(id, estado, authentication.getName()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Propiedad> obtenerPorId(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<PropiedadDTO> obtenerPorId(@PathVariable Long id, Authentication authentication) {
         return ResponseEntity.ok(propiedadService.obtenerPorId(id, authentication.getName()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Propiedad> editar(@PathVariable Long id,
-                                            @RequestBody EditarPropiedadRequest request,
-                                            Authentication authentication) {
+    public ResponseEntity<PropiedadDTO> editar(@PathVariable Long id,
+                                               @RequestBody EditarPropiedadRequest request,
+                                               Authentication authentication) {
         return ResponseEntity.ok(propiedadService.editarPropiedad(id, request, authentication.getName()));
     }
 

@@ -5,7 +5,9 @@ import com.leadera.leadera.entity.EventoOperacion;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.entity.Operacion;
 import com.leadera.leadera.entity.Propiedad;
+import com.leadera.leadera.dto.EventoOperacionDTO;
 import com.leadera.leadera.dto.OperacionPipelineDTO;
+import com.leadera.leadera.mapper.EventoOperacionMapper;
 import com.leadera.leadera.enums.EstadoOperacion;
 import com.leadera.leadera.enums.EstadoPropiedad;
 import com.leadera.leadera.enums.TipoOperacion;
@@ -39,8 +41,7 @@ public class OperacionService {
     private final ZoneId zonaHoraria;
 
     private static final Map<EstadoOperacion, Set<EstadoOperacion>> TRANSICIONES_VALIDAS = Map.of(
-            EstadoOperacion.ABIERTA,         EnumSet.of(EstadoOperacion.PUBLICADA, EstadoOperacion.CANCELADA),
-            EstadoOperacion.PUBLICADA,       EnumSet.of(EstadoOperacion.ABIERTA, EstadoOperacion.RESERVADA, EstadoOperacion.CANCELADA),
+            EstadoOperacion.PUBLICADA,       EnumSet.of(EstadoOperacion.RESERVADA, EstadoOperacion.CANCELADA),
             EstadoOperacion.RESERVADA,       EnumSet.of(EstadoOperacion.PUBLICADA, EstadoOperacion.EN_NEGOCIACION, EstadoOperacion.CANCELADA),
             EstadoOperacion.EN_NEGOCIACION,  EnumSet.of(EstadoOperacion.RESERVADA, EstadoOperacion.CERRADA_GANADA, EstadoOperacion.CANCELADA),
             EstadoOperacion.CERRADA_GANADA,  EnumSet.noneOf(EstadoOperacion.class),
@@ -79,7 +80,7 @@ public class OperacionService {
         operacion.setTitulo(operacionRequest.getTitulo());
         operacion.setTipoOperacion(operacionRequest.getTipoOperacion());
         operacion.setDescripcion(operacionRequest.getDescripcion());
-        operacion.setEstadoOperacion(EstadoOperacion.ABIERTA);
+        operacion.setEstadoOperacion(EstadoOperacion.PUBLICADA);
         operacion.setFechaCreacion(LocalDateTime.now(zonaHoraria));
 
         if (operacionRequest.getTipoOperacion() == TipoOperacion.VENTA) {
@@ -197,7 +198,7 @@ public class OperacionService {
                 .collect(Collectors.toList());
     }
 
-    public EventoOperacion registrarEvento(Long leadId, Long operacionId, EventoOperacion evento, String emailAgente) {
+    public EventoOperacionDTO registrarEvento(Long leadId, Long operacionId, EventoOperacion evento, String emailAgente) {
         Operacion operacion = operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailAgente)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe la operación o no tenés permiso para modificarla"));
@@ -205,15 +206,17 @@ public class OperacionService {
         evento.setFecha(LocalDateTime.now(zonaHoraria));
         evento.setOperacion(operacion);
 
-        return eventoOperacionRepository.save(evento);
+        return EventoOperacionMapper.toDTO(eventoOperacionRepository.save(evento));
     }
 
-    public List<EventoOperacion> obtenerEventos(Long leadId, Long operacionId, String emailAgente) {
+    public List<EventoOperacionDTO> obtenerEventos(Long leadId, Long operacionId, String emailAgente) {
         operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailAgente)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe la operación o no tenés permiso para verla"));
 
-        return eventoOperacionRepository.findByOperacionIdOrderByFechaDesc(operacionId);
+        return eventoOperacionRepository.findByOperacionIdOrderByFechaDesc(operacionId).stream()
+                .map(EventoOperacionMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     private Operacion aplicarCambioDeEstado(Operacion operacion, EstadoOperacion nuevoEstado) {

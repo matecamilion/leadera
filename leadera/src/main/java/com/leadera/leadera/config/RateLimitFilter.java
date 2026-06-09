@@ -20,11 +20,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class RateLimitFilter extends OncePerRequestFilter {
 
-    private static final String LOGIN_PATH = "/auth/login";
-    private static final int CAPACIDAD = 10;
-    private static final Duration VENTANA = Duration.ofMinutes(1);
+    // Config de rate limit por path: capacidad de requests y ventana de tiempo.
+    private record BucketConfig(int capacidad, Duration ventana) {
+    }
 
-    private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
+    // Cada endpoint sensible tiene su propio límite.
+    private static final Map<String, BucketConfig> CONFIGS = Map.of(
+            "/auth/login", new BucketConfig(10, Duration.ofMinutes(1)),
+            "/auth/register", new BucketConfig(5, Duration.ofMinutes(10))
+    );
+
+    // path -> (ip -> bucket): cada path lleva sus propios buckets por IP.
+    private final Map<String, Map<String, Bucket>> buckets = new ConcurrentHashMap<>();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -36,8 +43,12 @@ public class RateLimitFilter extends OncePerRequestFilter {
             return;
         }
 
+        String path = request.getRequestURI();
+        BucketConfig config = CONFIGS.get(path);
         String ip = obtenerIp(request);
-        Bucket bucket = buckets.computeIfAbsent(ip, k -> nuevoBucket());
+        Bucket bucket = buckets
+                .computeIfAbsent(path, p -> new ConcurrentHashMap<>())
+                .computeIfAbsent(ip, k -> nuevoBucket(config));
 
         if (bucket.tryConsume(1)) {
             filterChain.doFilter(request, response);
@@ -46,12 +57,12 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
         response.setStatus(429); // 429 Too Many Requests (no expuesto como constante en jakarta.servlet)
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write("{\"error\":\"Demasiados intentos. Por favor esperá un minuto.\"}");
+        response.getWriter().write("{\"error\":\"Demasiados intentos. Por favor esperá unos minutos.\"}");
     }
 
     private boolean aplicaA(HttpServletRequest request) {
         return HttpMethod.POST.matches(request.getMethod())
-                && LOGIN_PATH.equals(request.getRequestURI());
+                && CONFIGS.containsKey(request.getRequestURI());
     }
 
     private String obtenerIp(HttpServletRequest request) {
@@ -64,8 +75,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
         return request.getRemoteAddr();
     }
 
-    private Bucket nuevoBucket() {
-        Bandwidth limite = Bandwidth.classic(CAPACIDAD, Refill.intervally(CAPACIDAD, VENTANA));
+    private Bucket nuevoBucket(BucketConfig config) {
+        Bandwidth limite = Bandwidth.classic(
+                config.capacidad(),
+                Refill.intervally(config.capacidad(), config.ventana()));
         return Bucket.builder().addLimit(limite).build();
     }
 }

@@ -30,7 +30,12 @@
       "Bash(npm uninstall *)",
       "Bash(rm leadera-front/src/app/core/services/pdf-service.ts)",
       "Read(//c/c/Users/mateo/OneDrive/Escritorio/crm-inmobiliario/leadera-front/src/app/core/**)",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Bash(./mvnw -q -o compile)",
+      "Bash(./mvnw -q compile)",
+      "Bash(mvn -q -o compile)",
+      "Bash(./mvnw -o compile -DskipTests)",
+      "Bash(echo \"EXIT: $?\")"
     ]
   }
 }

@@ -23,7 +23,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DashboardService {
@@ -162,8 +164,11 @@ public class DashboardService {
                 ? round1((double) ganadosAnt / nuevosAnt * 100.0)
                 : 0.0;
 
-        double tiempoRespActual = round1(tiempoRespuestaPromedioDias(agenteId, inicioActual, finActual));
-        double tiempoRespAnt = round1(tiempoRespuestaPromedioDias(agenteId, inicioAnt, finAnt));
+        // Una sola query para las primeras interacciones de todos los leads del agente.
+        // El mapa es independiente del período, así que se reutiliza en ambos cálculos.
+        Map<Long, LocalDateTime> primerasInteracciones = cargarPrimerasInteracciones(agenteId);
+        double tiempoRespActual = round1(tiempoRespuestaPromedioDias(agenteId, inicioActual, finActual, primerasInteracciones));
+        double tiempoRespAnt = round1(tiempoRespuestaPromedioDias(agenteId, inicioAnt, finAnt, primerasInteracciones));
 
         List<Double> sparkActivos = acumular(ev.nuevos());
         List<Double> sparkGanados = acumular(ev.ganados());
@@ -201,20 +206,30 @@ public class DashboardService {
         return new KpisDTO(leadsActivos, tasaConversion, tiempoRespuesta, ganados);
     }
 
-    private double tiempoRespuestaPromedioDias(Long agenteId, LocalDateTime inicio, LocalDateTime fin) {
+    private double tiempoRespuestaPromedioDias(Long agenteId, LocalDateTime inicio, LocalDateTime fin,
+                                               Map<Long, LocalDateTime> primerasInteracciones) {
         List<Lead> leads = leadRepository.findLeadsConFechaEntrada(agenteId);
         return leads.stream()
                 .filter(l -> l.getFechaEntrada() != null
                         && !l.getFechaEntrada().isBefore(inicio)
                         && l.getFechaEntrada().isBefore(fin))
                 .mapToLong(lead -> {
-                    LocalDateTime primera = interaccionRepository.findPrimeraInteraccion(lead.getId());
+                    LocalDateTime primera = primerasInteracciones.get(lead.getId());
                     if (primera == null) return -1L;
                     return ChronoUnit.HOURS.between(lead.getFechaEntrada(), primera);
                 })
                 .filter(h -> h >= 0)
                 .average()
                 .orElse(0.0) / 24.0;
+    }
+
+    // Mapa leadId -> primera interacción, cargado en una sola query para evitar N+1.
+    private Map<Long, LocalDateTime> cargarPrimerasInteracciones(Long agenteId) {
+        Map<Long, LocalDateTime> mapa = new HashMap<>();
+        for (Object[] fila : interaccionRepository.findPrimerasInteraccionesPorAgente(agenteId)) {
+            mapa.put((Long) fila[0], (LocalDateTime) fila[1]);
+        }
+        return mapa;
     }
 
     private List<OrigenDTO> obtenerOrigenes(Long agenteId, LocalDateTime inicio, LocalDateTime fin) {

@@ -2,9 +2,11 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { NotificationService } from '../core/services/notification-service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
+  const notificationService = inject(NotificationService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -24,7 +26,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             mensaje = 'Sesión expirada. Iniciá sesión de nuevo.';
             localStorage.clear();
             router.navigate(['/login']);
-            break;
+            return throwError(() => ({ ...error, mensajeAmigable: mensaje }));
           case 403:
             mensaje = 'No tenés permiso para realizar esta acción.';
             break;
@@ -41,6 +43,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             mensaje = error.error?.message || `Error ${error.status}`;
         }
       }
+
+      notificationService.error(mensaje);
 
       return throwError(() => ({ ...error, mensajeAmigable: mensaje }));
     }),

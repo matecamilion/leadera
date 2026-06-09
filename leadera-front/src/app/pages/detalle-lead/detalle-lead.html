@@ -61,6 +61,11 @@
           <span class="material-symbols-outlined">insights</span>
           <span>{{ l.interacciones?.length || 0 }} interacciones registradas</span>
         </div>
+
+        <button class="btn-eliminar-lead" (click)="modalEliminar.showModal()">
+          <span class="material-symbols-outlined">delete</span>
+          Eliminar lead
+        </button>
       </div>
 
       <div class="tarjeta-blanca">
@@ -415,6 +420,18 @@
     </div>
   </div>
 </dialog>
+
+    <dialog #modalEliminar class="modal-leadera">
+      <div class="modal-content">
+        <span class="material-symbols-outlined" style="font-size: 2.5rem; color: #ef4444">warning</span>
+        <h3>¿Eliminar este lead?</h3>
+        <p>Esta acción es permanente. Una vez eliminado, no vas a poder recuperar su información, interacciones ni operaciones asociadas.</p>
+        <div style="display: flex; gap: 12px; margin-top: 20px">
+          <button class="btn-cancelar" style="flex: 1" (click)="modalEliminar.close()">Cancelar</button>
+          <button class="btn-eliminar-confirmar" style="flex: 1" (click)="eliminarLead(modalEliminar)">Sí, eliminar</button>
+        </div>
+      </div>
+    </dialog>
   </div>
 } @else {
   <div class="loading">Cargando detalles del lead...</div>

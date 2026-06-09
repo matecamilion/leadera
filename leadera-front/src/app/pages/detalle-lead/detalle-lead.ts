@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LeadService } from '../../core/services/lead-service';
+import { NotificationService } from '../../core/services/notification-service';
 import { FormsModule } from '@angular/forms';
 import { PropiedadService } from '../../core/services/propiedad-service';
 import { Propiedad } from '../../core/models/propiedad';
@@ -19,7 +20,9 @@ import { Lead } from '../../core/models/lead';
 })
 export class DetalleLead implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private leadService = inject(LeadService);
+  private notificationService = inject(NotificationService);
   private propiedadService = inject(PropiedadService);
   private operacionService = inject(OperacionService);
 
@@ -132,6 +135,17 @@ export class DetalleLead implements OnInit {
       error: (err) => {
         this.errorGeneral.set(err.mensajeAmigable || 'No se pudo actualizar el estado.');
       }
+    });
+  }
+
+  eliminarLead(modal: HTMLDialogElement) {
+    this.leadService.eliminarLead(this.id).subscribe({
+      next: () => {
+        modal.close();
+        this.notificationService.exito('Lead eliminado correctamente.');
+        this.router.navigate(['/leads']);
+      },
+      error: () => modal.close()
     });
   }
 

@@ -1,5 +1,6 @@
 package com.leadera.leadera.controller;
 
+import com.leadera.leadera.dto.EventoOperacionDTO;
 import com.leadera.leadera.entity.EventoOperacion;
 import com.leadera.leadera.entity.Operacion;
 import com.leadera.leadera.enums.EstadoOperacion;
@@ -96,7 +97,7 @@ public class OperacionController {
     }
 
     @PostMapping("/{operacionId}/eventos")
-    public ResponseEntity<EventoOperacion> registrarEvento(
+    public ResponseEntity<EventoOperacionDTO> registrarEvento(
             @PathVariable Long leadId,
             @PathVariable Long operacionId,
             @RequestBody EventoOperacion evento,
@@ -108,7 +109,7 @@ public class OperacionController {
     }
 
     @GetMapping("/{operacionId}/eventos")
-    public ResponseEntity<List<EventoOperacion>> listarEventos(
+    public ResponseEntity<List<EventoOperacionDTO>> listarEventos(
             @PathVariable Long leadId,
             @PathVariable Long operacionId,
             Authentication authentication

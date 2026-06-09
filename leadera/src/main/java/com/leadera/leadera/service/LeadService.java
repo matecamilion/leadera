@@ -6,24 +6,29 @@ import com.leadera.leadera.dto.CrearLeadRequest;
 import com.leadera.leadera.dto.LeadDetalleResponse;
 import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
+import com.leadera.leadera.dto.InteraccionDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Agente;
-import com.leadera.leadera.entity.Interaccion;
 import com.leadera.leadera.entity.Lead;
+import com.leadera.leadera.entity.Operacion;
 import com.leadera.leadera.enums.EstadoLead;
 import com.leadera.leadera.enums.TipoOperacion;
 import com.leadera.leadera.exception.DuplicateResourceException;
 import com.leadera.leadera.exception.ResourceNotFoundException;
 import com.leadera.leadera.exception.UnauthorizedActionException;
+import com.leadera.leadera.mapper.InteraccionMapper;
 import com.leadera.leadera.mapper.LeadMapper;
 import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,7 +37,10 @@ import org.springframework.stereotype.Service;
 import java.time.temporal.ChronoUnit;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,6 +50,7 @@ public class LeadService {
     private final AgenteRepository agenteRepository;
     private final InteraccionRepository interaccionRepository;
     private final OperacionRepository operacionRepository;
+    private final CacheManager cacheManager;
     private final ZoneId zonaHoraria;
 
     @Value("${leadera.prioritarios.dias-sin-contacto:3}")
@@ -51,19 +60,21 @@ public class LeadService {
                        AgenteRepository agenteRepository,
                        InteraccionRepository interaccionRepository,
                        OperacionRepository operacionRepository,
+                       CacheManager cacheManager,
                        ZoneId zonaHoraria) {
         this.leadRepository = leadRepository;
         this.agenteRepository = agenteRepository;
         this.interaccionRepository = interaccionRepository;
         this.operacionRepository = operacionRepository;
+        this.cacheManager = cacheManager;
         this.zonaHoraria = zonaHoraria;
     }
 
 
-    // allEntries=true: el método recibe el email del agente, no su id; resolverlo
-    // para un evict por key implicaría una query extra. Invalidar todo el cache
-    // es seguro porque la entrada se rehidrata bajo demanda con TTL de 5 min.
-    @CacheEvict(value = "estadisticasAgente", allEntries = true)
+    // Evict acotado al agente dueño del lead (no a todo el cache). El método recibe el
+    // email, así que resolvemos su id desde el repositorio para que la key coincida con
+    // la de @Cacheable en obtenerEstadisticasAgente (key="#agenteId").
+    @CacheEvict(value = "estadisticasAgente", key = "@agenteRepository.findByEmail(#email).get().id")
     public LeadResponseDTO crearLead(CrearLeadRequest request, String email) {
 
         Agente agente = agenteRepository.findByEmail(email)
@@ -126,17 +137,25 @@ public class LeadService {
         return leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimite, email);
     }
 
-    public List<Interaccion> obtenerHistorialInteracciones(Long leadId) {
+    public List<InteraccionDTO> obtenerHistorialInteracciones(Long leadId, String emailAgente) {
 
-            Lead lead = leadRepository.findById(leadId)
-                    .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con el id: " + leadId));
+        Lead lead = leadRepository.findById(leadId)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con el id: " + leadId));
 
-        return lead.getInteracciones();
+        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+            throw new UnauthorizedActionException("No tenés permiso para ver las interacciones de este lead.");
+        }
+
+        return lead.getInteracciones().stream()
+                .map(InteraccionMapper::toDTO)
+                .toList();
     }
 
 
 
-    @CacheEvict(value = "estadisticasAgente", allEntries = true)
+    // El Lead retornado ya tiene el agente cargado (se accede a su email arriba),
+    // así que tomamos el id desde #result sin query extra.
+    @CacheEvict(value = "estadisticasAgente", key = "#result.agente.id")
     public Lead cambiarEstado(Long id, EstadoLead nuevoEstado, String emailAgente) {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
@@ -189,7 +208,9 @@ public class LeadService {
         );
     }
 
-    @CacheEvict(value = "estadisticasAgente", allEntries = true)
+    // El Lead retornado ya tiene el agente cargado (se accede a su email arriba),
+    // así que tomamos el id desde #result sin query extra.
+    @CacheEvict(value = "estadisticasAgente", key = "#result.agente.id")
     public Lead establecerLeadInactivo(Long id, String emailAgente) {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
@@ -200,6 +221,37 @@ public class LeadService {
 
          lead.setEstado(EstadoLead.INACTIVO);
          return leadRepository.save(lead);
+    }
+
+    @Transactional
+    public void eliminarLead(Long leadId, String emailAgente) {
+        Lead lead = leadRepository.findById(leadId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
+
+        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+            throw new UnauthorizedActionException("No tenés permiso para eliminar este lead.");
+        }
+
+        // El agenteId sale del lead ya cargado: no hace falta una query extra al repo de agentes.
+        Long agenteId = lead.getAgente().getId();
+
+        // Interacciones y propiedades caen solas por el cascade = ALL de Lead. Las operaciones
+        // NO están mapeadas como @OneToMany en Lead y tienen FK lead_id NOT NULL, así que el
+        // cascade de JPA no las alcanza: hay que borrarlas explícitamente antes del lead (sus
+        // eventos se eliminan por el cascade propio de Operacion). Se borran primero para no
+        // violar la FK operacion -> propiedad cuando el cascade del lead borra las propiedades.
+        List<Operacion> operaciones = operacionRepository.findByLeadIdAndAgenteEmail(leadId, emailAgente);
+        operacionRepository.deleteAll(operaciones);
+
+        leadRepository.delete(lead);
+
+        // Evict acotado al agente dueño, con la misma key que @Cacheable en obtenerEstadisticasAgente.
+        // No se usa @CacheEvict porque la firma recibe el email y el id se resuelve desde el lead
+        // cargado (una expresión SpEL en la anotación obligaría a una query extra de agente).
+        Cache cache = cacheManager.getCache("estadisticasAgente");
+        if (cache != null) {
+            cache.evict(agenteId);
+        }
     }
 
     @Cacheable(value = "estadisticasAgente", key = "#agenteId")
@@ -271,7 +323,9 @@ public class LeadService {
 
     public List<LeadResumenDTO> obtenerResumenLeadsPorAgente(String email) {
         List<Lead> leads = leadRepository.findByAgenteEmailConInteracciones(email);
-        return leads.stream().map(this::toResumenDTO).toList();
+        Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(
+                leads.stream().map(Lead::getId).toList());
+        return leads.stream().map(lead -> toResumenDTO(lead, conteos)).toList();
     }
 
     public Page<LeadResumenDTO> obtenerResumenLeadsPorAgente(String email, Pageable pageable) {
@@ -279,14 +333,33 @@ public class LeadService {
                 ? pageable
                 : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                                  Sort.by(Sort.Direction.DESC, "fechaEntrada"));
-        return leadRepository.findByAgenteEmailConInteraccionesPaginado(email, efectivo)
-                .map(this::toResumenDTO);
+        Page<Lead> page = leadRepository.findByAgenteEmailConInteraccionesPaginado(email, efectivo);
+        Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(
+                page.getContent().stream().map(Lead::getId).toList());
+        return page.map(lead -> toResumenDTO(lead, conteos));
     }
 
-    private LeadResumenDTO toResumenDTO(Lead lead) {
-        long ventas = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.VENTA);
-        long compras = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.COMPRA);
-        long alquileres = operacionRepository.countByLeadIdAndTipo(lead.getId(), TipoOperacion.ALQUILER);
+    // Pre-carga los conteos de operaciones por tipo de todos los leads en una sola query.
+    // Sin esto, toResumenDTO disparaba 3 queries por lead (N+1).
+    private Map<Long, Map<TipoOperacion, Long>> cargarConteosOperaciones(List<Long> leadIds) {
+        if (leadIds.isEmpty()) {
+            return Map.of();
+        }
+        Map<Long, Map<TipoOperacion, Long>> conteos = new HashMap<>();
+        for (Object[] fila : operacionRepository.countByLeadIdsGroupedByTipo(leadIds)) {
+            Long leadId = (Long) fila[0];
+            TipoOperacion tipo = (TipoOperacion) fila[1];
+            long cantidad = ((Number) fila[2]).longValue();
+            conteos.computeIfAbsent(leadId, k -> new EnumMap<>(TipoOperacion.class)).put(tipo, cantidad);
+        }
+        return conteos;
+    }
+
+    private LeadResumenDTO toResumenDTO(Lead lead, Map<Long, Map<TipoOperacion, Long>> conteos) {
+        Map<TipoOperacion, Long> porTipo = conteos.getOrDefault(lead.getId(), Map.of());
+        long ventas = porTipo.getOrDefault(TipoOperacion.VENTA, 0L);
+        long compras = porTipo.getOrDefault(TipoOperacion.COMPRA, 0L);
+        long alquileres = porTipo.getOrDefault(TipoOperacion.ALQUILER, 0L);
         long interacciones = lead.getInteracciones().size();
         String ultimaInteraccion = lead.getInteracciones().isEmpty() ? null :
                 lead.getInteracciones().get(lead.getInteracciones().size() - 1).getDetalle();

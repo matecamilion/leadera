@@ -1,11 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { Sidebar } from './shared/sidebar/sidebar';
+import { ToastContainer } from './shared/toast-container/toast-container';
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Sidebar],
+  imports: [RouterOutlet, Sidebar, ToastContainer],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
