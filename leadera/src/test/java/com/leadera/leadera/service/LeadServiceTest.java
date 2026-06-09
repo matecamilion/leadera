@@ -20,6 +20,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.CacheManager;
 
 import java.time.ZoneId;
 import java.util.Optional;
@@ -47,6 +48,9 @@ class LeadServiceTest {
     @Mock
     private OperacionRepository operacionRepository;
 
+    @Mock
+    private CacheManager cacheManager;
+
     private final ZoneId zonaHoraria = ZoneId.of("America/Argentina/Buenos_Aires");
 
     private LeadService leadService;
@@ -60,6 +64,7 @@ class LeadServiceTest {
                 agenteRepository,
                 interaccionRepository,
                 operacionRepository,
+                cacheManager,
                 zonaHoraria
         );
     }
