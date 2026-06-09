@@ -2,6 +2,7 @@ package com.leadera.leadera.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.leadera.leadera.enums.RolAgente;
 import jakarta.persistence.*;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
@@ -37,14 +38,36 @@ public class Agente implements UserDetails{
     @ColumnDefault("12")
     private Integer metaMensualCierres = 12;
 
+    // JsonIgnore: la entidad Agente se serializa dentro de Lead (vía
+    // @JsonIgnoreProperties en Lead.agente) y la inmobiliaria no debe
+    // viajar en esos payloads. Para exponerla siempre usar DTOs.
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "inmobiliaria_id", nullable = false)
+    private Inmobiliaria inmobiliaria;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rol", nullable = false, length = 20)
+    private RolAgente rol;
+
+    @Column(name = "debe_cambiar_password", nullable = false)
+    @ColumnDefault("false")
+    private boolean debeCambiarPassword = false;
+
+    @Column(name = "activo", nullable = false)
+    @ColumnDefault("true")
+    private boolean activo = true;
+
     @ToString.Exclude
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL)
     private List<Lead> leads;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Como todos los agentes son iguales, les damos a todos el mismo permiso.
-        return List.of(new SimpleGrantedAuthority("ROLE_AGENTE"));
+        // Defensa ante entidades aún no persistidas con la migración corrida:
+        // sin rol explícito se asume AGENTE (el permiso más bajo).
+        RolAgente rolEfectivo = (rol != null) ? rol : RolAgente.AGENTE;
+        return List.of(new SimpleGrantedAuthority("ROLE_" + rolEfectivo.name()));
     }
 
     @Override
@@ -57,11 +80,13 @@ public class Agente implements UserDetails{
         return this.password;
     }
 
-    // Por ahora, mantenemos la cuenta siempre activa
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled() { return true; }
+
+    // Un agente desactivado por el dueño no puede loguearse:
+    // DaoAuthenticationProvider lanza DisabledException si isEnabled() es false.
+    @Override public boolean isEnabled() { return this.activo; }
 
 
 }
