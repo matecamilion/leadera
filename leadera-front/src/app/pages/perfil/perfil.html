@@ -139,38 +139,34 @@
           </div>
         </header>
 
-        <div class="evol-chart">
-          <svg viewBox="0 0 720 220" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="areaBrand" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stop-color="#10a05a" stop-opacity="0.22"/>
-                <stop offset="100%" stop-color="#10a05a" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <g class="grid">
-              <line x1="0" y1="40" x2="720" y2="40" />
-              <line x1="0" y1="90" x2="720" y2="90" />
-              <line x1="0" y1="140" x2="720" y2="140" />
-              <line x1="0" y1="190" x2="720" y2="190" />
-            </g>
-            <path [attr.d]="evolNuevosArea()" fill="url(#areaBrand)" />
-            <path [attr.d]="evolNuevosLinea()"
-                  fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path [attr.d]="evolGanadosLinea()"
-                  fill="none" stroke="var(--brand-deep)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path [attr.d]="evolPerdidosLinea()"
-                  fill="none" stroke="var(--ink-4)" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round" />
-
-            <line x1="720" y1="0" x2="720" y2="220" stroke="var(--ink-4)" stroke-dasharray="2 4" />
-            <circle cx="720" [attr.cy]="evolUltimoNuevoY()" r="4" fill="var(--brand)" />
-          </svg>
-          <div class="evol-xaxis">
-            @for (etiq of evolEjeX(); track $index) {
-              <span>{{ etiq }}</span>
-            }
-            <span class="today">Hoy</span>
+        @if (evolVacio()) {
+          <p class="empty">Sin actividad en este período.</p>
+        } @else {
+          <div class="evol-chart">
+            <svg viewBox="0 0 720 220" preserveAspectRatio="none" aria-hidden="true">
+              <g class="grid">
+                @for (t of evolTicksY(); track t.valor) {
+                  <line x1="30" [attr.y1]="t.y" x2="720" [attr.y2]="t.y" />
+                }
+              </g>
+              @for (t of evolTicksY(); track t.valor) {
+                <text x="22" [attr.y]="t.y + 3" text-anchor="end"
+                      font-size="10" fill="var(--ink-4)">{{ t.valor }}</text>
+              }
+              @for (b of evolBarras(); track $index) {
+                <rect [attr.x]="b.x" [attr.y]="b.y"
+                      [attr.width]="b.width" [attr.height]="b.height"
+                      [attr.fill]="b.color" rx="2" />
+              }
+            </svg>
+            <div class="evol-xaxis">
+              @for (etiq of evolEjeX(); track $index) {
+                <span>{{ etiq }}</span>
+              }
+              <span class="today">Hoy</span>
+            </div>
           </div>
-        </div>
+        }
       </div>
 
       <!-- Right column stack -->

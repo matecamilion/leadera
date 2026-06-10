@@ -12,6 +12,21 @@ import { LeadService } from '../../core/services/lead-service';
 import { LeadHoy } from '../../core/models/lead-hoy';
 
 const DONUT_RADIUS = 56;
+
+// Geometría del gráfico de evolución (viewBox 0 0 720 220).
+const EVOL_W = 720;
+const EVOL_PAD_LEFT = 30; // espacio para las etiquetas del eje Y
+const EVOL_TOP = 12;
+const EVOL_BASELINE = 204;
+
+interface EvolBarra {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string;
+  key: 'nuevos' | 'ganados' | 'perdidos';
+}
 const ORIGEN_COLORS = [
   'var(--brand)',
   'var(--brand-deep)',
@@ -154,34 +169,70 @@ export class Perfil {
   sparkGanados = computed(() => this.linePath(this.dashboard()?.kpis.ganados.sparkline ?? [], 120, 32));
   sparkGanadosArea = computed(() => this.areaPath(this.dashboard()?.kpis.ganados.sparkline ?? [], 120, 32));
 
-  // Evolución (líneas y área)
-  private evolMaxY = computed(() => {
+  // Evolución (barras agrupadas por día). Con conteos diarios dispersos las
+  // curvas suavizadas inflaban cada evento en una "campana" de varios días.
+  private evolEscala = computed(() => {
     const ev = this.dashboard()?.evolucion;
-    if (!ev) return 1;
-    const all = [...ev.nuevos, ...ev.ganados, ...ev.perdidos];
-    return Math.max(1, ...all);
+    const realMax = ev
+      ? Math.max(0, ...ev.nuevos, ...ev.ganados, ...ev.perdidos)
+      : 0;
+    // Piso de 3: un día con 1 lead no debe tocar el techo del gráfico.
+    const maxY = Math.max(3, realMax);
+    if (maxY <= 5) {
+      return { max: maxY, ticks: Array.from({ length: maxY + 1 }, (_, i) => i) };
+    }
+    const step = Math.ceil(maxY / 4);
+    return { max: step * 4, ticks: [0, step, step * 2, step * 3, step * 4] };
   });
 
-  evolNuevosLinea = computed(() =>
-    this.linePathScaled(this.dashboard()?.evolucion.nuevos ?? [], 720, 220, this.evolMaxY())
-  );
-  evolNuevosArea = computed(() =>
-    this.areaPathScaled(this.dashboard()?.evolucion.nuevos ?? [], 720, 220, this.evolMaxY())
-  );
-  evolGanadosLinea = computed(() =>
-    this.linePathScaled(this.dashboard()?.evolucion.ganados ?? [], 720, 220, this.evolMaxY())
-  );
-  evolPerdidosLinea = computed(() =>
-    this.linePathScaled(this.dashboard()?.evolucion.perdidos ?? [], 720, 220, this.evolMaxY())
+  evolTicksY = computed(() =>
+    this.evolEscala().ticks.map(valor => ({ valor, y: this.evolY(valor) }))
   );
 
-  evolUltimoNuevoY = computed(() => {
-    const arr = this.dashboard()?.evolucion.nuevos ?? [];
-    if (arr.length === 0) return 110;
-    const v = arr[arr.length - 1];
-    const max = this.evolMaxY();
-    return this.scaleY(v, max, 220);
+  evolVacio = computed(() =>
+    this.totalNuevosPeriodo() + this.totalGanadosPeriodo() + this.totalPerdidosPeriodo() === 0
+  );
+
+  evolBarras = computed<EvolBarra[]>(() => {
+    const ev = this.dashboard()?.evolucion;
+    if (!ev || ev.fechas.length === 0) return [];
+
+    // Se itera el período completo: cada día conserva su posición real en el
+    // eje X aunque no tenga eventos (los días en cero no emiten rects).
+    const dias = ev.fechas.length;
+    const groupW = (EVOL_W - EVOL_PAD_LEFT) / dias;
+    const barW = Math.max(2, +((groupW * 0.7) / 3).toFixed(2));
+
+    const series = [
+      { key: 'nuevos' as const, valores: ev.nuevos, color: 'var(--brand)' },
+      { key: 'ganados' as const, valores: ev.ganados, color: 'var(--brand-deep)' },
+      { key: 'perdidos' as const, valores: ev.perdidos, color: 'var(--ink-4)' },
+    ];
+
+    const barras: EvolBarra[] = [];
+    for (let i = 0; i < dias; i++) {
+      const x0 = EVOL_PAD_LEFT + i * groupW + (groupW - barW * 3) / 2;
+      series.forEach((s, si) => {
+        const v = s.valores[i] ?? 0;
+        if (v <= 0) return;
+        const y = this.evolY(v);
+        barras.push({
+          x: +(x0 + si * barW).toFixed(2),
+          y,
+          width: barW,
+          height: +(EVOL_BASELINE - y).toFixed(2),
+          color: s.color,
+          key: s.key,
+        });
+      });
+    }
+    return barras;
   });
+
+  private evolY(valor: number): number {
+    const { max } = this.evolEscala();
+    return +(EVOL_BASELINE - (valor / max) * (EVOL_BASELINE - EVOL_TOP)).toFixed(2);
+  }
 
   totalNuevosPeriodo = computed(() => (this.dashboard()?.evolucion.nuevos ?? []).reduce((a, b) => a + b, 0));
   totalGanadosPeriodo = computed(() => (this.dashboard()?.evolucion.ganados ?? []).reduce((a, b) => a + b, 0));
@@ -380,16 +431,6 @@ export class Perfil {
     if (values.length === 0) return '';
     const max = Math.max(1, ...values);
     return this.buildPath(values, w, h, max, true);
-  }
-
-  private linePathScaled(values: number[], w: number, h: number, maxY: number): string {
-    if (values.length === 0) return '';
-    return this.buildPath(values, w, h, maxY, false);
-  }
-
-  private areaPathScaled(values: number[], w: number, h: number, maxY: number): string {
-    if (values.length === 0) return '';
-    return this.buildPath(values, w, h, maxY, true);
   }
 
   private buildPath(values: number[], w: number, h: number, max: number, fill: boolean): string {
