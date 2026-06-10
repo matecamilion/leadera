@@ -1,6 +1,7 @@
 package com.leadera.leadera.config;
 
 import com.leadera.leadera.service.CustomUserDetailService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -85,6 +86,17 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No guardamos sesiones en el servidor
+                )
+                // Sin token (o rechazado): 401, no el 403 default de Spring.
+                // El error-interceptor del frontend solo desloguea ante 401;
+                // con 403 el agente quedaba atrapado en "No tenés permiso".
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("{\"error\":\"Autenticación requerida\"}");
+                        })
                 )
                 .authenticationProvider(authenticationProvider())
                 // El rate limit va antes que el JWT filter. Ambos se anclan al

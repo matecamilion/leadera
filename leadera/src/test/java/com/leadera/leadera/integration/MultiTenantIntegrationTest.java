@@ -372,12 +372,14 @@ class MultiTenantIntegrationTest {
 
         @Test
         void sinTokenElCambioDePasswordEsRechazado() throws Exception {
+            // 401 (no 403): el contrato de auth devuelve Unauthorized cuando
+            // falta autenticación, y el frontend desloguea solo ante 401.
             mockMvc.perform(post("/auth/cambiar-password")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(Map.of(
                                     "passwordActual", "password123",
                                     "passwordNueva", "nuevaPassword456"))))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isUnauthorized());
         }
     }
 

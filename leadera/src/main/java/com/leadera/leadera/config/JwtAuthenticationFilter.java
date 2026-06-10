@@ -2,6 +2,7 @@ package com.leadera.leadera.config;
 
 import com.leadera.leadera.service.CustomUserDetailService;
 import com.leadera.leadera.service.JwtService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,8 +52,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
-        log.debug("Email extraído del token: {}", userEmail);
+
+        try {
+            userEmail = jwtService.extractUsername(jwt);
+            log.debug("Email extraído del token");
+        } catch (JwtException e) {
+            // Vencido, malformado o con firma inválida: 401 para que el
+            // interceptor del frontend desloguee, no el 500 de antes.
+            log.debug("Token JWT inválido o vencido: {}", e.getMessage());
+            escribir401(response);
+            return;
+        }
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
@@ -59,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // isEnabled(): un agente desactivado por el dueño no debe seguir
             // operando con un token emitido antes de la desactivación.
             if (jwtService.isTokenValid(jwt, userDetails) && userDetails.isEnabled()) {
-                log.debug("Token válido para: {}", userEmail);
+                log.debug("Token válido");
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -68,9 +79,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             } else {
-                log.warn("Token inválido para: {}", userEmail);
+                // Sin email en el log: es PII (Ley 25.326).
+                log.warn("Token rechazado por validación");
+                escribir401(response);
+                return;
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void escribir401(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"error\":\"Token inválido o sesión expirada\"}");
     }
 }
