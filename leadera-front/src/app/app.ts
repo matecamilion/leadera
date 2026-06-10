@@ -14,7 +14,9 @@ export class App {
   protected readonly title = signal('leadera-front');
 
   mostrarSidebar = true;
-  private rutasOcultas = ['/login', '/register'];
+  // cambiar-password sin sidebar: durante el cambio forzado de password
+  // temporal el resto de la navegación está bloqueada por el authGuard.
+  private rutasOcultas = ['/login', '/register', '/cambiar-password'];
 
   constructor(private router: Router) {
     this.router.events.subscribe(event => {

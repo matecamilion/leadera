@@ -57,6 +57,15 @@
       <span class="material-symbols-outlined">person_add</span>
       <span class="nav-label">Nuevo Lead</span>
     </a>
+
+    @if (esDueno) {
+      <div class="nav-divider"></div>
+
+      <a routerLink="/equipo" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined">groups_2</span>
+        <span class="nav-label">Mi equipo</span>
+      </a>
+    }
   </nav>
 
   <div class="sidebar-user">

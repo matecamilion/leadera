@@ -3,4 +3,5 @@ export interface RegistroRequest {
   apellido: string;
   email: string;
   password: string;
+  nombreInmobiliaria: string;
 }

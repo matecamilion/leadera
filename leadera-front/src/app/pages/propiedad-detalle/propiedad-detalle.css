@@ -183,6 +183,38 @@
 }
 .link-ver-lead:hover { text-decoration: underline; }
 
+/* Lead de otro agente del equipo (matching compartido): estilo diferenciado,
+   sin acciones sobre el lead ni datos de contacto. */
+.comprador-card.comprador-ajeno {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.badge-agente-ajeno {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.badge-agente-ajeno .material-symbols-outlined {
+  font-size: 0.9rem;
+}
+
+.hint-agente-ajeno {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #92400e;
+  font-style: italic;
+}
+
 @media (max-width: 900px) {
   .contenedor-detalle { display: flex; flex-direction: column; padding: 16px; }
 }

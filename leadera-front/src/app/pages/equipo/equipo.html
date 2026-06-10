@@ -1,0 +1,264 @@
+<div class="contenedor-equipo">
+  <header class="header-equipo">
+    <div>
+      <h1>Mi equipo</h1>
+      <p class="subtitulo">Gestioná los agentes de tu inmobiliaria y mirá el rendimiento del equipo.</p>
+    </div>
+    <button type="button" class="btn-agregar" (click)="abrirModalAgente(modalAgente)">
+      <span class="material-symbols-outlined">person_add</span>
+      Agregar agente
+    </button>
+  </header>
+
+  <nav class="tabs-equipo">
+    <button type="button" [class.activa]="seccion() === 'agentes'" (click)="cambiarSeccion('agentes')">
+      Agentes
+    </button>
+    <button type="button" [class.activa]="seccion() === 'stats'" (click)="cambiarSeccion('stats')">
+      Estadísticas
+    </button>
+    <button type="button" [class.activa]="seccion() === 'leads'" (click)="cambiarSeccion('leads')">
+      Leads del equipo
+    </button>
+  </nav>
+
+  <!-- ================= AGENTES ================= -->
+  @if (seccion() === 'agentes') {
+    @if (cargandoAgentes()) {
+      <div class="tarjeta-blanca estado">Cargando equipo...</div>
+    } @else if (errorAgentes()) {
+      <div class="tarjeta-blanca estado error">{{ errorAgentes() }}</div>
+    } @else {
+      <div class="tarjeta-blanca">
+        <table class="tabla-equipo">
+          <thead>
+            <tr>
+              <th>Agente</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th class="num">Leads activos</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (a of agentes(); track a.id) {
+              <tr [class.fila-inactiva]="!a.activo">
+                <td class="celda-nombre">{{ a.nombre }} {{ a.apellido }}</td>
+                <td class="celda-email">{{ a.email }}</td>
+                <td>
+                  <span class="badge-rol" [class.dueno]="a.rol === 'DUENO'">
+                    {{ a.rol === 'DUENO' ? 'Dueño' : 'Agente' }}
+                  </span>
+                </td>
+                <td class="num">{{ a.leadsActivos }}</td>
+                <td>
+                  <span class="badge-activo" [class.inactivo]="!a.activo">
+                    {{ a.activo ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="celda-acciones">
+                  @if (a.rol !== 'DUENO') {
+                    <button
+                      type="button"
+                      class="btn-toggle"
+                      [class.btn-reactivar]="!a.activo"
+                      [disabled]="cambiandoActivoId() === a.id"
+                      (click)="toggleActivo(a)">
+                      {{ cambiandoActivoId() === a.id ? '...' : (a.activo ? 'Desactivar' : 'Activar') }}
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <!-- ================= ESTADÍSTICAS ================= -->
+  @if (seccion() === 'stats') {
+    @if (cargandoStats()) {
+      <div class="tarjeta-blanca estado">Cargando estadísticas...</div>
+    } @else if (errorStats()) {
+      <div class="tarjeta-blanca estado error">{{ errorStats() }}</div>
+    } @else if (stats(); as s) {
+      <section class="stats-totales">
+        <div class="stat-card">
+          <span class="stat-valor">{{ s.totales.activos }}</span>
+          <span class="stat-label">Leads activos</span>
+        </div>
+        <div class="stat-card caliente">
+          <span class="stat-valor">{{ s.totales.calientes }}</span>
+          <span class="stat-label">Calientes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-valor">{{ s.totales.nuevosDelMes }}</span>
+          <span class="stat-label">Nuevos del mes</span>
+        </div>
+        <div class="stat-card ganados">
+          <span class="stat-valor">{{ s.totales.ganadosMes }}</span>
+          <span class="stat-label">Ganados del mes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-valor">{{ s.totales.tasaConversion }}%</span>
+          <span class="stat-label">Tasa de conversión</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-valor">{{ s.totales.interacciones7d }}</span>
+          <span class="stat-label">Interacciones (7 días)</span>
+        </div>
+      </section>
+
+      <div class="tarjeta-blanca">
+        <h2 class="titulo-seccion">Desglose por agente</h2>
+        <table class="tabla-equipo">
+          <thead>
+            <tr>
+              <th>Agente</th>
+              <th class="num">Activos</th>
+              <th class="num">Calientes</th>
+              <th class="num">Nuevos (mes)</th>
+              <th class="num">Ganados (mes)</th>
+              <th class="num">Conversión</th>
+              <th class="num">Interacciones 7d</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (a of s.porAgente; track a.agenteId) {
+              <tr>
+                <td class="celda-nombre">{{ a.nombre }} {{ a.apellido }}</td>
+                <td class="num">{{ a.stats.activos }}</td>
+                <td class="num">{{ a.stats.calientes }}</td>
+                <td class="num">{{ a.stats.nuevosDelMes }}</td>
+                <td class="num">{{ a.stats.ganadosMes }}</td>
+                <td class="num">{{ a.stats.tasaConversion }}%</td>
+                <td class="num">{{ a.stats.interacciones7d }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <!-- ================= LEADS DEL EQUIPO ================= -->
+  @if (seccion() === 'leads') {
+    @if (cargandoLeads()) {
+      <div class="tarjeta-blanca estado">Cargando leads del equipo...</div>
+    } @else if (errorLeads()) {
+      <div class="tarjeta-blanca estado error">{{ errorLeads() }}</div>
+    } @else if (leadsPage(); as page) {
+      <div class="tarjeta-blanca">
+        <p class="nota-readonly">
+          Vista de solo lectura: cada lead se gestiona desde la cuenta de su agente.
+        </p>
+        @if (page.empty) {
+          <p class="estado">Todavía no hay leads en tu inmobiliaria.</p>
+        } @else {
+          <table class="tabla-equipo">
+            <thead>
+              <tr>
+                <th>Lead</th>
+                <th>Agente</th>
+                <th>Estado</th>
+                <th>Teléfono</th>
+                <th>Origen</th>
+                <th class="num">Interacciones</th>
+                <th>Ingreso</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of page.content; track item.lead.id) {
+                <tr>
+                  <td class="celda-nombre">{{ item.lead.nombre }} {{ item.lead.apellido }}</td>
+                  <td>{{ item.agenteNombre }} {{ item.agenteApellido }}</td>
+                  <td>
+                    <span class="badge-estado" [ngClass]="item.lead.estado.toLowerCase()">
+                      {{ item.lead.estado }}
+                    </span>
+                  </td>
+                  <td>{{ item.lead.telefono }}</td>
+                  <td>{{ item.lead.origen || '—' }}</td>
+                  <td class="num">{{ item.lead.cantidadInteracciones }}</td>
+                  <td>{{ item.lead.fechaEntrada | date: 'dd/MM/yyyy' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <div class="paginador">
+            <button type="button" (click)="paginaAnterior()" [disabled]="page.first">Anterior</button>
+            <span>Página {{ page.number + 1 }} de {{ page.totalPages }} · {{ page.totalElements }} leads</span>
+            <button type="button" (click)="paginaSiguiente()" [disabled]="page.last">Siguiente</button>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+<!-- ================= MODAL AGREGAR AGENTE ================= -->
+<dialog #modalAgente class="modal-agente">
+  <div class="modal-content">
+    <h3>Agregar agente</h3>
+    <p class="modal-sub">
+      El agente va a ingresar con esta contraseña temporal y el sistema le va a pedir cambiarla en su primer login.
+    </p>
+
+    <form [formGroup]="formAgente" (ngSubmit)="crearAgente(modalAgente)">
+      <div class="campo-doble">
+        <div class="campo">
+          <label>Nombre</label>
+          <input type="text" formControlName="nombre" placeholder="Nombre">
+          @if (esInvalido('nombre')) {
+            <span class="msj-error">Mínimo 2 caracteres</span>
+          }
+        </div>
+        <div class="campo">
+          <label>Apellido</label>
+          <input type="text" formControlName="apellido" placeholder="Apellido">
+          @if (esInvalido('apellido')) {
+            <span class="msj-error">Mínimo 2 caracteres</span>
+          }
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="agente@inmobiliaria.com">
+        @if (esInvalido('email')) {
+          <span class="msj-error">Ingresá un email válido</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Contraseña temporal</label>
+        <div class="campo-password">
+          <input type="text" formControlName="passwordTemporal" placeholder="Mínimo 6 caracteres">
+          <button type="button" class="btn-generar" (click)="generarPasswordAleatoria()">
+            <span class="material-symbols-outlined">casino</span>
+            Generar
+          </button>
+        </div>
+        @if (esInvalido('passwordTemporal')) {
+          <span class="msj-error">Mínimo 6 caracteres</span>
+        }
+      </div>
+
+      @if (errorModal()) {
+        <p class="error-servidor">{{ errorModal() }}</p>
+      }
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-cancelar" (click)="modalAgente.close()" [disabled]="guardandoAgente()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-guardar" [disabled]="guardandoAgente()">
+          {{ guardandoAgente() ? 'Creando...' : 'Crear agente' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>

@@ -3,11 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+// Espejo de CompradorPotencialDTO. El matching es compartido a nivel
+// inmobiliaria: cuando esMio es false el lead pertenece a otro agente del
+// equipo y el backend NUNCA envía su teléfono/email.
 export interface CompradorPotencial {
   leadId: number;
-  leadNombre: string;
-  leadTelefono: string;
-  leadEstado: string;
+  nombreLead: string;
+  apellidoLead: string;
+  estadoLead: string;
   operacionId: number;
   busquedaZona: string;
   busquedaTipoVivienda: string;
@@ -15,6 +18,10 @@ export interface CompradorPotencial {
   busquedaPrecioMax: number;
   busquedaAmbientes: number;
   busquedaMetros: number;
+  agenteId: number;
+  nombreAgente: string;
+  apellidoAgente: string;
+  esMio: boolean;
 }
 
 @Injectable({

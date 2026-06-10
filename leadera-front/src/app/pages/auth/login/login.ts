@@ -28,9 +28,15 @@ export class Login {
   onSubmit(){
     if(this.loginForm.valid){
       this.authService.login(this.loginForm.value).subscribe({
-        next: () => {
+        next: (res) => {
           this.errorLogin.set('');
-          this.router.navigate(['/home']);
+          // Password temporal asignada por el dueño: obligamos a cambiarla
+          // antes de usar el resto de la app (el authGuard refuerza esto).
+          if (res.debeCambiarPassword) {
+            this.router.navigate(['/cambiar-password']);
+          } else {
+            this.router.navigate(['/home']);
+          }
         },
         error: (err) => {
           this.errorLogin.set(err.mensajeAmigable || 'Credenciales incorrectas');

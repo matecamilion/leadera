@@ -17,6 +17,12 @@ export class Sidebar {
 
   agenteNombre = computed(() => this.authService.getNombreAgente() || 'Usuario');
 
+  // Getter (no computed): el rol sale del token en localStorage, que no es
+  // reactivo; el getter se re-evalúa en cada ciclo de change detection.
+  get esDueno(): boolean {
+    return this.authService.esDueno();
+  }
+
   iniciales = computed(() => {
     const nombre = this.agenteNombre();
     if (!nombre || nombre === 'Usuario') return 'U';

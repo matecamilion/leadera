@@ -9,4 +9,7 @@ export interface AgenteDashboard {
   interacciones7d: number;
   tasaConversion: number;
   tiempoRespuestaDias: number;
+  // Nombre real del campo en AgenteDashboardDTO del backend (el de arriba
+  // quedó por compatibilidad con vistas viejas; revisar en la auditoría).
+  tiempoRespuesta?: number;
 }

@@ -18,6 +18,14 @@
       </div>
 
       <div class="input-group">
+        <label>Nombre de tu inmobiliaria <span class="obligatorio">*</span></label>
+        <input type="text" formControlName="nombreInmobiliaria" placeholder="Ej: Inmobiliaria García">
+        @if (esInvalido('nombreInmobiliaria')) {
+          <span class="msj-error">El nombre de la inmobiliaria es obligatorio</span>
+        }
+      </div>
+
+      <div class="input-group">
         <label>Email Profesional</label>
         <input type="email" formControlName="email" placeholder="mateo@inmobiliaria.com">
       </div>

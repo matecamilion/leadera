@@ -10,6 +10,9 @@ import { Register } from './pages/auth/register/register';
 import { Perfil } from './pages/perfil/perfil';
 import { MiPerfil } from './pages/mi-perfil/mi-perfil';
 import { authGuard } from './core/guards/auth-guard';
+import { duenoGuard } from './core/guards/dueno-guard';
+import { CambiarPassword } from './pages/auth/cambiar-password/cambiar-password';
+import { Equipo } from './pages/equipo/equipo';
 import { PropiedadDetalle } from './pages/propiedad-detalle/propiedad-detalle';
 import { DetalleOperacion } from './pages/detalle-operacion/detalle-operacion';
 import { PropiedadesLead } from './pages/propiedades-lead/propiedades-lead';
@@ -24,6 +27,9 @@ export const routes: Routes = [
     // 1. Rutas de Autenticación (Públicas)
    { path: 'login', component: Login },
   { path: 'register', component: Register },
+
+  { path: 'cambiar-password', component: CambiarPassword, canActivate: [authGuard], title: 'LeadEra - Cambiar contraseña' },
+  { path: 'equipo', component: Equipo, canActivate: [authGuard, duenoGuard], title: 'LeadEra - Mi equipo' },
 
   { path: 'home', component: Home, canActivate: [authGuard] },
   { path: 'leads', component: ListadoLeadsComponent, canActivate: [authGuard] },

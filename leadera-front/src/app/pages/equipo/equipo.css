@@ -1,0 +1,391 @@
+.contenedor-equipo {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.header-equipo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.header-equipo h1 {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+}
+
+.subtitulo {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.btn-agregar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-agregar:hover { background: #059669; }
+
+/* Tabs */
+.tabs-equipo {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabs-equipo button {
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabs-equipo button.activa {
+  color: #10b981;
+  border-bottom-color: #10b981;
+}
+
+/* Tarjetas */
+.tarjeta-blanca {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.estado { color: #64748b; text-align: center; padding: 24px; }
+.estado.error { color: #b91c1c; }
+
+.titulo-seccion {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Tabla */
+.tabla-equipo {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.tabla-equipo th {
+  text-align: left;
+  padding: 10px 12px;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabla-equipo td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.tabla-equipo .num { text-align: right; }
+.celda-nombre { font-weight: 600; color: #0f172a; }
+.celda-email { color: #64748b; }
+.fila-inactiva td { opacity: 0.55; }
+
+/* Badges */
+.badge-rol {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.badge-rol.dueno {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.badge-activo {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.badge-activo.inactivo {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.badge-estado {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-estado.caliente { background: #fef2f2; color: #dc2626; }
+.badge-estado.tibio { background: #fffbeb; color: #d97706; }
+.badge-estado.frio { background: #eff6ff; color: #2563eb; }
+.badge-estado.inactivo { background: #f1f5f9; color: #64748b; }
+
+/* Acciones */
+.celda-acciones { text-align: right; }
+
+.btn-toggle {
+  padding: 6px 12px;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  background: #fff;
+  color: #dc2626;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-toggle:hover:not(:disabled) { background: #fef2f2; }
+
+.btn-toggle.btn-reactivar {
+  border-color: #6ee7b7;
+  color: #047857;
+}
+
+.btn-toggle.btn-reactivar:hover:not(:disabled) { background: #ecfdf5; }
+
+.btn-toggle:disabled { opacity: 0.6; cursor: wait; }
+
+/* Stats */
+.stats-totales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.stat-valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.stat-card.caliente .stat-valor { color: #dc2626; }
+.stat-card.ganados .stat-valor { color: #059669; }
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Leads del equipo */
+.nota-readonly {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.paginador {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.paginador button {
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.paginador button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Modal */
+.modal-agente {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 480px;
+  width: calc(100% - 32px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.modal-agente::backdrop { background: rgba(15, 23, 42, 0.5); }
+
+.modal-content { padding: 24px; }
+
+.modal-content h3 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  color: #0f172a;
+}
+
+.modal-sub {
+  margin: 0 0 18px;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.campo { margin-bottom: 14px; }
+
+.campo-doble {
+  display: flex;
+  gap: 12px;
+}
+
+.campo-doble .campo { flex: 1; }
+
+.campo label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 5px;
+}
+
+.campo input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  box-sizing: border-box;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.campo-password {
+  display: flex;
+  gap: 8px;
+}
+
+.campo-password input { flex: 1; }
+
+.btn-generar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-generar:hover { background: #f1f5f9; }
+
+.btn-generar .material-symbols-outlined { font-size: 1rem; }
+
+.msj-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: #ef4444;
+}
+
+.error-servidor {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 0.82rem;
+}
+
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btn-cancelar {
+  padding: 9px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-guardar {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #10b981;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-guardar:hover:not(:disabled) { background: #059669; }
+.btn-guardar:disabled, .btn-cancelar:disabled { opacity: 0.6; cursor: not-allowed; }
+
+@media (max-width: 720px) {
+  .header-equipo { flex-direction: column; }
+  .tabla-equipo { display: block; overflow-x: auto; }
+  .campo-doble { flex-direction: column; gap: 0; }
+}

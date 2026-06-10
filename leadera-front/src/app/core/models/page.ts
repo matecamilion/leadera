@@ -14,4 +14,6 @@ export interface LoginResponse {
   email: string;
   nombre: string;
   apellido: string;
+  rol: 'DUENO' | 'AGENTE';
+  debeCambiarPassword: boolean;
 }

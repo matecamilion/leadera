@@ -21,6 +21,14 @@ export const authGuard: CanActivateFn = (route, state) => {
       router.navigate(['/login']);
       return false;
     }
+
+    // Password temporal pendiente de cambio: bloquea toda la app salvo la
+    // pantalla de cambio (que también pasa por este guard, de ahí el chequeo).
+    if (authService.debeCambiarPassword() && state.url !== '/cambiar-password') {
+      router.navigate(['/cambiar-password']);
+      return false;
+    }
+
     return true;
   } catch {
     authService.logout();

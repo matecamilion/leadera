@@ -21,8 +21,15 @@ export class Register {
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      // Espejo del backend: @NotBlank @Size(min=2, max=150)
+      nombreInmobiliaria: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]]
     });
+  }
+
+  esInvalido(campo: string): boolean {
+    const c = this.registerForm.get(campo);
+    return !!(c && c.invalid && c.touched);
   }
 
   onRegister() {

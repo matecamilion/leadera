@@ -66,13 +66,19 @@
                 <p class="match-info">No hay compradores que coincidan con esta propiedad por ahora.</p>
               } @else {
                 @for (c of compradores(); track c.operacionId) {
-                  <div class="comprador-card">
+                  <div class="comprador-card" [class.comprador-ajeno]="!c.esMio">
                     <div class="comprador-header">
-                      <span class="comprador-nombre">{{ c.leadNombre }}</span>
-                      <span class="badge-estado-lead" [ngClass]="c.leadEstado.toLowerCase()">
-                        {{ c.leadEstado }}
+                      <span class="comprador-nombre">{{ c.nombreLead }} {{ c.apellidoLead }}</span>
+                      <span class="badge-estado-lead" [ngClass]="c.estadoLead.toLowerCase()">
+                        {{ c.estadoLead }}
                       </span>
                     </div>
+                    @if (!c.esMio) {
+                      <span class="badge-agente-ajeno">
+                        <span class="material-symbols-outlined">person</span>
+                        Lead de {{ c.nombreAgente }} {{ c.apellidoAgente }}
+                      </span>
+                    }
                     <div class="comprador-data">
                       <span><strong>Zona:</strong> {{ c.busquedaZona }}</span>
                       <span>
@@ -94,7 +100,13 @@
                         <span><strong>Metros:</strong> {{ c.busquedaMetros }}+ m²</span>
                       }
                     </div>
-                    <a class="link-ver-lead" [routerLink]="['/leads', c.leadId]">Ver lead →</a>
+                    @if (c.esMio) {
+                      <a class="link-ver-lead" [routerLink]="['/leads', c.leadId]">Ver lead →</a>
+                    } @else {
+                      <p class="hint-agente-ajeno">
+                        Hablá con {{ c.nombreAgente }}: tiene un comprador para tu propiedad.
+                      </p>
+                    }
                   </div>
                 }
               }
