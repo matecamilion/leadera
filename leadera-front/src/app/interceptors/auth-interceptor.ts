@@ -1,9 +1,12 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
+// Solo login y register son públicos: ahí un token viejo o firmado con un
+// secret distinto rompe la request. El resto de /auth (cambiar-password)
+// REQUIERE el token como cualquier endpoint protegido.
+const RUTAS_AUTH_PUBLICAS = ['/auth/login', '/auth/register'];
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  // Las rutas de /auth/** son públicas y rompen si reciben un token
-  // viejo o firmado con un secret distinto al actual.
-  if (req.url.includes('/auth/')) {
+  if (RUTAS_AUTH_PUBLICAS.some(ruta => req.url.includes(ruta))) {
     return next(req);
   }
 

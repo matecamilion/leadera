@@ -345,6 +345,43 @@ class MultiTenantIntegrationTest {
     }
 
     // =========================================================
+    // 6. Cambio de password con password temporal
+    // =========================================================
+    @Nested
+    class CambioDePassword {
+
+        @Test
+        void unAgenteConPasswordTemporalPuedeCambiarlaConSuToken() throws Exception {
+            // debeCambiarPassword=true NO debe bloquear este endpoint: es
+            // justamente el que destraba el flag.
+            agenteA.setDebeCambiarPassword(true);
+            agenteRepository.save(agenteA);
+
+            mockMvc.perform(post("/auth/cambiar-password")
+                            .header("Authorization", bearer(agenteA))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(Map.of(
+                                    "passwordActual", "password123",
+                                    "passwordNueva", "nuevaPassword456"))))
+                    .andExpect(status().isOk());
+
+            Agente actualizado = agenteRepository.findById(agenteA.getId()).orElseThrow();
+            assertThat(actualizado.isDebeCambiarPassword()).isFalse();
+            assertThat(passwordEncoder.matches("nuevaPassword456", actualizado.getPassword())).isTrue();
+        }
+
+        @Test
+        void sinTokenElCambioDePasswordEsRechazado() throws Exception {
+            mockMvc.perform(post("/auth/cambiar-password")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(Map.of(
+                                    "passwordActual", "password123",
+                                    "passwordNueva", "nuevaPassword456"))))
+                    .andExpect(status().isForbidden());
+        }
+    }
+
+    // =========================================================
     // Helpers de datos de prueba
     // =========================================================
 
