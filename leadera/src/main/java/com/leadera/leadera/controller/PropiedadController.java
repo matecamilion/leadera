@@ -1,12 +1,13 @@
 package com.leadera.leadera.controller;
 
 import com.leadera.leadera.dto.CompradorPotencialDTO;
+import com.leadera.leadera.dto.CrearPropiedadRequest;
 import com.leadera.leadera.dto.EditarPropiedadRequest;
 import com.leadera.leadera.dto.EventoOperacionResumenDTO;
 import com.leadera.leadera.dto.PropiedadDTO;
 import com.leadera.leadera.dto.PropiedadResumenDTO;
-import com.leadera.leadera.entity.Propiedad;
 import com.leadera.leadera.service.PropiedadService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +32,9 @@ public class PropiedadController {
 
     @PostMapping("/lead/{leadId}")
     public ResponseEntity<PropiedadDTO> agregarPropiedad(@PathVariable Long leadId,
-                                                         @RequestBody Propiedad propiedad,
+                                                         @Valid @RequestBody CrearPropiedadRequest request,
                                                          Authentication authentication) {
-        return ResponseEntity.ok(propiedadService.agregarPropiedad(leadId, propiedad, authentication.getName()));
+        return ResponseEntity.ok(propiedadService.agregarPropiedad(leadId, request, authentication.getName()));
     }
 
     @GetMapping("/lead/{leadId}")

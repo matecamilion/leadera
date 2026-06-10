@@ -1,6 +1,7 @@
 package com.leadera.leadera.service;
 
 import com.leadera.leadera.dto.CompradorPotencialDTO;
+import com.leadera.leadera.dto.CrearPropiedadRequest;
 import com.leadera.leadera.dto.EditarPropiedadRequest;
 import com.leadera.leadera.dto.EventoOperacionResumenDTO;
 import com.leadera.leadera.dto.PropiedadDTO;
@@ -50,7 +51,7 @@ public class PropiedadService {
         this.zonaHoraria = zonaHoraria;
     }
 
-    public PropiedadDTO agregarPropiedad(Long leadId, Propiedad propiedad, String emailAgente) {
+    public PropiedadDTO agregarPropiedad(Long leadId, CrearPropiedadRequest request, String emailAgente) {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
@@ -58,6 +59,17 @@ public class PropiedadService {
             throw new UnauthorizedActionException("No tenés permiso para modificar este lead.");
         }
 
+        // Entidad construida acá y no bindeada del request: un id en el body
+        // no puede convertir el save en un merge sobre una propiedad ajena.
+        Propiedad propiedad = new Propiedad();
+        propiedad.setDireccion(request.direccion());
+        propiedad.setPrecio(request.precio());
+        propiedad.setCantidadAmbientes(request.cantidadAmbientes());
+        propiedad.setMetrosTotales(request.metrosTotales());
+        propiedad.setMetrosCubiertos(request.metrosCubiertos());
+        propiedad.setTipoVivienda(request.tipoVivienda());
+        propiedad.setZona(request.zona());
+        propiedad.setObservaciones(request.observaciones());
         propiedad.setLead(lead);
         propiedad.setFechaPublicacion(LocalDateTime.now(zonaHoraria));
         return PropiedadMapper.toDTO(propiedadRepository.save(propiedad));

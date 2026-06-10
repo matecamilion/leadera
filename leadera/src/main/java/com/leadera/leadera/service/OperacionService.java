@@ -5,6 +5,7 @@ import com.leadera.leadera.entity.EventoOperacion;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.entity.Operacion;
 import com.leadera.leadera.entity.Propiedad;
+import com.leadera.leadera.dto.CrearEventoRequest;
 import com.leadera.leadera.dto.EventoOperacionDTO;
 import com.leadera.leadera.dto.OperacionPipelineDTO;
 import com.leadera.leadera.mapper.EventoOperacionMapper;
@@ -198,11 +199,16 @@ public class OperacionService {
                 .collect(Collectors.toList());
     }
 
-    public EventoOperacionDTO registrarEvento(Long leadId, Long operacionId, EventoOperacion evento, String emailAgente) {
+    public EventoOperacionDTO registrarEvento(Long leadId, Long operacionId, CrearEventoRequest request, String emailAgente) {
         Operacion operacion = operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailAgente)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe la operación o no tenés permiso para modificarla"));
 
+        // Entidad construida acá y no bindeada del request: un id en el body
+        // no puede convertir el save en un merge sobre un evento ajeno.
+        EventoOperacion evento = new EventoOperacion();
+        evento.setTipo(request.tipo());
+        evento.setDetalle(request.detalle());
         evento.setFecha(LocalDateTime.now(zonaHoraria));
         evento.setOperacion(operacion);
 

@@ -1,6 +1,5 @@
 import { Component, HostListener, computed, inject, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { firstValueFrom } from 'rxjs';
 import { FotoPropiedadService } from '../../core/services/foto-propiedad-service';
 import { FotoPropiedad } from '../../core/models/foto-propiedad';
 
@@ -81,10 +80,7 @@ export class FotosPropiedadComponent implements OnInit {
 
     const promesas = files.map(async (file, idx) => {
       try {
-        const url = await this.fotoService.subirFotoASupabase(file, this.propiedadId);
-        const foto = await firstValueFrom(
-          this.fotoService.guardarFotoEnBackend(this.propiedadId, url, ordenBase + idx),
-        );
+        const foto = await this.fotoService.subirFoto(file, this.propiedadId, ordenBase + idx);
         return foto;
       } finally {
         completados++;

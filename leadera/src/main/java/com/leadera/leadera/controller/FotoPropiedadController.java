@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,6 +27,17 @@ public class FotoPropiedadController {
                                                     @Valid @RequestBody CrearFotoRequest request,
                                                     Authentication authentication) {
         FotoPropiedadDTO creada = fotoPropiedadService.agregarFoto(propiedadId, request, authentication.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(creada);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<FotoPropiedadDTO> subirFoto(
+            @PathVariable Long propiedadId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "orden", defaultValue = "0") Integer orden,
+            Authentication authentication) {
+        FotoPropiedadDTO creada = fotoPropiedadService.subirFoto(
+                propiedadId, file, orden, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(creada);
     }
 

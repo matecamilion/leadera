@@ -1,10 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { FotoPropiedad } from '../models/foto-propiedad';
-
-const BUCKET = 'fotos-propiedades';
 
 @Injectable({
   providedIn: 'root',
@@ -14,38 +12,22 @@ export class FotoPropiedadService {
   private apiUrl = `${environment.apiUrl}/propiedades`;
 
   /**
-   * Sube el archivo directo a Supabase Storage via fetch (sin @supabase/supabase-js).
-   * Devuelve la URL pública del objeto subido.
+   * Sube el archivo al backend, que lo guarda en Supabase Storage con la
+   * service role key y persiste la URL. El frontend ya no habla con Storage
+   * ni necesita la anon key en el bundle.
    */
-  async subirFotoASupabase(file: File, propiedadId: number): Promise<string> {
-    const timestamp = Date.now();
-    // Sanitizo el nombre para evitar problemas con caracteres especiales en la URL.
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const path = `${propiedadId}/${timestamp}-${safeName}`;
+  async subirFoto(file: File, propiedadId: number, orden: number): Promise<FotoPropiedad> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('orden', orden.toString());
 
-    const uploadUrl = `${environment.supabaseUrl}/storage/v1/object/${BUCKET}/${path}`;
-
-    const response = await fetch(uploadUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${environment.supabaseAnonKey}`,
-        apikey: environment.supabaseAnonKey,
-        'Content-Type': file.type || 'application/octet-stream',
-        'x-upsert': 'false',
-      },
-      body: file,
-    });
-
-    if (!response.ok) {
-      const detalle = await response.text().catch(() => '');
-      throw new Error(`Supabase Storage rechazó la subida (${response.status}): ${detalle}`);
-    }
-
-    return `${environment.supabaseUrl}/storage/v1/object/public/${BUCKET}/${path}`;
-  }
-
-  guardarFotoEnBackend(propiedadId: number, url: string, orden: number): Observable<FotoPropiedad> {
-    return this.http.post<FotoPropiedad>(`${this.apiUrl}/${propiedadId}/fotos`, { url, orden });
+    return firstValueFrom(
+      this.http.post<FotoPropiedad>(
+        `${this.apiUrl}/${propiedadId}/fotos/upload`,
+        formData,
+        // Sin Content-Type manual: el browser lo setea con el boundary correcto.
+      ),
+    );
   }
 
   obtenerFotos(propiedadId: number): Observable<FotoPropiedad[]> {

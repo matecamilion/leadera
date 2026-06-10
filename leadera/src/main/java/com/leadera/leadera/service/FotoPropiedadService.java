@@ -10,6 +10,7 @@ import com.leadera.leadera.exception.UnauthorizedActionException;
 import com.leadera.leadera.repository.FotoPropiedadRepository;
 import com.leadera.leadera.repository.PropiedadRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -19,16 +20,20 @@ import java.util.List;
 public class FotoPropiedadService {
 
     private static final int MAX_FOTOS_POR_PROPIEDAD = 10;
+    private static final long MAX_BYTES_POR_FOTO = 5 * 1024 * 1024;
 
     private final FotoPropiedadRepository fotoRepository;
     private final PropiedadRepository propiedadRepository;
+    private final SupabaseStorageService storageService;
     private final ZoneId zonaHoraria;
 
     public FotoPropiedadService(FotoPropiedadRepository fotoRepository,
                                 PropiedadRepository propiedadRepository,
+                                SupabaseStorageService storageService,
                                 ZoneId zonaHoraria) {
         this.fotoRepository = fotoRepository;
         this.propiedadRepository = propiedadRepository;
+        this.storageService = storageService;
         this.zonaHoraria = zonaHoraria;
     }
 
@@ -48,6 +53,41 @@ public class FotoPropiedadService {
         return FotoPropiedadDTO.fromEntity(fotoRepository.save(foto));
     }
 
+    public FotoPropiedadDTO subirFoto(Long propiedadId, MultipartFile file, Integer orden, String emailAgente) {
+        Propiedad propiedad = obtenerPropiedadDelAgente(propiedadId, emailAgente);
+
+        if (fotoRepository.countByPropiedadId(propiedadId) >= MAX_FOTOS_POR_PROPIEDAD) {
+            throw new BadRequestException("Máximo 10 fotos por propiedad");
+        }
+
+        // Espejo de las validaciones del frontend: acá son obligatorias, allá UX.
+        if (file.isEmpty()) {
+            throw new BadRequestException("El archivo no puede estar vacío");
+        }
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new BadRequestException("Solo se permiten imágenes");
+        }
+        if (file.getSize() > MAX_BYTES_POR_FOTO) {
+            throw new BadRequestException("El archivo supera el máximo de 5 MB");
+        }
+
+        String safeName = file.getOriginalFilename() != null
+                ? file.getOriginalFilename().replaceAll("[^a-zA-Z0-9._-]", "_")
+                : "foto";
+        String path = propiedadId + "/" + System.currentTimeMillis() + "-" + safeName;
+
+        String url = storageService.subirArchivo(file, path);
+
+        FotoPropiedad foto = new FotoPropiedad();
+        foto.setPropiedad(propiedad);
+        foto.setUrl(url);
+        foto.setOrden(orden != null ? orden : 0);
+        foto.setFechaSubida(LocalDateTime.now(zonaHoraria));
+
+        return FotoPropiedadDTO.fromEntity(fotoRepository.save(foto));
+    }
+
     public List<FotoPropiedadDTO> listarFotos(Long propiedadId, String emailAgente) {
         obtenerPropiedadDelAgente(propiedadId, emailAgente);
         return fotoRepository.findByPropiedadIdOrderByOrdenAsc(propiedadId).stream()
@@ -59,6 +99,13 @@ public class FotoPropiedadService {
         obtenerPropiedadDelAgente(propiedadId, emailAgente);
         FotoPropiedad foto = fotoRepository.findByIdAndPropiedadId(fotoId, propiedadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Foto no encontrada"));
+
+        // Primero el objeto de Storage, después la fila: no quedan huérfanos.
+        String path = storageService.extraerPath(foto.getUrl());
+        if (path != null) {
+            storageService.eliminarArchivo(path);
+        }
+
         fotoRepository.delete(foto);
     }
 

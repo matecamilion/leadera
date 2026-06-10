@@ -1,10 +1,11 @@
 package com.leadera.leadera.controller;
 
+import com.leadera.leadera.dto.CrearEventoRequest;
 import com.leadera.leadera.dto.EventoOperacionDTO;
-import com.leadera.leadera.entity.EventoOperacion;
 import com.leadera.leadera.entity.Operacion;
 import com.leadera.leadera.enums.EstadoOperacion;
 import com.leadera.leadera.service.OperacionService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -100,11 +101,11 @@ public class OperacionController {
     public ResponseEntity<EventoOperacionDTO> registrarEvento(
             @PathVariable Long leadId,
             @PathVariable Long operacionId,
-            @RequestBody EventoOperacion evento,
+            @Valid @RequestBody CrearEventoRequest request,
             Authentication authentication
     ) {
         return ResponseEntity.ok(
-                operacionService.registrarEvento(leadId, operacionId, evento, authentication.getName())
+                operacionService.registrarEvento(leadId, operacionId, request, authentication.getName())
         );
     }
 
