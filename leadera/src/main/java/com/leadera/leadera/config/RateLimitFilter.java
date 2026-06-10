@@ -27,7 +27,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
     // Cada endpoint sensible tiene su propio límite.
     private static final Map<String, BucketConfig> CONFIGS = Map.of(
             "/auth/login", new BucketConfig(10, Duration.ofMinutes(1)),
-            "/auth/register", new BucketConfig(5, Duration.ofMinutes(10))
+            "/auth/register", new BucketConfig(5, Duration.ofMinutes(10)),
+            // Valida la password actual contra BCrypt: mismo riesgo de fuerza
+            // bruta que el login, mismo límite.
+            "/auth/cambiar-password", new BucketConfig(10, Duration.ofMinutes(1))
     );
 
     // path -> (ip -> bucket): cada path lleva sus propios buckets por IP.

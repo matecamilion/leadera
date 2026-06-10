@@ -7,6 +7,7 @@ import com.leadera.leadera.dto.LeadDetalleResponse;
 import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
 import com.leadera.leadera.dto.InteraccionDTO;
+import com.leadera.leadera.dto.LeadEquipoDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Lead;
@@ -41,6 +42,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,10 +82,7 @@ public class LeadService {
         Agente agente = agenteRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Agente no encontrado"));
 
-        if (request.getEmail() != null && !request.getEmail().isBlank()
-                && leadRepository.existsByAgenteEmailAndEmail(email, request.getEmail())) {
-            throw new DuplicateResourceException("Ya tenés un lead con ese email");
-        }
+        validarDuplicadosEnInmobiliaria(agente, request.getTelefono(), request.getEmail(), null);
 
         Lead lead = LeadMapper.toEntity(request);
         if (lead.getEstado() == null) {
@@ -297,15 +296,8 @@ public class LeadService {
             throw new UnauthorizedActionException("No tenés permiso para editar este lead.");
         }
 
-        boolean telefonoDuplicado = leadRepository.existsByAgenteEmailAndTelefonoAndIdNot(emailAgente, nuevoTelefono, leadId);
-        if (telefonoDuplicado) {
-            throw new DuplicateResourceException("Ya tenés un lead con ese teléfono.");
-        }
-
-        boolean emailDuplicado = leadRepository.existsByAgenteEmailAndEmailAndIdNot(emailAgente, nuevoEmail, leadId);
-        if (emailDuplicado) {
-            throw new DuplicateResourceException("Ya tenés un lead con ese email.");
-        }
+        // El ownership ya está validado: lead.getAgente() es el agente autenticado.
+        validarDuplicadosEnInmobiliaria(lead.getAgente(), nuevoTelefono, nuevoEmail, leadId);
 
         lead.setTelefono(nuevoTelefono);
         lead.setEmail(nuevoEmail);
@@ -326,6 +318,59 @@ public class LeadService {
         Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(
                 leads.stream().map(Lead::getId).toList());
         return leads.stream().map(lead -> toResumenDTO(lead, conteos)).toList();
+    }
+
+    // Unicidad de teléfono y email a nivel INMOBILIARIA (no por agente): si el
+    // duplicado pertenece a otro agente del equipo, el mensaje lo nombra para que
+    // puedan coordinar. leadIdExcluido permite reutilizarlo en la edición.
+    private void validarDuplicadosEnInmobiliaria(Agente agente, String telefono, String email, Long leadIdExcluido) {
+        Long inmobiliariaId = agente.getInmobiliaria().getId();
+
+        if (telefono != null && !telefono.isBlank()) {
+            Optional<Lead> duplicado = (leadIdExcluido == null)
+                    ? leadRepository.findFirstByAgente_Inmobiliaria_IdAndTelefono(inmobiliariaId, telefono)
+                    : leadRepository.findFirstByAgente_Inmobiliaria_IdAndTelefonoAndIdNot(inmobiliariaId, telefono, leadIdExcluido);
+            duplicado.ifPresent(l -> {
+                throw new DuplicateResourceException(mensajeDuplicado("teléfono", l, agente));
+            });
+        }
+
+        if (email != null && !email.isBlank()) {
+            Optional<Lead> duplicado = (leadIdExcluido == null)
+                    ? leadRepository.findFirstByAgente_Inmobiliaria_IdAndEmail(inmobiliariaId, email)
+                    : leadRepository.findFirstByAgente_Inmobiliaria_IdAndEmailAndIdNot(inmobiliariaId, email, leadIdExcluido);
+            duplicado.ifPresent(l -> {
+                throw new DuplicateResourceException(mensajeDuplicado("email", l, agente));
+            });
+        }
+    }
+
+    private String mensajeDuplicado(String campo, Lead duplicado, Agente solicitante) {
+        Agente duenoDelDuplicado = duplicado.getAgente();
+        if (duenoDelDuplicado.getId().equals(solicitante.getId())) {
+            return "Ya tenés un lead con ese " + campo + ".";
+        }
+        return "Ya existe un lead con ese " + campo + " en tu inmobiliaria (agente: "
+                + duenoDelDuplicado.getNombre() + " " + duenoDelDuplicado.getApellido() + ")";
+    }
+
+    // Listado read-only de todos los leads de la inmobiliaria para la vista
+    // "Mi equipo" del dueño. Reutiliza el armado de LeadResumenDTO y le suma
+    // el agente dueño de cada lead.
+    public Page<LeadEquipoDTO> obtenerResumenLeadsPorInmobiliaria(Long inmobiliariaId, Pageable pageable) {
+        Pageable efectivo = pageable.getSort().isSorted()
+                ? pageable
+                : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                                 Sort.by(Sort.Direction.DESC, "fechaEntrada"));
+        Page<Lead> page = leadRepository.findByInmobiliariaConInteraccionesPaginado(inmobiliariaId, efectivo);
+        Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(
+                page.getContent().stream().map(Lead::getId).toList());
+        return page.map(lead -> new LeadEquipoDTO(
+                toResumenDTO(lead, conteos),
+                lead.getAgente().getId(),
+                lead.getAgente().getNombre(),
+                lead.getAgente().getApellido()
+        ));
     }
 
     public Page<LeadResumenDTO> obtenerResumenLeadsPorAgente(String email, Pageable pageable) {

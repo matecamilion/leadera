@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -56,6 +57,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiError> handleUserNotFound(UsernameNotFoundException ex, HttpServletRequest req) {
         return build(HttpStatus.UNAUTHORIZED, "Credenciales inválidas", req, null);
+    }
+
+    // Login de un agente desactivado por el dueño de su inmobiliaria
+    // (DaoAuthenticationProvider la lanza cuando isEnabled() es false).
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ApiError> handleDisabled(DisabledException ex, HttpServletRequest req) {
+        return build(HttpStatus.UNAUTHORIZED,
+                "Tu cuenta está desactivada. Contactá al dueño de tu inmobiliaria.", req, null);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

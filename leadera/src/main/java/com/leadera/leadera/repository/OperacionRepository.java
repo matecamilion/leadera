@@ -104,14 +104,16 @@ public interface OperacionRepository extends JpaRepository<Operacion, Long> {
             "AND e.tipo = com.leadera.leadera.enums.TipoEvento.VISITA")
     long countLeadsConVisita(@Param("agenteId") Long agenteId);
 
-    // Candidatos a matching: operaciones COMPRA del agente con búsqueda definida,
-    // lead activo y operación abierta. El filtrado fino (tipoVivienda, zona, precio,
-    // ambientes, metros) se hace en Java para evitar issues de mapeo de enums entre
-    // Propiedad y Busqueda.
+    // Candidatos a matching: operaciones COMPRA de TODA la inmobiliaria (matching
+    // compartido entre agentes del mismo equipo) con búsqueda definida, lead activo
+    // y operación abierta. El filtrado fino (tipoVivienda, zona, precio, ambientes,
+    // metros) se hace en Java para evitar issues de mapeo de enums entre Propiedad
+    // y Busqueda. Se fetchea el agente para mostrar de quién es cada lead matcheado.
     @Query("SELECT DISTINCT o FROM Operacion o " +
             "JOIN FETCH o.lead l " +
             "JOIN FETCH o.busqueda " +
-            "WHERE o.agente.email = :email " +
+            "JOIN FETCH o.agente a " +
+            "WHERE a.inmobiliaria.id = :inmobiliariaId " +
             "AND o.tipoOperacion = com.leadera.leadera.enums.TipoOperacion.COMPRA " +
             "AND o.busqueda IS NOT NULL " +
             "AND l.estado <> com.leadera.leadera.enums.EstadoLead.INACTIVO " +
@@ -119,5 +121,5 @@ public interface OperacionRepository extends JpaRepository<Operacion, Long> {
             "  com.leadera.leadera.enums.EstadoOperacion.CERRADA_GANADA, " +
             "  com.leadera.leadera.enums.EstadoOperacion.CANCELADA" +
             ")")
-    List<Operacion> findCandidatosParaMatching(@Param("email") String email);
+    List<Operacion> findCandidatosParaMatching(@Param("inmobiliariaId") Long inmobiliariaId);
 }

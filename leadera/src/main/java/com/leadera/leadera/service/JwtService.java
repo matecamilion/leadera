@@ -1,5 +1,6 @@
 package com.leadera.leadera.service;
 
+import com.leadera.leadera.entity.Agente;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,6 +26,18 @@ public class JwtService {
     public String generarToken(UserDetails userDetails, Long id) {
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("id", id);
+
+        // Claims nuevos del multi-tenant. Son opcionales al leer: los tokens
+        // emitidos antes de este cambio siguen siendo válidos (la validación
+        // solo mira subject y expiración).
+        if (userDetails instanceof Agente agente) {
+            if (agente.getRol() != null) {
+                claims.put("rol", agente.getRol().name());
+            }
+            if (agente.getInmobiliaria() != null) {
+                claims.put("inmobiliariaId", agente.getInmobiliaria().getId());
+            }
+        }
 
         return Jwts.builder()
                 .setClaims(claims)

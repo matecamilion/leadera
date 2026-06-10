@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 // ÍNDICES DB: idx_leads_agente_estado, idx_leads_agente_ultimo_contacto,
 //             idx_leads_proximo_seguimiento, idx_leads_fecha_entrada
@@ -20,7 +21,6 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
 
     boolean existsByEmail(String email);
 
-    boolean existsByAgenteEmailAndEmail(String agenteEmail, String email);
     // 1. FUNDAMENTALES + FILTRO AGENTE
     List<Lead> findByEstadoAndAgenteEmail(EstadoLead estado, String email);
 
@@ -88,8 +88,36 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
     @Query("SELECT l FROM Lead l WHERE l.agente.id = :agenteId AND l.fechaEntrada IS NOT NULL")
     List<Lead> findLeadsConFechaEntrada(@Param("agenteId") Long agenteId);
 
-    boolean existsByAgenteEmailAndTelefonoAndIdNot(String agenteEmail, String telefono, Long id);
-    boolean existsByAgenteEmailAndEmailAndIdNot(String agenteEmail, String email, Long id);
+    // ---- Unicidad a nivel inmobiliaria ----
+    // Devuelven el lead duplicado (no solo exists) para poder armar el mensaje
+    // de error con el nombre del agente del equipo que ya lo tiene.
+    Optional<Lead> findFirstByAgente_Inmobiliaria_IdAndTelefono(Long inmobiliariaId, String telefono);
+    Optional<Lead> findFirstByAgente_Inmobiliaria_IdAndEmail(Long inmobiliariaId, String email);
+    Optional<Lead> findFirstByAgente_Inmobiliaria_IdAndTelefonoAndIdNot(Long inmobiliariaId, String telefono, Long id);
+    Optional<Lead> findFirstByAgente_Inmobiliaria_IdAndEmailAndIdNot(Long inmobiliariaId, String email, Long id);
+
+    // ---- Vista de equipo del dueño ----
+
+    // Misma técnica que findByAgenteEmailConInteraccionesPaginado pero a nivel
+    // inmobiliaria, con el agente fetcheado para la columna "Agente" del listado.
+    @Query(
+        value = """
+            SELECT DISTINCT l FROM Lead l
+            LEFT JOIN FETCH l.interacciones
+            JOIN FETCH l.agente
+            WHERE l.agente.inmobiliaria.id = :inmobiliariaId
+        """,
+        countQuery = "SELECT COUNT(l) FROM Lead l WHERE l.agente.inmobiliaria.id = :inmobiliariaId"
+    )
+    Page<Lead> findByInmobiliariaConInteraccionesPaginado(@Param("inmobiliariaId") Long inmobiliariaId, Pageable pageable);
+
+    // Conteo de leads activos por agente del equipo en una sola query (evita N+1).
+    // Devuelve filas [agenteId (Long), count (Long)].
+    @Query("SELECT l.agente.id, COUNT(l) FROM Lead l " +
+            "WHERE l.agente.inmobiliaria.id = :inmobiliariaId " +
+            "AND l.estado <> com.leadera.leadera.enums.EstadoLead.INACTIVO " +
+            "GROUP BY l.agente.id")
+    List<Object[]> countLeadsActivosPorAgente(@Param("inmobiliariaId") Long inmobiliariaId);
 
 
     List<Lead> findByUltimoContactoIsNullAndAgenteEmailAndEstadoNot(String email, EstadoLead estado);

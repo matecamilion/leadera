@@ -10,11 +10,16 @@ public class LoginResponse {
     private String nombre;
     private String apellido;
     private String email;
+    private String rol;
+    private boolean debeCambiarPassword;
 
-    public LoginResponse(String token, String nombre, String apellido, String email) {
+    public LoginResponse(String token, String nombre, String apellido, String email,
+                         String rol, boolean debeCambiarPassword) {
         this.token = token;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
+        this.rol = rol;
+        this.debeCambiarPassword = debeCambiarPassword;
     }
 }

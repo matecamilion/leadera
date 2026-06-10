@@ -4,6 +4,7 @@ import com.leadera.leadera.dto.CrearLeadRequest;
 import com.leadera.leadera.dto.LeadDetalleResponse;
 import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.entity.Agente;
+import com.leadera.leadera.entity.Inmobiliaria;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.enums.EstadoLead;
 import com.leadera.leadera.exception.DuplicateResourceException;
@@ -56,6 +57,7 @@ class LeadServiceTest {
     private LeadService leadService;
 
     private static final String EMAIL_AGENTE = "agente@leadera.com";
+    private static final Long INMOBILIARIA_ID = 1L;
 
     @BeforeEach
     void setUp() {
@@ -84,13 +86,40 @@ class LeadServiceTest {
     }
 
     @Test
-    void crearLead_cuandoEmailYaExiste_lanzaDuplicateResourceException() {
+    void crearLead_cuandoEmailYaExisteEnLaInmobiliaria_lanzaDuplicateResourceException() {
         CrearLeadRequest request = nuevoRequest();
-        when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(nuevoAgente()));
-        when(leadRepository.existsByAgenteEmailAndEmail(EMAIL_AGENTE, request.getEmail())).thenReturn(true);
+        Agente agente = nuevoAgente();
+        when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(agente));
+        when(leadRepository.findFirstByAgente_Inmobiliaria_IdAndTelefono(INMOBILIARIA_ID, request.getTelefono()))
+                .thenReturn(Optional.empty());
+        when(leadRepository.findFirstByAgente_Inmobiliaria_IdAndEmail(INMOBILIARIA_ID, request.getEmail()))
+                .thenReturn(Optional.of(nuevoLead()));
 
         assertThatThrownBy(() -> leadService.crearLead(request, EMAIL_AGENTE))
                 .isInstanceOf(DuplicateResourceException.class);
+
+        verify(leadRepository, never()).save(any());
+    }
+
+    @Test
+    void crearLead_cuandoTelefonoLoTieneOtroAgenteDelEquipo_elMensajeLoNombra() {
+        CrearLeadRequest request = nuevoRequest();
+        Agente agente = nuevoAgente();
+
+        Agente companero = nuevoAgente();
+        companero.setId(8L);
+        companero.setNombre("Carla");
+        companero.setApellido("Gómez");
+        Lead leadDeCompanero = nuevoLead();
+        leadDeCompanero.setAgente(companero);
+
+        when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(agente));
+        when(leadRepository.findFirstByAgente_Inmobiliaria_IdAndTelefono(INMOBILIARIA_ID, request.getTelefono()))
+                .thenReturn(Optional.of(leadDeCompanero));
+
+        assertThatThrownBy(() -> leadService.crearLead(request, EMAIL_AGENTE))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessageContaining("Carla Gómez");
 
         verify(leadRepository, never()).save(any());
     }
@@ -101,7 +130,7 @@ class LeadServiceTest {
         Agente agente = nuevoAgente();
 
         when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(agente));
-        when(leadRepository.existsByAgenteEmailAndEmail(EMAIL_AGENTE, request.getEmail())).thenReturn(false);
+        stubSinDuplicados(request);
         when(leadRepository.save(any(Lead.class))).thenAnswer(inv -> {
             Lead l = inv.getArgument(0);
             l.setId(99L);
@@ -125,7 +154,7 @@ class LeadServiceTest {
     void crearLead_cuandoFechaEntradaEsNull_laSeteaAutomaticamente() {
         CrearLeadRequest request = nuevoRequest();
         when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(nuevoAgente()));
-        when(leadRepository.existsByAgenteEmailAndEmail(EMAIL_AGENTE, request.getEmail())).thenReturn(false);
+        stubSinDuplicados(request);
         when(leadRepository.save(any(Lead.class))).thenAnswer(inv -> inv.getArgument(0));
 
         leadService.crearLead(request, EMAIL_AGENTE);
@@ -141,7 +170,7 @@ class LeadServiceTest {
         request.setEstado(null);
 
         when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(nuevoAgente()));
-        when(leadRepository.existsByAgenteEmailAndEmail(EMAIL_AGENTE, request.getEmail())).thenReturn(false);
+        stubSinDuplicados(request);
         when(leadRepository.save(any(Lead.class))).thenAnswer(inv -> inv.getArgument(0));
 
         leadService.crearLead(request, EMAIL_AGENTE);
@@ -226,6 +255,13 @@ class LeadServiceTest {
 
     // ---------- helpers ----------
 
+    private void stubSinDuplicados(CrearLeadRequest request) {
+        when(leadRepository.findFirstByAgente_Inmobiliaria_IdAndTelefono(INMOBILIARIA_ID, request.getTelefono()))
+                .thenReturn(Optional.empty());
+        when(leadRepository.findFirstByAgente_Inmobiliaria_IdAndEmail(INMOBILIARIA_ID, request.getEmail()))
+                .thenReturn(Optional.empty());
+    }
+
     private CrearLeadRequest nuevoRequest() {
         CrearLeadRequest req = new CrearLeadRequest();
         req.setNombre("Juan");
@@ -244,6 +280,10 @@ class LeadServiceTest {
         a.setEmail(EMAIL_AGENTE);
         a.setNombre("Mateo");
         a.setApellido("Tester");
+        Inmobiliaria inmobiliaria = new Inmobiliaria();
+        inmobiliaria.setId(INMOBILIARIA_ID);
+        inmobiliaria.setNombre("Inmobiliaria Test");
+        a.setInmobiliaria(inmobiliaria);
         return a;
     }
 

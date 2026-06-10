@@ -6,6 +6,7 @@ import com.leadera.leadera.dto.EventoOperacionResumenDTO;
 import com.leadera.leadera.dto.PropiedadDTO;
 import com.leadera.leadera.dto.PropiedadResumenDTO;
 import com.leadera.leadera.mapper.PropiedadMapper;
+import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Busqueda;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.entity.Operacion;
@@ -32,17 +33,20 @@ public class PropiedadService {
     private final LeadRepository leadRepository;
     private final EventoOperacionRepository eventoOperacionRepository;
     private final OperacionRepository operacionRepository;
+    private final AgenteAutenticadoService agenteAutenticadoService;
     private final ZoneId zonaHoraria;
 
     public PropiedadService(PropiedadRepository propiedadRepository,
                             LeadRepository leadRepository,
                             EventoOperacionRepository eventoOperacionRepository,
                             OperacionRepository operacionRepository,
+                            AgenteAutenticadoService agenteAutenticadoService,
                             ZoneId zonaHoraria) {
         this.propiedadRepository = propiedadRepository;
         this.leadRepository = leadRepository;
         this.eventoOperacionRepository = eventoOperacionRepository;
         this.operacionRepository = operacionRepository;
+        this.agenteAutenticadoService = agenteAutenticadoService;
         this.zonaHoraria = zonaHoraria;
     }
 
@@ -147,9 +151,14 @@ public class PropiedadService {
             return List.of();
         }
 
-        return operacionRepository.findCandidatosParaMatching(emailAgente).stream()
+        // Matching compartido: cruza las búsquedas de COMPRA de toda la
+        // inmobiliaria, no solo las del agente que consulta.
+        Agente agenteActual = agenteAutenticadoService.obtenerPorEmail(emailAgente);
+        Long inmobiliariaId = agenteActual.getInmobiliaria().getId();
+
+        return operacionRepository.findCandidatosParaMatching(inmobiliariaId).stream()
                 .filter(op -> coincide(propiedad, op.getBusqueda()))
-                .map(op -> toCompradorDTO(op))
+                .map(op -> toCompradorDTO(op, agenteActual.getId()))
                 .toList();
     }
 
@@ -195,14 +204,16 @@ public class PropiedadService {
         return true;
     }
 
-    private CompradorPotencialDTO toCompradorDTO(Operacion op) {
+    // Sin teléfono ni email del lead a propósito: el matching es compartido a
+    // nivel inmobiliaria y los datos de contacto de leads ajenos no se exponen.
+    private CompradorPotencialDTO toCompradorDTO(Operacion op, Long agenteActualId) {
         Lead lead = op.getLead();
         Busqueda b = op.getBusqueda();
+        Agente duenoDelLead = op.getAgente();
         return new CompradorPotencialDTO(
                 lead.getId(),
-                (lead.getNombre() == null ? "" : lead.getNombre()) + " "
-                        + (lead.getApellido() == null ? "" : lead.getApellido()),
-                lead.getTelefono(),
+                lead.getNombre(),
+                lead.getApellido(),
                 lead.getEstado(),
                 op.getId(),
                 b.getZona(),
@@ -210,7 +221,11 @@ public class PropiedadService {
                 b.getPrecioMin(),
                 b.getPrecioMax(),
                 b.getCantidadAmbientes(),
-                b.getMetrosTotales()
+                b.getMetrosTotales(),
+                duenoDelLead.getId(),
+                duenoDelLead.getNombre(),
+                duenoDelLead.getApellido(),
+                duenoDelLead.getId().equals(agenteActualId)
         );
     }
 

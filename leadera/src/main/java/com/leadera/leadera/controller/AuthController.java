@@ -1,6 +1,7 @@
 package com.leadera.leadera.controller;
 
 import java.util.Map;
+import com.leadera.leadera.dto.CambiarPasswordRequest;
 import com.leadera.leadera.dto.LoginRequest;
 import com.leadera.leadera.dto.LoginResponse;
 import com.leadera.leadera.dto.RegisterRequest;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,5 +32,14 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(response);
+    }
+
+    // Único endpoint de /auth que requiere token (ver SecurityConfig: tiene su
+    // matcher authenticated() antes del permitAll de /auth/**).
+    @PostMapping("/cambiar-password")
+    public ResponseEntity<Map<String, String>> cambiarPassword(@Valid @RequestBody CambiarPasswordRequest request,
+                                                               Authentication authentication) {
+        authService.cambiarPassword(authentication.getName(), request);
+        return ResponseEntity.ok(Map.of("mensaje", "Contraseña actualizada con éxito"));
     }
 }

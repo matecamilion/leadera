@@ -77,6 +77,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // El orden importa: gana el primer matcher. cambiar-password
+                        // es el único endpoint de /auth que requiere estar logueado.
+                        .requestMatchers("/auth/cambiar-password").authenticated()
                         .requestMatchers("/auth/**").permitAll() // Público
                         .anyRequest().authenticated()           // Todo lo demás REQUIERE TOKEN
                 )

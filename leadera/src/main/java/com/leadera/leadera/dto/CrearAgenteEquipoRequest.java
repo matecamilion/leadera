@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class CrearAgenteEquipoRequest {
 
     @NotBlank
     @Size(min = 2, max = 50)
@@ -28,9 +28,5 @@ public class RegisterRequest {
 
     @NotBlank
     @Size(min = 6, max = 100)
-    private String password;
-
-    @NotBlank(message = "El nombre de la inmobiliaria es obligatorio")
-    @Size(min = 2, max = 150)
-    private String nombreInmobiliaria;
+    private String passwordTemporal;
 }
