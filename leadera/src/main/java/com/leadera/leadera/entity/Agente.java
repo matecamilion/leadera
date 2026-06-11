@@ -4,6 +4,7 @@ package com.leadera.leadera.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leadera.leadera.enums.RolAgente;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
@@ -49,6 +50,16 @@ public class Agente implements UserDetails{
     @Enumerated(EnumType.STRING)
     @Column(name = "rol", nullable = false, length = 20)
     private RolAgente rol;
+
+    // Supervisor del agente. Solo lo usa ASISTENTE, que apunta al AGENTE
+    // bajo el que trabaja; DUENO y AGENTE quedan en null.
+    // Exclusiones obligatorias: Agente usa @Data y esto es un self-FK; sin
+    // ellas habría recursión infinita en toString()/equals()/hashCode().
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supervisor_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Agente supervisor;
 
     @Column(name = "debe_cambiar_password", nullable = false)
     @ColumnDefault("false")

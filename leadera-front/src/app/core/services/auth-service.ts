@@ -12,7 +12,7 @@ export interface CambiarPasswordRequest {
   passwordNueva: string;
 }
 
-export type RolAgente = 'DUENO' | 'AGENTE';
+export type RolAgente = 'DUENO' | 'AGENTE' | 'ASISTENTE';
 
 @Injectable({
   providedIn: 'root',
@@ -66,11 +66,17 @@ export class AuthService {
   // Tokens emitidos antes del multi-tenant no traen el claim: se asume AGENTE.
   getRol(): RolAgente {
     const payload = this.getTokenPayload();
-    return payload?.rol === 'DUENO' ? 'DUENO' : 'AGENTE';
+    if (payload?.rol === 'DUENO') return 'DUENO';
+    if (payload?.rol === 'ASISTENTE') return 'ASISTENTE';
+    return 'AGENTE';
   }
 
   esDueno(): boolean {
     return this.getRol() === 'DUENO';
+  }
+
+  esAsistente(): boolean {
+    return this.getRol() === 'ASISTENTE';
   }
 
   logout(): void {

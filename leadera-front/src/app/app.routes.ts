@@ -13,6 +13,8 @@ import { authGuard } from './core/guards/auth-guard';
 import { duenoGuard } from './core/guards/dueno-guard';
 import { CambiarPassword } from './pages/auth/cambiar-password/cambiar-password';
 import { Equipo } from './pages/equipo/equipo';
+import { MiAsistente } from './pages/mi-asistente/mi-asistente';
+import { MiEquipoAgente } from './pages/mi-equipo-agente/mi-equipo-agente';
 import { PropiedadDetalle } from './pages/propiedad-detalle/propiedad-detalle';
 import { DetalleOperacion } from './pages/detalle-operacion/detalle-operacion';
 import { PropiedadesLead } from './pages/propiedades-lead/propiedades-lead';
@@ -30,6 +32,9 @@ export const routes: Routes = [
 
   { path: 'cambiar-password', component: CambiarPassword, canActivate: [authGuard], title: 'LeadEra - Cambiar contraseña' },
   { path: 'equipo', component: Equipo, canActivate: [authGuard, duenoGuard], title: 'LeadEra - Mi equipo' },
+  // Obsoleta (Fase 3): la reemplaza /mi-equipo-agente; queda ruteada pero sin link.
+  { path: 'mi-asistente', component: MiAsistente, canActivate: [authGuard], title: 'LeadEra - Mi Asistente' },
+  { path: 'mi-equipo-agente', component: MiEquipoAgente, canActivate: [authGuard], title: 'LeadEra - Mi Equipo' },
 
   { path: 'home', component: Home, canActivate: [authGuard] },
   { path: 'leads', component: ListadoLeadsComponent, canActivate: [authGuard] },

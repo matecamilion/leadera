@@ -38,6 +38,9 @@ class InteraccionServiceTest {
     @Mock
     private LeadRepository leadRepository;
 
+    @Mock
+    private AgenteContextResolver agenteContextResolver;
+
     private final ZoneId zonaHoraria = ZoneId.of("America/Argentina/Buenos_Aires");
 
     private InteraccionService interaccionService;
@@ -46,7 +49,16 @@ class InteraccionServiceTest {
 
     @BeforeEach
     void setUp() {
-        interaccionService = new InteraccionService(interaccionRepository, leadRepository, zonaHoraria);
+        interaccionService = new InteraccionService(
+                interaccionRepository, leadRepository, agenteContextResolver, zonaHoraria);
+    }
+
+    // crearInteraccion resuelve actor -> propietario; sin asistentes, ambos son el mismo agente.
+    private Agente stubActorPropietario() {
+        Agente agente = nuevoAgente();
+        when(agenteContextResolver.resolverActor(EMAIL_AGENTE)).thenReturn(agente);
+        when(agenteContextResolver.resolverPropietario(agente)).thenReturn(agente);
+        return agente;
     }
 
     @Test
@@ -66,9 +78,11 @@ class InteraccionServiceTest {
     void crearInteraccion_cuandoLeadPerteneceAOtroAgente_lanzaUnauthorizedActionException() {
         Lead lead = nuevoLead();
         Agente otro = nuevoAgente();
+        otro.setId(99L);
         otro.setEmail("otro@leadera.com");
         lead.setAgente(otro);
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
+        stubActorPropietario();
 
         CrearInteraccionRequest req = nuevoRequest();
 
@@ -82,6 +96,7 @@ class InteraccionServiceTest {
     void crearInteraccion_cuandoFechaInteraccionEsNull_laSeteaConNow() {
         Lead lead = nuevoLead();
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
+        stubActorPropietario();
         when(interaccionRepository.save(any(Interaccion.class))).thenAnswer(inv -> inv.getArgument(0));
 
         CrearInteraccionRequest req = nuevoRequest();
@@ -102,6 +117,7 @@ class InteraccionServiceTest {
     void crearInteraccion_cuandoTipoInteraccionEsNull_aplicaDefaultLlamada() {
         Lead lead = nuevoLead();
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
+        stubActorPropietario();
         when(interaccionRepository.save(any(Interaccion.class))).thenAnswer(inv -> inv.getArgument(0));
 
         CrearInteraccionRequest req = nuevoRequest();
@@ -118,6 +134,7 @@ class InteraccionServiceTest {
     void crearInteraccion_cuandoProximoContactoEsNull_seteaFechaProximoSeguimientoATresDias() {
         Lead lead = nuevoLead();
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
+        stubActorPropietario();
         when(interaccionRepository.save(any(Interaccion.class))).thenAnswer(inv -> inv.getArgument(0));
 
         CrearInteraccionRequest req = nuevoRequest();
@@ -137,6 +154,7 @@ class InteraccionServiceTest {
     void crearInteraccion_cuandoProximoContactoTieneValor_loRespetaExactamente() {
         Lead lead = nuevoLead();
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
+        stubActorPropietario();
         when(interaccionRepository.save(any(Interaccion.class))).thenAnswer(inv -> inv.getArgument(0));
 
         LocalDateTime esperado = LocalDateTime.of(2026, 6, 15, 10, 30);
@@ -152,6 +170,7 @@ class InteraccionServiceTest {
     void crearInteraccion_cuandoTodoEsValido_actualizaUltimoContactoYGuarda() {
         Lead lead = nuevoLead();
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
+        Agente actor = stubActorPropietario();
         when(interaccionRepository.save(any(Interaccion.class))).thenAnswer(inv -> inv.getArgument(0));
 
         LocalDateTime fecha = LocalDateTime.of(2026, 5, 18, 14, 0);
@@ -162,6 +181,7 @@ class InteraccionServiceTest {
 
         assertThat(creada).isNotNull();
         assertThat(creada.getLead()).isSameAs(lead);
+        assertThat(creada.getAutor()).isSameAs(actor);
         assertThat(lead.getUltimoContacto()).isEqualTo(fecha);
         verify(leadRepository).save(lead);
         verify(interaccionRepository).save(any(Interaccion.class));

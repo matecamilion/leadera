@@ -27,4 +27,56 @@
       <button class="btn-primary" routerLink="/home">Ir a trabajar</button>
     </div>
   }
+
+  <!-- ============ MIS TAREAS DEL DÍA (solo ASISTENTE) ============ -->
+  @if (esAsistente) {
+    <div class="tareas-dia">
+      <h2 class="tareas-titulo">Mis tareas del día</h2>
+
+      @if (cargandoTareas()) {
+        <div class="tareas-card tareas-estado">Cargando tareas...</div>
+      } @else if (tareas().length === 0) {
+        <div class="tareas-card tareas-estado">No tenés tareas asignadas para hoy.</div>
+      } @else {
+        @if (cuotas().length > 0) {
+          <div class="lista-cuotas">
+            @for (t of cuotas(); track t.id) {
+              <div class="tareas-card cuota">
+                <div class="cuota-cabecera">
+                  <span class="cuota-titulo">{{ t.titulo }}</span>
+                  <span class="badge-estado" [ngClass]="estadoCuota(t)">{{ etiquetaEstado(t) }}</span>
+                </div>
+                <div class="barra-progreso">
+                  <div class="barra-relleno" [ngClass]="estadoCuota(t)" [style.width.%]="porcentaje(t)"></div>
+                </div>
+                <span class="cuota-detalle">{{ t.progreso }} de {{ t.objetivo }} leads contactados</span>
+              </div>
+            }
+          </div>
+        }
+
+        @if (discretas().length > 0) {
+          <div class="tareas-card">
+            <ul class="lista-checklist">
+              @for (t of discretas(); track t.id) {
+                <li class="item-checklist" [class.completado]="t.completada">
+                  <button
+                    type="button"
+                    class="check-btn"
+                    [disabled]="t.completada || completandoIds().has(t.id)"
+                    (click)="completarTarea(t)"
+                    [attr.aria-label]="t.completada ? 'Tarea completada' : 'Marcar como completada'">
+                    <span class="material-symbols-outlined check-icon" [class.activo]="t.completada">
+                      {{ t.completada ? 'check_box' : 'check_box_outline_blank' }}
+                    </span>
+                  </button>
+                  <span class="item-titulo">{{ t.titulo }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      }
+    </div>
+  }
 </section>

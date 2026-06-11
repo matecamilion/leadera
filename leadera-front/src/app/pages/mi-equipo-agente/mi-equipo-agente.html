@@ -1,0 +1,283 @@
+<div class="contenedor-equipo">
+  <header class="header-equipo">
+    <div>
+      <h1>Mi equipo</h1>
+      <p class="subtitulo">Gestioná tus asistentes y asignales tareas del día.</p>
+    </div>
+    <button type="button" class="btn-agregar" (click)="abrirModalAsistente(modalAsistente)">
+      <span class="material-symbols-outlined">person_add</span>
+      Agregar asistente
+    </button>
+  </header>
+
+  <nav class="tabs-equipo">
+    <button type="button" [class.activa]="seccion() === 'asistentes'" (click)="cambiarSeccion('asistentes')">
+      Asistentes
+    </button>
+    <button type="button" [class.activa]="seccion() === 'tareas'" (click)="cambiarSeccion('tareas')">
+      Tareas
+    </button>
+  </nav>
+
+  <!-- ================= ASISTENTES ================= -->
+  @if (seccion() === 'asistentes') {
+    @if (cargandoAsistentes()) {
+      <div class="tarjeta-blanca estado">Cargando asistentes...</div>
+    } @else if (errorAsistentes()) {
+      <div class="tarjeta-blanca estado error">{{ errorAsistentes() }}</div>
+    } @else if (asistentes().length === 0) {
+      <div class="tarjeta-blanca estado-vacio">
+        <span class="material-symbols-outlined">support_agent</span>
+        <p>Todavía no tenés asistentes.</p>
+        <span class="estado-vacio-sub">Agregá uno con el botón de arriba.</span>
+      </div>
+    } @else {
+      <div class="tarjeta-blanca">
+        <p class="nota-readonly">
+          Hacé clic en un asistente para ver y asignarle tareas.
+        </p>
+        <table class="tabla-equipo">
+          <thead>
+            <tr>
+              <th>Asistente</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th class="num">Leads activos</th>
+              <th class="num">Tareas hoy</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (a of asistentes(); track a.id) {
+              <tr class="fila-clickeable" [class.fila-inactiva]="!a.activo" (click)="verTareasDe(a)">
+                <td class="celda-nombre">{{ a.nombre }} {{ a.apellido }}</td>
+                <td class="celda-email">{{ a.email }}</td>
+                <td><span class="badge-rol asistente">Asistente</span></td>
+                <td class="num">{{ a.leadsActivos }}</td>
+                <td class="num">{{ a.tareasCompletadasHoy }}</td>
+                <td>
+                  <span class="badge-activo" [class.inactivo]="!a.activo">
+                    {{ a.activo ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="celda-acciones">
+                  <button
+                    type="button"
+                    class="btn-toggle"
+                    [class.btn-reactivar]="!a.activo"
+                    [disabled]="cambiandoActivoId() === a.id"
+                    (click)="$event.stopPropagation(); toggleActivo(a)">
+                    {{ cambiandoActivoId() === a.id ? '...' : (a.activo ? 'Desactivar' : 'Activar') }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <!-- ================= TAREAS ================= -->
+  @if (seccion() === 'tareas') {
+    @if (asistentes().length === 0) {
+      <div class="tarjeta-blanca estado-vacio">
+        <span class="material-symbols-outlined">support_agent</span>
+        <p>Todavía no tenés asistentes.</p>
+        <span class="estado-vacio-sub">Agregá uno para poder asignarle tareas.</span>
+      </div>
+    } @else {
+      <!-- Selector si hay más de uno; nombre fijo si hay exactamente uno -->
+      <div class="encabezado-tareas">
+        @if (asistentes().length > 1) {
+          <div class="selector-asistente">
+            <label for="sel-asistente">Asistente</label>
+            <select
+              id="sel-asistente"
+              [value]="asistenteSeleccionadoId()"
+              (change)="onSeleccionarAsistente($any($event.target).value)">
+              @for (a of asistentes(); track a.id) {
+                <option [value]="a.id">{{ a.nombre }} {{ a.apellido }}</option>
+              }
+            </select>
+          </div>
+        } @else if (asistenteSeleccionado(); as asis) {
+          <h2 class="nombre-asistente">{{ asis.nombre }} {{ asis.apellido }}</h2>
+        }
+      </div>
+
+      @if (cargandoTareas()) {
+        <div class="tarjeta-blanca estado">Cargando tareas...</div>
+      } @else if (errorTareas()) {
+        <div class="tarjeta-blanca estado error">{{ errorTareas() }}</div>
+      } @else if (tareas().length === 0) {
+        <div class="tarjeta-blanca estado-vacio">
+          <span class="material-symbols-outlined">event_available</span>
+          <p>No hay tareas para hoy.</p>
+          <span class="estado-vacio-sub">Creá la primera con el formulario de abajo.</span>
+        </div>
+      } @else {
+        @if (cuotas().length > 0) {
+          <section class="bloque">
+            <h3 class="titulo-seccion">Cuotas</h3>
+            <div class="lista-cuotas">
+              @for (t of cuotas(); track t.id) {
+                <div class="tarjeta-blanca cuota">
+                  <div class="cuota-cabecera">
+                    <span class="cuota-titulo">{{ t.titulo }}</span>
+                    <span class="badge-estado" [ngClass]="estadoCuota(t)">{{ etiquetaEstado(t) }}</span>
+                  </div>
+                  <div class="barra-progreso">
+                    <div class="barra-relleno" [ngClass]="estadoCuota(t)" [style.width.%]="porcentaje(t)"></div>
+                  </div>
+                  <span class="cuota-detalle">{{ t.progreso }} de {{ t.objetivo }} leads contactados</span>
+                </div>
+              }
+            </div>
+          </section>
+        }
+
+        @if (discretas().length > 0) {
+          <section class="bloque">
+            <h3 class="titulo-seccion">Checklist</h3>
+            <div class="tarjeta-blanca">
+              <ul class="lista-checklist">
+                @for (t of discretas(); track t.id) {
+                  <li class="item-checklist" [class.completado]="t.completada">
+                    <span class="material-symbols-outlined check-icon" [class.activo]="t.completada">
+                      {{ t.completada ? 'check_box' : 'check_box_outline_blank' }}
+                    </span>
+                    <span class="item-titulo">{{ t.titulo }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          </section>
+        }
+      }
+
+      <!-- ===== NUEVA TAREA ===== -->
+      <section class="bloque">
+        <h3 class="titulo-seccion">Nueva tarea</h3>
+        <div class="tarjeta-blanca">
+          <form [formGroup]="formTarea" (ngSubmit)="crearTarea()">
+            <div class="campo">
+              <label>Título</label>
+              <input type="text" formControlName="titulo" placeholder="Ej: Contactar leads nuevos">
+              @if (esInvalidoTarea('titulo')) {
+                <span class="msj-error">Ingresá un título (máx. 200 caracteres)</span>
+              }
+            </div>
+
+            <div class="campo">
+              <label>Tipo</label>
+              <div class="toggle-tipo">
+                <button type="button" [class.activa]="tipoTarea() === 'discreta'" (click)="cambiarTipoTarea('discreta')">
+                  Discreta
+                </button>
+                <button type="button" [class.activa]="tipoTarea() === 'cuota'" (click)="cambiarTipoTarea('cuota')">
+                  Cuota
+                </button>
+              </div>
+              <span class="ayuda-tipo">
+                {{ tipoTarea() === 'cuota'
+                    ? 'Se completa sola cuando el asistente contacta la cantidad de leads.'
+                    : 'El asistente la marca a mano cuando la termina.' }}
+              </span>
+            </div>
+
+            <div class="campo-doble">
+              @if (tipoTarea() === 'cuota') {
+                <div class="campo">
+                  <label>Cantidad de leads</label>
+                  <input type="number" formControlName="objetivo" min="1">
+                  @if (esInvalidoTarea('objetivo')) {
+                    <span class="msj-error">Mínimo 1</span>
+                  }
+                </div>
+              }
+              <div class="campo">
+                <label>Fecha objetivo</label>
+                <input type="date" formControlName="fechaObjetivo">
+                @if (esInvalidoTarea('fechaObjetivo')) {
+                  <span class="msj-error">Elegí una fecha</span>
+                }
+              </div>
+            </div>
+
+            <div class="acciones-form">
+              <button type="submit" class="btn-guardar" [disabled]="guardandoTarea()">
+                {{ guardandoTarea() ? 'Creando...' : 'Crear tarea' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    }
+  }
+</div>
+
+<!-- ================= MODAL AGREGAR ASISTENTE ================= -->
+<dialog #modalAsistente class="modal-asistente">
+  <div class="modal-content">
+    <h3>Agregar asistente</h3>
+    <p class="modal-sub">
+      El asistente va a trabajar sobre tus leads. Ingresa con esta contraseña temporal y el sistema le pide cambiarla en su primer login.
+    </p>
+
+    <form [formGroup]="formAsistente" (ngSubmit)="crearAsistente(modalAsistente)">
+      <div class="campo-doble">
+        <div class="campo">
+          <label>Nombre</label>
+          <input type="text" formControlName="nombre" placeholder="Nombre">
+          @if (esInvalido('nombre')) {
+            <span class="msj-error">Mínimo 2 caracteres</span>
+          }
+        </div>
+        <div class="campo">
+          <label>Apellido</label>
+          <input type="text" formControlName="apellido" placeholder="Apellido">
+          @if (esInvalido('apellido')) {
+            <span class="msj-error">Mínimo 2 caracteres</span>
+          }
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="asistente@inmobiliaria.com">
+        @if (esInvalido('email')) {
+          <span class="msj-error">Ingresá un email válido</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Contraseña temporal</label>
+        <div class="campo-password">
+          <input type="text" formControlName="passwordTemporal" placeholder="Mínimo 6 caracteres">
+          <button type="button" class="btn-generar" (click)="generarPasswordAleatoria()">
+            <span class="material-symbols-outlined">casino</span>
+            Generar
+          </button>
+        </div>
+        @if (esInvalido('passwordTemporal')) {
+          <span class="msj-error">Mínimo 6 caracteres</span>
+        }
+      </div>
+
+      @if (errorModal()) {
+        <p class="error-servidor">{{ errorModal() }}</p>
+      }
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-cancelar" (click)="modalAsistente.close()" [disabled]="guardandoAsistente()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-guardar" [disabled]="guardandoAsistente()">
+          {{ guardandoAsistente() ? 'Creando...' : 'Crear asistente' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>

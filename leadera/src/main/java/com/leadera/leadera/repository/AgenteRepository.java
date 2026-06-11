@@ -14,4 +14,8 @@ public interface AgenteRepository extends JpaRepository<Agente, Long> {
     boolean existsByEmail(String email);
 
     List<Agente> findByInmobiliariaIdOrderByIdAsc(Long inmobiliariaId);
+
+    // Asistentes de un supervisor (su jerarquía directa). Por invariante de Fase 0
+    // todos pertenecen a la misma inmobiliaria que el supervisor.
+    List<Agente> findBySupervisorId(Long supervisorId);
 }

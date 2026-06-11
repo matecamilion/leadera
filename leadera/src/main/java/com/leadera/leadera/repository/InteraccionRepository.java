@@ -40,4 +40,15 @@ public interface InteraccionRepository extends JpaRepository<Interaccion, Long> 
     long countInteraccionesEnRango(@Param("agenteId") Long agenteId,
                                    @Param("desde") LocalDateTime desde,
                                    @Param("hasta") LocalDateTime hasta);
+
+    // Progreso de una cuota: leads DISTINTOS contactados por un autor (el asistente)
+    // en un rango cerrado-abierto [desde, hasta). Filtra por i.autor.id (quién la
+    // registró), no por el dueño del lead.
+    @Query("SELECT COUNT(DISTINCT i.lead.id) FROM Interaccion i " +
+            "WHERE i.autor.id = :autorId " +
+            "AND i.fechaInteraccion >= :desde " +
+            "AND i.fechaInteraccion < :hasta")
+    long countLeadsDistinctPorAutorEnRango(@Param("autorId") Long autorId,
+                                           @Param("desde") LocalDateTime desde,
+                                           @Param("hasta") LocalDateTime hasta);
 }

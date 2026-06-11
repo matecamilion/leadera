@@ -4,5 +4,6 @@ package com.leadera.leadera.enums;
 // @PreAuthorize("hasRole('DUENO')"); un carácter no-ASCII ahí es fuente de bugs.
 public enum RolAgente {
     DUENO,
-    AGENTE
+    AGENTE,
+    ASISTENTE
 }

@@ -40,7 +40,12 @@
       "PowerShell(& .\\\\leadera\\\\mvnw.cmd -f leadera\\\\pom.xml test -q \"-Dtest=LeadServiceTest,InteraccionServiceTest\" \"-DfailIfNoTests=false\")",
       "PowerShell(git checkout *)",
       "PowerShell(git *)",
-      "PowerShell($path = 'leadera\\\\pom.xml'; $c = [System.IO.File]::ReadAllText\\($path\\); $viejo = \"\t\t<dependency>`r`n\t\t\t<groupId>org.springframework.boot</groupId>`r`n\t\t\t<artifactId>spring-boot-starter-test</artifactId>`r`n\t\t\t<scope>test</scope>`r`n\t\t</dependency>\"; $nuevo = $viejo + \"`r`n`r`n\t\t<!-- DB en memoria solo para tests de integracion \\(MockMvc + JPA real\\) -->`r`n\t\t<dependency>`r`n\t\t\t<groupId>com.h2database</groupId>`r`n\t\t\t<artifactId>h2</artifactId>`r`n\t\t\t<scope>test</scope>`r`n\t\t</dependency>\"; if \\($c.Contains\\($viejo\\)\\) { [System.IO.File]::WriteAllText\\($path, $c.Replace\\($viejo, $nuevo\\)\\); 'OK' } else { 'NO MATCH' })"
+      "PowerShell($path = 'leadera\\\\pom.xml'; $c = [System.IO.File]::ReadAllText\\($path\\); $viejo = \"\t\t<dependency>`r`n\t\t\t<groupId>org.springframework.boot</groupId>`r`n\t\t\t<artifactId>spring-boot-starter-test</artifactId>`r`n\t\t\t<scope>test</scope>`r`n\t\t</dependency>\"; $nuevo = $viejo + \"`r`n`r`n\t\t<!-- DB en memoria solo para tests de integracion \\(MockMvc + JPA real\\) -->`r`n\t\t<dependency>`r`n\t\t\t<groupId>com.h2database</groupId>`r`n\t\t\t<artifactId>h2</artifactId>`r`n\t\t\t<scope>test</scope>`r`n\t\t</dependency>\"; if \\($c.Contains\\($viejo\\)\\) { [System.IO.File]::WriteAllText\\($path, $c.Replace\\($viejo, $nuevo\\)\\); 'OK' } else { 'NO MATCH' })",
+      "Bash(./mvnw -q -o test-compile)",
+      "Bash(./mvnw -q -o test -Dtest=LeadServiceTest,InteraccionServiceTest)",
+      "Bash(./mvnw -o test -Dtest=LeadServiceTest,InteraccionServiceTest)",
+      "Bash(./mvnw -o test -Dtest=MultiTenantIntegrationTest,AuthContractIntegrationTest)",
+      "Bash(./mvnw -o test)"
     ]
   }
 }

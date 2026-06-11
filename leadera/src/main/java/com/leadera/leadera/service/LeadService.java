@@ -19,7 +19,6 @@ import com.leadera.leadera.exception.ResourceNotFoundException;
 import com.leadera.leadera.exception.UnauthorizedActionException;
 import com.leadera.leadera.mapper.InteraccionMapper;
 import com.leadera.leadera.mapper.LeadMapper;
-import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
@@ -49,9 +48,9 @@ import java.util.stream.Collectors;
 @Service
 public class LeadService {
     private final LeadRepository leadRepository;
-    private final AgenteRepository agenteRepository;
     private final InteraccionRepository interaccionRepository;
     private final OperacionRepository operacionRepository;
+    private final AgenteContextResolver agenteContextResolver;
     private final CacheManager cacheManager;
     private final ZoneId zonaHoraria;
 
@@ -59,63 +58,82 @@ public class LeadService {
     private int diasSinContactoPrioritario;
 
     public LeadService(LeadRepository leadRepository,
-                       AgenteRepository agenteRepository,
                        InteraccionRepository interaccionRepository,
                        OperacionRepository operacionRepository,
+                       AgenteContextResolver agenteContextResolver,
                        CacheManager cacheManager,
                        ZoneId zonaHoraria) {
         this.leadRepository = leadRepository;
-        this.agenteRepository = agenteRepository;
         this.interaccionRepository = interaccionRepository;
         this.operacionRepository = operacionRepository;
+        this.agenteContextResolver = agenteContextResolver;
         this.cacheManager = cacheManager;
         this.zonaHoraria = zonaHoraria;
     }
 
+    // Email del propietario efectivo del que pide: para un asistente es el de su
+    // supervisor; para los demás, el suyo. Todas las queries por agente filtran
+    // por este email para que el asistente vea/opere los leads de su supervisor.
+    private String emailPropietario(String email) {
+        return agenteContextResolver.resolverPropietarioPorEmail(email).getEmail();
+    }
 
-    // Evict acotado al agente dueño del lead (no a todo el cache). El método recibe el
-    // email, así que resolvemos su id desde el repositorio para que la key coincida con
-    // la de @Cacheable en obtenerEstadisticasAgente (key="#agenteId").
-    @CacheEvict(value = "estadisticasAgente", key = "@agenteRepository.findByEmail(#email).get().id")
+    // True si el lead pertenece al propietario efectivo del que pide.
+    private boolean esPropietario(Lead lead, String email) {
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(email);
+        return lead.getAgente().getId().equals(propietario.getId());
+    }
+
+
+    // El lead se crea SIEMPRE a nombre del propietario efectivo: si quien lo carga
+    // es un asistente, el dueño es su supervisor. Por eso la eviction de stats es
+    // programática contra el id del PROPIETARIO (no del actor); con @CacheEvict por
+    // el email del autenticado las stats del supervisor quedarían stale.
     public LeadResponseDTO crearLead(CrearLeadRequest request, String email) {
 
-        Agente agente = agenteRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Agente no encontrado"));
+        Agente actor = agenteContextResolver.resolverActor(email);
+        Agente propietario = agenteContextResolver.resolverPropietario(actor);
 
-        validarDuplicadosEnInmobiliaria(agente, request.getTelefono(), request.getEmail(), null);
+        validarDuplicadosEnInmobiliaria(propietario, request.getTelefono(), request.getEmail(), null);
 
         Lead lead = LeadMapper.toEntity(request);
         if (lead.getEstado() == null) {
             lead.setEstado(EstadoLead.FRIO);
         }
-        lead.setAgente(agente);
+        lead.setAgente(propietario);
         lead.setFechaEntrada(LocalDateTime.now(zonaHoraria));
 
-        return LeadMapper.toDTO(leadRepository.save(lead));
+        LeadResponseDTO creado = LeadMapper.toDTO(leadRepository.save(lead));
+
+        Cache cache = cacheManager.getCache("estadisticasAgente");
+        if (cache != null) {
+            cache.evict(propietario.getId());
+        }
+
+        return creado;
     }
 
     public List<Lead> obtenerLeadsPorAgente(String email) {
-        return leadRepository.findByAgenteEmail(email);
+        return leadRepository.findByAgenteEmail(emailPropietario(email));
     }
 
     public List<Lead> obtenerLeads() {
         return leadRepository.findAll();
     }
 
-    public List<Lead> obtenerLeadsPorEstado(EstadoLead estado, String email) { // <--- Agregamos email
-        // Usamos el nuevo método del repository que filtra por ambas cosas
-        return leadRepository.findByEstadoAndAgenteEmail(estado, email);
+    public List<Lead> obtenerLeadsPorEstado(EstadoLead estado, String email) {
+        // Filtra por el propietario efectivo (supervisor del asistente, o uno mismo).
+        return leadRepository.findByEstadoAndAgenteEmail(estado, emailPropietario(email));
     }
 
-    public List<Lead> obtenerLeadsSinContacto(String email) { // <--- Agregamos email
+    public List<Lead> obtenerLeadsSinContacto(String email) {
         // Este es clave para la sección de "Nuevos"
-        return leadRepository.findByUltimoContactoIsNullAndAgenteEmail(email);
+        return leadRepository.findByUltimoContactoIsNullAndAgenteEmail(emailPropietario(email));
     }
 
-    public List<Lead> obtenerLeadsInactivos(int dias, String email) { // <--- Agregamos email
+    public List<Lead> obtenerLeadsInactivos(int dias, String email) {
         LocalDateTime fechaLimite = LocalDateTime.now(zonaHoraria).minusDays(dias);
-        // Usamos el nuevo método del repo con filtro de email
-        return leadRepository.findByUltimoContactoBeforeAndUltimoContactoIsNotNullAndAgenteEmail(fechaLimite, email);
+        return leadRepository.findByUltimoContactoBeforeAndUltimoContactoIsNotNullAndAgenteEmail(fechaLimite, emailPropietario(email));
     }
 
 
@@ -123,17 +141,16 @@ public class LeadService {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con el id: " + id));
 
-        if (!lead.getAgente().getEmail().equals(email)) {
+        if (!esPropietario(lead, email)) {
             throw new UnauthorizedActionException("No tenés permiso para ver este lead.");
         }
 
         return LeadMapper.toDetalleResponse(lead);
     }
 
-    public List<Lead> obtenerLeadsPrioritarios(int dias, String email) { // <--- Agregamos email
+    public List<Lead> obtenerLeadsPrioritarios(int dias, String email) {
         LocalDateTime fechaLimite = LocalDateTime.now(zonaHoraria).minusDays(dias);
-        // Usamos el nuevo método del repo con filtro de email
-        return leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimite, email);
+        return leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimite, emailPropietario(email));
     }
 
     public List<InteraccionDTO> obtenerHistorialInteracciones(Long leadId, String emailAgente) {
@@ -141,7 +158,7 @@ public class LeadService {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con el id: " + leadId));
 
-        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+        if (!esPropietario(lead, emailAgente)) {
             throw new UnauthorizedActionException("No tenés permiso para ver las interacciones de este lead.");
         }
 
@@ -159,7 +176,7 @@ public class LeadService {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
-        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+        if (!esPropietario(lead, emailAgente)) {
             throw new UnauthorizedActionException("No tenés permiso para modificar este lead.");
         }
 
@@ -169,19 +186,21 @@ public class LeadService {
 
 
     public LeadsHoyResponse obtenerLeadsDeHoy(String email) {
+        // El "home" del asistente muestra los leads de su supervisor.
+        String emailDuenio = emailPropietario(email);
         LocalDateTime ahora = LocalDateTime.now(zonaHoraria);
         LocalDateTime inicioHoy = ahora.toLocalDate().atStartOfDay();
 
-        List<Lead> nuevos = leadRepository.findByUltimoContactoIsNullAndAgenteEmailAndEstadoNot(email, EstadoLead.INACTIVO);
+        List<Lead> nuevos = leadRepository.findByUltimoContactoIsNullAndAgenteEmailAndEstadoNot(emailDuenio, EstadoLead.INACTIVO);
 
         LocalDateTime fechaLimitePrioritarios = ahora.minusDays(diasSinContactoPrioritario);
-        List<Lead> prioritarios = leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimitePrioritarios, email);
+        List<Lead> prioritarios = leadRepository.findByEstadoAndUltimoContactoBeforeAndAgenteEmail(EstadoLead.CALIENTE, fechaLimitePrioritarios, emailDuenio);
 
         // Incluye todos los seguimientos programados para hoy aunque la hora exacta
         // sea futura dentro del mismo día (ej: agendado 18:00, el usuario entra 09:00).
         LocalDateTime finDeHoy = inicioHoy.plusDays(1);
         List<Lead> seguimientos = leadRepository.findSeguimientosPendientes(
-                finDeHoy, email, EstadoLead.INACTIVO
+                finDeHoy, emailDuenio, EstadoLead.INACTIVO
         );
 
         // Dedup: un lead que ya está en "prioritarios" no debe duplicarse en "seguimientos".
@@ -192,7 +211,7 @@ public class LeadService {
                 .filter(l -> !idsPrioritarios.contains(l.getId()))
                 .toList();
 
-        List<Lead> yaContactados = leadRepository.findByUltimoContactoAfterAndAgenteEmail(inicioHoy, email);
+        List<Lead> yaContactados = leadRepository.findByUltimoContactoAfterAndAgenteEmail(inicioHoy, emailDuenio);
 
         int totalTareas = nuevos.size() + prioritarios.size() + seguimientosUnicos.size() + yaContactados.size();
         int completadas = yaContactados.size();
@@ -214,7 +233,7 @@ public class LeadService {
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
-        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+        if (!esPropietario(lead, emailAgente)) {
             throw new UnauthorizedActionException("No tenés permiso para modificar este lead.");
         }
 
@@ -227,19 +246,23 @@ public class LeadService {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
-        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+        if (!esPropietario(lead, emailAgente)) {
             throw new UnauthorizedActionException("No tenés permiso para eliminar este lead.");
         }
 
-        // El agenteId sale del lead ya cargado: no hace falta una query extra al repo de agentes.
+        // Tras el check, lead.getAgente() ES el propietario efectivo. El id y el email
+        // salen del lead ya cargado: no hace falta query extra al repo de agentes.
         Long agenteId = lead.getAgente().getId();
+        String emailPropietario = lead.getAgente().getEmail();
 
         // Interacciones y propiedades caen solas por el cascade = ALL de Lead. Las operaciones
         // NO están mapeadas como @OneToMany en Lead y tienen FK lead_id NOT NULL, así que el
         // cascade de JPA no las alcanza: hay que borrarlas explícitamente antes del lead (sus
         // eventos se eliminan por el cascade propio de Operacion). Se borran primero para no
         // violar la FK operacion -> propiedad cuando el cascade del lead borra las propiedades.
-        List<Operacion> operaciones = operacionRepository.findByLeadIdAndAgenteEmail(leadId, emailAgente);
+        // Se filtra por el email del PROPIETARIO (dueño de las operaciones), no por el del actor:
+        // si quien elimina es un asistente, las operaciones pertenecen a su supervisor.
+        List<Operacion> operaciones = operacionRepository.findByLeadIdAndAgenteEmail(leadId, emailPropietario);
         operacionRepository.deleteAll(operaciones);
 
         leadRepository.delete(lead);
@@ -292,11 +315,11 @@ public class LeadService {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
-        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+        if (!esPropietario(lead, emailAgente)) {
             throw new UnauthorizedActionException("No tenés permiso para editar este lead.");
         }
 
-        // El ownership ya está validado: lead.getAgente() es el agente autenticado.
+        // El ownership ya está validado: lead.getAgente() es el propietario efectivo.
         validarDuplicadosEnInmobiliaria(lead.getAgente(), nuevoTelefono, nuevoEmail, leadId);
 
         lead.setTelefono(nuevoTelefono);
@@ -314,7 +337,7 @@ public class LeadService {
     }
 
     public List<LeadResumenDTO> obtenerResumenLeadsPorAgente(String email) {
-        List<Lead> leads = leadRepository.findByAgenteEmailConInteracciones(email);
+        List<Lead> leads = leadRepository.findByAgenteEmailConInteracciones(emailPropietario(email));
         Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(
                 leads.stream().map(Lead::getId).toList());
         return leads.stream().map(lead -> toResumenDTO(lead, conteos)).toList();
@@ -378,7 +401,7 @@ public class LeadService {
                 ? pageable
                 : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                                  Sort.by(Sort.Direction.DESC, "fechaEntrada"));
-        Page<Lead> page = leadRepository.findByAgenteEmailConInteraccionesPaginado(email, efectivo);
+        Page<Lead> page = leadRepository.findByAgenteEmailConInteraccionesPaginado(emailPropietario(email), efectivo);
         Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(
                 page.getContent().stream().map(Lead::getId).toList());
         return page.map(lead -> toResumenDTO(lead, conteos));

@@ -10,7 +10,6 @@ import com.leadera.leadera.enums.EstadoLead;
 import com.leadera.leadera.exception.DuplicateResourceException;
 import com.leadera.leadera.exception.ResourceNotFoundException;
 import com.leadera.leadera.exception.UnauthorizedActionException;
-import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
@@ -41,7 +40,7 @@ class LeadServiceTest {
     private LeadRepository leadRepository;
 
     @Mock
-    private AgenteRepository agenteRepository;
+    private AgenteContextResolver agenteContextResolver;
 
     @Mock
     private InteraccionRepository interaccionRepository;
@@ -63,9 +62,9 @@ class LeadServiceTest {
     void setUp() {
         leadService = new LeadService(
                 leadRepository,
-                agenteRepository,
                 interaccionRepository,
                 operacionRepository,
+                agenteContextResolver,
                 cacheManager,
                 zonaHoraria
         );
@@ -76,7 +75,8 @@ class LeadServiceTest {
     @Test
     void crearLead_cuandoAgenteNoExiste_lanzaResourceNotFoundException() {
         CrearLeadRequest request = nuevoRequest();
-        when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.empty());
+        when(agenteContextResolver.resolverActor(EMAIL_AGENTE))
+                .thenThrow(new ResourceNotFoundException("Agente no encontrado"));
 
         assertThatThrownBy(() -> leadService.crearLead(request, EMAIL_AGENTE))
                 .isInstanceOf(ResourceNotFoundException.class)
@@ -89,7 +89,7 @@ class LeadServiceTest {
     void crearLead_cuandoEmailYaExisteEnLaInmobiliaria_lanzaDuplicateResourceException() {
         CrearLeadRequest request = nuevoRequest();
         Agente agente = nuevoAgente();
-        when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(agente));
+        stubPropietario(agente);
         when(leadRepository.findFirstByAgente_Inmobiliaria_IdAndTelefono(INMOBILIARIA_ID, request.getTelefono()))
                 .thenReturn(Optional.empty());
         when(leadRepository.findFirstByAgente_Inmobiliaria_IdAndEmail(INMOBILIARIA_ID, request.getEmail()))
@@ -113,7 +113,7 @@ class LeadServiceTest {
         Lead leadDeCompanero = nuevoLead();
         leadDeCompanero.setAgente(companero);
 
-        when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(agente));
+        stubPropietario(agente);
         when(leadRepository.findFirstByAgente_Inmobiliaria_IdAndTelefono(INMOBILIARIA_ID, request.getTelefono()))
                 .thenReturn(Optional.of(leadDeCompanero));
 
@@ -129,7 +129,7 @@ class LeadServiceTest {
         CrearLeadRequest request = nuevoRequest();
         Agente agente = nuevoAgente();
 
-        when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(agente));
+        stubPropietario(agente);
         stubSinDuplicados(request);
         when(leadRepository.save(any(Lead.class))).thenAnswer(inv -> {
             Lead l = inv.getArgument(0);
@@ -153,7 +153,7 @@ class LeadServiceTest {
     @Test
     void crearLead_cuandoFechaEntradaEsNull_laSeteaAutomaticamente() {
         CrearLeadRequest request = nuevoRequest();
-        when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(nuevoAgente()));
+        stubPropietario(nuevoAgente());
         stubSinDuplicados(request);
         when(leadRepository.save(any(Lead.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -169,7 +169,7 @@ class LeadServiceTest {
         CrearLeadRequest request = nuevoRequest();
         request.setEstado(null);
 
-        when(agenteRepository.findByEmail(EMAIL_AGENTE)).thenReturn(Optional.of(nuevoAgente()));
+        stubPropietario(nuevoAgente());
         stubSinDuplicados(request);
         when(leadRepository.save(any(Lead.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -195,9 +195,11 @@ class LeadServiceTest {
     void obtenerLeadsPorId_cuandoPerteneceAOtroAgente_lanzaUnauthorizedActionException() {
         Lead lead = nuevoLead();
         Agente otro = nuevoAgente();
+        otro.setId(99L);
         otro.setEmail("otro@leadera.com");
         lead.setAgente(otro);
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
+        stubPropietarioPorEmail(nuevoAgente());
 
         assertThatThrownBy(() -> leadService.obtenerLeadsPorId(1L, EMAIL_AGENTE))
                 .isInstanceOf(UnauthorizedActionException.class);
@@ -207,6 +209,7 @@ class LeadServiceTest {
     void obtenerLeadsPorId_cuandoLeadPerteneceAlAgente_loRetorna() {
         Lead lead = nuevoLead();
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
+        stubPropietarioPorEmail(nuevoAgente());
 
         LeadDetalleResponse detalle = leadService.obtenerLeadsPorId(1L, EMAIL_AGENTE);
 
@@ -232,6 +235,7 @@ class LeadServiceTest {
         Lead lead = nuevoLead();
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
         when(leadRepository.save(any(Lead.class))).thenAnswer(inv -> inv.getArgument(0));
+        stubPropietarioPorEmail(nuevoAgente());
 
         Lead resultado = leadService.cambiarEstado(1L, EstadoLead.CALIENTE, EMAIL_AGENTE);
 
@@ -243,9 +247,11 @@ class LeadServiceTest {
     void cambiarEstado_cuandoPerteneceAOtroAgente_lanzaUnauthorizedActionException() {
         Lead lead = nuevoLead();
         Agente otro = nuevoAgente();
+        otro.setId(99L);
         otro.setEmail("otro@leadera.com");
         lead.setAgente(otro);
         when(leadRepository.findById(1L)).thenReturn(Optional.of(lead));
+        stubPropietarioPorEmail(nuevoAgente());
 
         assertThatThrownBy(() -> leadService.cambiarEstado(1L, EstadoLead.CALIENTE, EMAIL_AGENTE))
                 .isInstanceOf(UnauthorizedActionException.class);
@@ -254,6 +260,17 @@ class LeadServiceTest {
     }
 
     // ---------- helpers ----------
+
+    // crearLead resuelve actor -> propietario; sin asistentes en juego, ambos son el mismo agente.
+    private void stubPropietario(Agente agente) {
+        when(agenteContextResolver.resolverActor(EMAIL_AGENTE)).thenReturn(agente);
+        when(agenteContextResolver.resolverPropietario(agente)).thenReturn(agente);
+    }
+
+    // Para los checks de ownership (esPropietario) que pasan por resolverPropietarioPorEmail.
+    private void stubPropietarioPorEmail(Agente propietario) {
+        when(agenteContextResolver.resolverPropietarioPorEmail(EMAIL_AGENTE)).thenReturn(propietario);
+    }
 
     private void stubSinDuplicados(CrearLeadRequest request) {
         when(leadRepository.findFirstByAgente_Inmobiliaria_IdAndTelefono(INMOBILIARIA_ID, request.getTelefono()))

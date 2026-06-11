@@ -115,6 +115,142 @@
     letter-spacing: -0.01em;
 }
 
+/* ===== Mis tareas del día (solo ASISTENTE) ===== */
+.tareas-dia {
+    margin-top: 40px;
+}
+
+.tareas-titulo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 16px;
+    letter-spacing: -0.02em;
+}
+
+.tareas-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    margin-bottom: 12px;
+}
+
+.tareas-estado {
+    color: #64748b;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.lista-cuotas {
+    display: flex;
+    flex-direction: column;
+}
+
+.cuota {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cuota-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.cuota-titulo {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.95rem;
+}
+
+.cuota-detalle {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.barra-progreso {
+    width: 100%;
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.barra-relleno {
+    height: 100%;
+    border-radius: 999px;
+    background: #f59e0b;
+    transition: width 0.3s ease;
+}
+
+.barra-relleno.completada { background: #10b981; }
+.barra-relleno.pendiente { background: #cbd5e1; }
+
+.badge-estado {
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.badge-estado.completada { background: #ecfdf5; color: #047857; }
+.badge-estado.en-progreso { background: #fffbeb; color: #d97706; }
+.badge-estado.pendiente { background: #f1f5f9; color: #64748b; }
+
+.lista-checklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.item-checklist {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    font-size: 0.9rem;
+}
+
+.item-checklist:last-child { border-bottom: none; }
+
+.check-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.check-btn:disabled { cursor: default; }
+
+.check-icon {
+    color: #cbd5e1;
+    font-size: 1.4rem;
+    transition: color 0.15s ease;
+}
+
+.check-btn:not(:disabled):hover .check-icon { color: #10b981; }
+.check-icon.activo { color: #10b981; }
+
+.item-titulo { font-weight: 500; }
+
+.item-checklist.completado .item-titulo {
+    text-decoration: line-through;
+    color: #94a3b8;
+}
+
 /* Animaciones */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(15px); }

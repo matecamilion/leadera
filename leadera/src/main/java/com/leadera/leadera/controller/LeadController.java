@@ -13,9 +13,8 @@ import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.enums.EstadoLead;
-import com.leadera.leadera.exception.ResourceNotFoundException;
 import com.leadera.leadera.mapper.LeadMapper;
-import com.leadera.leadera.repository.AgenteRepository;
+import com.leadera.leadera.service.AgenteContextResolver;
 import com.leadera.leadera.service.DashboardService;
 import com.leadera.leadera.service.LeadService;
 import jakarta.validation.Valid;
@@ -35,21 +34,21 @@ import java.util.List;
 public class LeadController {
     private final LeadService leadService;
     private final DashboardService dashboardService;
-    private final AgenteRepository agenteRepository;
+    private final AgenteContextResolver agenteContextResolver;
 
     public LeadController(LeadService leadService, DashboardService dashboardService,
-                          AgenteRepository agenteRepository) {
+                          AgenteContextResolver agenteContextResolver) {
         this.leadService = leadService;
         this.dashboardService = dashboardService;
-        this.agenteRepository = agenteRepository;
+        this.agenteContextResolver = agenteContextResolver;
     }
 
-    // Resuelve el id del agente autenticado desde el email del token JWT.
-    // Evita confiar en un id recibido por path (IDOR).
+    // Resuelve el id del PROPIETARIO EFECTIVO desde el email del token JWT: para un
+    // asistente es su supervisor, así sus stats/dashboard muestran los del agente al
+    // que asiste. Se resuelve siempre del token (nunca de un id por path) para evitar IDOR.
     private Long resolverAgenteId(Authentication authentication) {
-        Agente agente = agenteRepository.findByEmail(authentication.getName())
-                .orElseThrow(() -> new ResourceNotFoundException("Agente no encontrado"));
-        return agente.getId();
+        Agente actor = agenteContextResolver.resolverActor(authentication.getName());
+        return agenteContextResolver.resolverPropietario(actor).getId();
     }
 
     //Crear lead

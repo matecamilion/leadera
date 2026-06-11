@@ -1,0 +1,99 @@
+<div class="contenedor-asistente">
+  <header class="header-asistente">
+    <div>
+      <h1>Mi Asistente</h1>
+      <p class="subtitulo">Seguí las tareas del día de tu asistente: el avance de las cuotas y su checklist.</p>
+    </div>
+
+    <!-- Selector solo si hay más de un asistente -->
+    @if (asistentes().length > 1) {
+      <div class="selector-asistente">
+        <label for="sel-asistente">Asistente</label>
+        <select
+          id="sel-asistente"
+          [value]="asistenteSeleccionadoId()"
+          (change)="onSeleccionarAsistente($any($event.target).value)">
+          @for (a of asistentes(); track a.id) {
+            <option [value]="a.id">{{ a.nombre }} {{ a.apellido }}</option>
+          }
+        </select>
+      </div>
+    }
+  </header>
+
+  <!-- ============== CARGA / VACÍO DE ASISTENTES ============== -->
+  @if (cargandoAsistentes()) {
+    <div class="tarjeta-blanca estado">
+      <span class="spinner"></span> Cargando tus asistentes...
+    </div>
+  } @else if (errorAsistentes()) {
+    <div class="tarjeta-blanca estado error">{{ errorAsistentes() }}</div>
+  } @else if (asistentes().length === 0) {
+    <div class="tarjeta-blanca estado-vacio">
+      <span class="material-symbols-outlined">support_agent</span>
+      <p>Todavía no tenés asistentes asignados.</p>
+      <span class="estado-vacio-sub">Cuando un asistente quede bajo tu supervisión, vas a ver acá sus tareas del día.</span>
+    </div>
+  } @else {
+    <!-- ============== TAREAS DEL ASISTENTE ============== -->
+    @if (asistenteSeleccionado(); as asis) {
+      <p class="nota-readonly">
+        Vista de solo lectura de las tareas de hoy de <strong>{{ asis.nombre }} {{ asis.apellido }}</strong>.
+        Las cuotas se completan solas al alcanzar el objetivo; el checklist lo marca el asistente.
+      </p>
+    }
+
+    @if (cargandoTareas()) {
+      <div class="tarjeta-blanca estado">
+        <span class="spinner"></span> Cargando tareas...
+      </div>
+    } @else if (errorTareas()) {
+      <div class="tarjeta-blanca estado error">{{ errorTareas() }}</div>
+    } @else if (tareas().length === 0) {
+      <div class="tarjeta-blanca estado-vacio">
+        <span class="material-symbols-outlined">event_available</span>
+        <p>No hay tareas para hoy.</p>
+      </div>
+    } @else {
+      <!-- ===== CUOTAS ===== -->
+      @if (cuotas().length > 0) {
+        <section class="bloque">
+          <h2 class="titulo-seccion">Cuotas del día</h2>
+          <div class="lista-cuotas">
+            @for (t of cuotas(); track t.id) {
+              <div class="tarjeta-blanca cuota">
+                <div class="cuota-cabecera">
+                  <span class="cuota-titulo">{{ t.titulo }}</span>
+                  <span class="badge-estado" [ngClass]="estadoCuota(t)">{{ etiquetaEstado(t) }}</span>
+                </div>
+                <div class="barra-progreso">
+                  <div class="barra-relleno" [ngClass]="estadoCuota(t)" [style.width.%]="porcentaje(t)"></div>
+                </div>
+                <span class="cuota-detalle">{{ t.progreso }} de {{ t.objetivo }} leads contactados</span>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ===== TAREAS DISCRETAS (CHECKLIST) ===== -->
+      @if (discretas().length > 0) {
+        <section class="bloque">
+          <h2 class="titulo-seccion">Checklist</h2>
+          <div class="tarjeta-blanca">
+            <ul class="lista-checklist">
+              @for (t of discretas(); track t.id) {
+                <li class="item-checklist" [class.completado]="t.completada">
+                  <span class="material-symbols-outlined check-icon" [class.activo]="t.completada">
+                    {{ t.completada ? 'check_box' : 'check_box_outline_blank' }}
+                  </span>
+                  <span class="item-titulo">{{ t.titulo }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        </section>
+      }
+    }
+  }
+</div>
