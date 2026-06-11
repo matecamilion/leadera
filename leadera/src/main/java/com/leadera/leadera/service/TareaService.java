@@ -66,10 +66,10 @@ public class TareaService {
             throw new UnauthorizedActionException("No podés asignar tareas a agentes de otra inmobiliaria.");
         }
 
-        // Jerarquía (solo para AGENTE/DUENO): se asigna únicamente a los propios
-        // asistentes (supervisor == actor). No aplica a la autoasignación del
-        // asistente: su supervisor es su agente, no él mismo.
-        if (actor.getRol() != RolAgente.ASISTENTE
+        // Jerarquía: la AUTOASIGNACIÓN está permitida para cualquier rol
+        // (asignadoAId == actor.id). Si se asigna a OTRO, solo puede ser un
+        // asistente propio (supervisor == actor).
+        if (!actor.getId().equals(request.getAsignadoAId())
                 && (asignadoA.getSupervisor() == null
                         || !asignadoA.getSupervisor().getId().equals(actor.getId()))) {
             throw new UnauthorizedActionException("Solo podés asignar tareas a tus propios asistentes.");

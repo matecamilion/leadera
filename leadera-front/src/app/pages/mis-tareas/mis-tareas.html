@@ -1,0 +1,153 @@
+<div class="contenedor-tareas">
+  <header class="header-tareas">
+    <div>
+      <h1>Mis tareas de hoy</h1>
+      <p class="subtitulo">{{ fechaDeHoy() }}</p>
+    </div>
+    @if (!esAsistente) {
+      <button type="button" class="btn-agregar" (click)="abrirModal(modalTarea)">
+        <span class="material-symbols-outlined">add_task</span>
+        Nueva tarea
+      </button>
+    }
+  </header>
+
+  @if (cargando()) {
+    <div class="tarjeta-blanca estado">Cargando tus tareas...</div>
+  } @else if (tareas().length === 0) {
+    <div class="tarjeta-blanca estado-vacio">
+      <span class="emoji">🎉</span>
+      <p>No tenés tareas para hoy. ¡Todo libre!</p>
+    </div>
+  } @else {
+    <!-- ===== CUOTAS ===== -->
+    @if (cuotas().length > 0) {
+      <section class="bloque">
+        <h2 class="titulo-seccion">Cuotas del día</h2>
+        <div class="lista-cuotas">
+          @for (t of cuotas(); track t.id) {
+            <div class="tarjeta-blanca cuota">
+              <div class="cuota-cabecera">
+                <span class="cuota-titulo">{{ t.titulo }}</span>
+                <span class="badge-estado" [ngClass]="estadoCuota(t)">{{ etiquetaEstado(t) }}</span>
+              </div>
+              <div class="barra-progreso">
+                <div class="barra-relleno" [ngClass]="estadoCuota(t)" [style.width.%]="porcentaje(t)"></div>
+              </div>
+              <span class="cuota-detalle">{{ t.progreso }} de {{ t.objetivo }} leads contactados</span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ===== TAREAS DISCRETAS ===== -->
+    @if (discretas().length > 0) {
+      <section class="bloque">
+        <h2 class="titulo-seccion">Tareas</h2>
+        <div class="tarjeta-blanca">
+          <ul class="lista-checklist">
+            @for (t of discretas(); track t.id) {
+              <li class="item-checklist" [class.completado]="t.completada">
+                <button
+                  type="button"
+                  class="check-btn"
+                  [disabled]="t.completada || completandoIds().has(t.id)"
+                  (click)="completarTarea(t)"
+                  [attr.aria-label]="t.completada ? 'Tarea completada' : 'Marcar como completada'">
+                  <span class="material-symbols-outlined check-icon" [class.activo]="t.completada">
+                    {{ t.completada ? 'check_box' : 'check_box_outline_blank' }}
+                  </span>
+                </button>
+                <span class="item-titulo">{{ t.titulo }}</span>
+                @if (t.leadId != null) {
+                  <span class="chip-lead">Lead #{{ t.leadId }}</span>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+    }
+  }
+</div>
+
+<!-- ================= MODAL NUEVA TAREA (solo AGENTE/DUENO) ================= -->
+<dialog #modalTarea class="modal-tarea">
+  <div class="modal-content">
+    <h3>Nueva tarea</h3>
+    <p class="modal-sub">Creá una tarea para vos o para uno de tus asistentes.</p>
+
+    <form [formGroup]="formTarea" (ngSubmit)="crearTarea(modalTarea)">
+      <div class="campo">
+        <label>Título</label>
+        <input type="text" formControlName="titulo" placeholder="Ej: Llamar a los leads nuevos">
+        @if (esInvalido('titulo')) {
+          <span class="msj-error">Ingresá un título (máx. 200 caracteres)</span>
+        }
+      </div>
+
+      <!-- Con asistentes: selector. Sin asistentes: queda "Yo mismo" implícito. -->
+      @if (asistentes().length > 0) {
+        <div class="campo">
+          <label>Asignar a</label>
+          <select formControlName="asignadoA">
+            <option value="yo">Yo mismo</option>
+            @for (a of asistentes(); track a.id) {
+              <option [value]="a.id">{{ a.nombre }} {{ a.apellido }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      <div class="campo">
+        <label>Tipo</label>
+        <div class="toggle-tipo">
+          <button type="button" [class.activa]="tipoTarea() === 'discreta'" (click)="cambiarTipoTarea('discreta')">
+            Tarea
+          </button>
+          <button type="button" [class.activa]="tipoTarea() === 'cuota'" (click)="cambiarTipoTarea('cuota')">
+            Cuota
+          </button>
+        </div>
+        <span class="ayuda-tipo">
+          {{ tipoTarea() === 'cuota'
+              ? 'Se completa sola al contactar la cantidad de leads.'
+              : 'Se marca a mano cuando se termina.' }}
+        </span>
+      </div>
+
+      <div class="campo-doble">
+        @if (tipoTarea() === 'cuota') {
+          <div class="campo">
+            <label>Cantidad de leads</label>
+            <input type="number" formControlName="objetivo" min="1">
+            @if (esInvalido('objetivo')) {
+              <span class="msj-error">Mínimo 1</span>
+            }
+          </div>
+        }
+        <div class="campo">
+          <label>Fecha objetivo</label>
+          <input type="date" formControlName="fechaObjetivo">
+          @if (esInvalido('fechaObjetivo')) {
+            <span class="msj-error">Elegí una fecha</span>
+          }
+        </div>
+      </div>
+
+      @if (errorModal()) {
+        <p class="error-servidor">{{ errorModal() }}</p>
+      }
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-cancelar" (click)="modalTarea.close()" [disabled]="guardandoTarea()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-guardar" [disabled]="guardandoTarea()">
+          {{ guardandoTarea() ? 'Creando...' : 'Crear tarea' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>

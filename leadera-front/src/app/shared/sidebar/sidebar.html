@@ -26,6 +26,11 @@
       <span class="nav-label">Gestión del día</span>
     </a>
 
+    <a routerLink="/mis-tareas" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">checklist</span>
+      <span class="nav-label">Mis Tareas</span>
+    </a>
+
     <a routerLink="/perfil" routerLinkActive="active" class="nav-item nav-item-primary">
       <span class="material-symbols-outlined">dashboard</span>
       <span class="nav-label">Dashboard</span>
@@ -67,7 +72,7 @@
       </a>
     }
 
-    @if (tieneAsistentes() && !esAsistente) {
+    @if (!esAsistente) {
       <a routerLink="/mi-equipo-agente" routerLinkActive="active" class="nav-item">
         <span class="material-symbols-outlined">support_agent</span>
         <span class="nav-label">Mi Equipo</span>
