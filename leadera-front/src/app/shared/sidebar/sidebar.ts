@@ -27,6 +27,10 @@ export class Sidebar {
     return this.authService.esAsistente();
   }
 
+  get esAgente(): boolean {
+    return this.authService.getRol() === 'AGENTE';
+  }
+
   iniciales = computed(() => {
     const nombre = this.agenteNombre();
     if (!nombre || nombre === 'Usuario') return 'U';
