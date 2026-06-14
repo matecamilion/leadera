@@ -18,22 +18,20 @@
       </div>
     </div>
 
-    @if (mostrarResumenCards()) {
-      <div class="resumen-cards">
-        <div class="resumen-card calientes">
-          <span class="resumen-numero">{{ totalCalientes() }}</span>
-          <span class="resumen-label">CALIENTES</span>
-        </div>
-        <div class="resumen-card nuevos">
-          <span class="resumen-numero">{{ totalNuevos() }}</span>
-          <span class="resumen-label">NUEVOS</span>
-        </div>
-        <div class="resumen-card seguimientos">
-          <span class="resumen-numero">{{ totalSeguim() }}</span>
-          <span class="resumen-label">SEGUIM.</span>
-        </div>
+    <div class="resumen-cards">
+      <div class="resumen-card calientes" routerLink="/leads">
+        <span class="resumen-numero">{{ totalCalientes() }}</span>
+        <span class="resumen-label">CALIENTES</span>
       </div>
-    }
+      <div class="resumen-card nuevos" routerLink="/leads">
+        <span class="resumen-numero">{{ totalNuevos() }}</span>
+        <span class="resumen-label">NUEVOS</span>
+      </div>
+      <div class="resumen-card seguimientos" routerLink="/leads">
+        <span class="resumen-numero">{{ totalSeguim() }}</span>
+        <span class="resumen-label">SEGUIM.</span>
+      </div>
+    </div>
 
     <app-lead-section
       title="Leads prioritarios"
