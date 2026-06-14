@@ -95,3 +95,42 @@
     gap: 4px;
   }
 }
+
+.resumen-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.resumen-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.resumen-numero {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.resumen-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.resumen-card.calientes    .resumen-numero { color: #e11d48; }
+.resumen-card.nuevos       .resumen-numero { color: #0d9488; }
+.resumen-card.seguimientos .resumen-numero { color: #7c3aed; }
+
+@media (max-width: 480px) {
+  .resumen-cards { gap: 8px; }
+  .resumen-numero { font-size: 1.6rem; }
+}

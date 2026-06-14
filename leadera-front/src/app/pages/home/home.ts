@@ -16,6 +16,13 @@ export class Home implements OnInit {
   error = signal('');
   leadsHoy = signal<LeadsHoyResponse | null>(null);
 
+  // Feature flag — cambiar a false para volver al diseño sin cards
+  mostrarResumenCards = signal(true);
+
+  totalCalientes = computed(() => this.leadsHoy()?.prioritarios?.length ?? 0);
+  totalNuevos    = computed(() => this.leadsHoy()?.nuevosSinContacto?.length ?? 0);
+  totalSeguim    = computed(() => this.leadsHoy()?.seguimientosDeHoy?.length ?? 0);
+
   totalOriginal = computed(() => this.leadsHoy()?.totalTareasDelDia ?? 0);
   completadas = computed(() => this.leadsHoy()?.tareasCompletadasDelDia ?? 0);
 
