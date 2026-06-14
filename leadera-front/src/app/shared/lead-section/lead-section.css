@@ -220,3 +220,120 @@
     font-size: 1.3rem;
   }
 }
+
+/* ========================= */
+/* LISTA COMPACTA — desktop  */
+/* ========================= */
+
+.leads-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.lead-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 4px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 8px;
+}
+
+.lead-row:last-child { border-bottom: none; }
+.lead-row:hover { background: #f8fafc; }
+
+.lead-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.av-caliente { background: #ffe4e6; color: #be123c; }
+.av-tibio    { background: #fef9c3; color: #a16207; }
+.av-frio     { background: #dbeafe; color: #1d4ed8; }
+.av-inactivo { background: #f3f4f6; color: #4b5563; }
+
+.lead-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lead-row-nombre {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lead-row-detalle {
+  font-size: 0.78rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lead-row-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.pill-caliente { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+.pill-tibio    { background: #fef9c3; color: #a16207; border: 1px solid #fde68a; }
+.pill-frio     { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.pill-inactivo { background: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; }
+
+.lead-row-tiempo {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  flex-shrink: 0;
+  min-width: 80px;
+  text-align: right;
+}
+
+.lead-row-btn {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.lead-row-btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
+
+.lead-list-empty {
+  padding: 20px 4px;
+  font-size: 0.88rem;
+  color: #94a3b8;
+}
+
+/* Visibilidad lista vs carrusel según breakpoint */
+@media (max-width: 768px) {
+  .leads-list { display: none; }
+  .cards-carousel { display: block; }
+}
+
+@media (min-width: 769px) {
+  .leads-list { display: flex; }
+  .cards-carousel { display: none; }
+}

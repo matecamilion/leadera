@@ -1,11 +1,13 @@
 import { Component, ElementRef, OnDestroy, effect, input, signal, viewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { TitleCasePipe } from '@angular/common';
 import { LeadHoy } from '../../core/models/lead-hoy';
 import { LeadCard } from '../lead-card/lead-card';
 
 @Component({
   selector: 'app-lead-section',
   standalone: true,
-  imports: [LeadCard],
+  imports: [LeadCard, TitleCasePipe],
   templateUrl: './lead-section.html',
   styleUrl: './lead-section.css',
 })
@@ -22,7 +24,7 @@ export class LeadSection implements OnDestroy {
 
   private resizeObserver?: ResizeObserver;
 
-  constructor() {
+  constructor(private router: Router) {
     effect(() => {
       this.leads();
       const el = this.viewport()?.nativeElement;
@@ -61,5 +63,50 @@ export class LeadSection implements OnDestroy {
     if (!el) return;
     this.canScrollLeft.set(el.scrollLeft > 0);
     this.canScrollRight.set(Math.ceil(el.scrollLeft + el.clientWidth) < el.scrollWidth);
+  }
+
+  iniciales(lead: LeadHoy): string {
+    return `${lead.nombre.charAt(0)}${lead.apellido.charAt(0)}`.toUpperCase();
+  }
+
+  claseAvatar(estado: string): string {
+    switch (estado) {
+      case 'CALIENTE': return 'av-caliente';
+      case 'TIBIO':    return 'av-tibio';
+      case 'FRIO':     return 'av-frio';
+      default:         return 'av-inactivo';
+    }
+  }
+
+  clasePill(estado: string): string {
+    switch (estado) {
+      case 'CALIENTE': return 'pill-caliente';
+      case 'TIBIO':    return 'pill-tibio';
+      case 'FRIO':     return 'pill-frio';
+      default:         return 'pill-inactivo';
+    }
+  }
+
+  tiempoDesde(ultimoContacto?: string | null): string {
+    if (!ultimoContacto) return 'Sin contacto';
+    const fecha = new Date(ultimoContacto);
+    const ahora = new Date();
+    const diffMs = Math.max(0, ahora.getTime() - fecha.getTime());
+    const diffMin = Math.floor(diffMs / (1000 * 60));
+    const diffHoras = Math.floor(diffMin / 60);
+    const diffDias = Math.floor(diffHoras / 24);
+    if (diffMin < 1) return 'Recién';
+    if (diffMin < 60) return `Hace ${diffMin} min`;
+    if (diffHoras < 24) return diffHoras === 1 ? 'Hace 1 hora' : `Hace ${diffHoras} horas`;
+    if (diffDias === 1) return 'Hace 1 día';
+    return `Hace ${diffDias} días`;
+  }
+
+  irADetalle(id: number): void {
+    this.router.navigate(['/leads', id]);
+  }
+
+  irAInteraccion(id: number): void {
+    this.router.navigate(['/leads', id, 'interaccion']);
   }
 }

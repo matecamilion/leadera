@@ -35,6 +35,31 @@
 
   </div>
 
+  <!-- DESKTOP: lista compacta -->
+  <div class="leads-list">
+    @for (lead of leads(); track lead.id) {
+      <div class="lead-row" (click)="irADetalle(lead.id)">
+        <div class="lead-avatar" [class]="claseAvatar(lead.estado)">
+          {{ iniciales(lead) }}
+        </div>
+        <div class="lead-row-info">
+          <span class="lead-row-nombre">{{ lead.nombre }} {{ lead.apellido }}</span>
+          <span class="lead-row-detalle">{{ lead.ultimaInteraccion ?? 'Sin interacciones registradas' }}</span>
+        </div>
+        <span class="lead-row-pill" [class]="clasePill(lead.estado)">
+          {{ lead.estado | titlecase }}
+        </span>
+        <span class="lead-row-tiempo">{{ tiempoDesde(lead.ultimoContacto) }}</span>
+        <button class="lead-row-btn" (click)="$event.stopPropagation(); irAInteraccion(lead.id)">
+          Registrar
+        </button>
+      </div>
+    }
+    @empty {
+      <p class="lead-list-empty">No hay leads en esta sección.</p>
+    }
+  </div>
+
   <div class="cards-carousel">
     @if (canScrollLeft()) {
       <button type="button" class="carousel-arrow prev" (click)="scrollPrev()" aria-label="Anterior">
