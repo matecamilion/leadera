@@ -223,4 +223,69 @@ class CrossTenantWriteTest {
         evento.setFecha(LocalDateTime.now());
         return eventoOperacionRepository.save(evento);
     }
+
+    @Test
+    void crearOperacion_ignora_id_de_busqueda_en_body() throws Exception {
+        Lead leadA = crearLead(agenteA, "Comprador", "DeA", "5555555555");
+        Operacion operacionA = crearOperacionCompra(agenteA, leadA);
+        Long busquedaAId = operacionA.getBusqueda().getId();
+
+        Lead leadB = crearLead(agenteB, "Comprador", "DeB", "6666666666");
+
+        // B manda en el body el id de la busqueda de A intentando pisar datos ajenos.
+        // Con BusquedaData (sin campo id), Jackson lo ignora y se crea una busqueda nueva.
+        mockMvc.perform(post("/leads/" + leadB.getId() + "/operaciones")
+                        .header("Authorization", bearer(agenteB))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "titulo": "Búsqueda de DEPTO",
+                                  "tipoOperacion": "COMPRA",
+                                  "descripcion": "test",
+                                  "busqueda": {
+                                    "zona": "Palermo",
+                                    "tipoVivienda": "DEPTO",
+                                    "id": %d
+                                  }
+                                }
+                                """.formatted(busquedaAId)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.tipoOperacion").value("COMPRA"))
+                .andExpect(jsonPath("$.leadId").value(leadB.getId().intValue()));
+
+        // La busqueda de A sigue intacta.
+        assertThat(busquedaRepository.findById(busquedaAId)).isPresent();
+        assertThat(busquedaRepository.findById(busquedaAId).get().getZona()).isEqualTo("Palermo");
+    }
+
+    @Test
+    void crearOperacion_devuelve_OperacionDTO_sin_exponer_entity() throws Exception {
+        Lead leadA = crearLead(agenteA, "Comprador", "DeA", "7777777777");
+
+        String response = mockMvc.perform(post("/leads/" + leadA.getId() + "/operaciones")
+                        .header("Authorization", bearer(agenteA))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "titulo": "Búsqueda test",
+                                  "tipoOperacion": "COMPRA",
+                                  "descripcion": "desc",
+                                  "busqueda": {
+                                    "zona": "Microcentro",
+                                    "tipoVivienda": "DEPTO"
+                                  }
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.titulo").value("Búsqueda test"))
+                .andExpect(jsonPath("$.estadoOperacion").value("PUBLICADA"))
+                .andExpect(jsonPath("$.leadId").value(leadA.getId().intValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        // La entity no debe exponer el campo "agente" ni "lead" completos.
+        assertThat(response).doesNotContain("\"agente\":{");
+        assertThat(response).doesNotContain("\"lead\":{");
+    }
 }

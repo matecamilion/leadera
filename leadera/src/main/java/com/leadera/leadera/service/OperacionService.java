@@ -6,9 +6,12 @@ import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.entity.Operacion;
 import com.leadera.leadera.entity.Propiedad;
 import com.leadera.leadera.dto.CrearEventoRequest;
+import com.leadera.leadera.dto.CrearOperacionRequest;
 import com.leadera.leadera.dto.EventoOperacionDTO;
+import com.leadera.leadera.dto.OperacionDTO;
 import com.leadera.leadera.dto.OperacionPipelineDTO;
 import com.leadera.leadera.mapper.EventoOperacionMapper;
+import com.leadera.leadera.mapper.PropiedadMapper;
 import com.leadera.leadera.enums.EstadoOperacion;
 import com.leadera.leadera.enums.EstadoPropiedad;
 import com.leadera.leadera.enums.TipoOperacion;
@@ -69,7 +72,7 @@ public class OperacionService {
     }
 
     @Transactional
-    public Operacion crearOperacion(Long leadId, Operacion operacionRequest, String emailAgente) {
+    public OperacionDTO crearOperacion(Long leadId, CrearOperacionRequest request, String emailAgente) {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con id: " + leadId));
 
@@ -79,21 +82,20 @@ public class OperacionService {
         }
 
         Operacion operacion = new Operacion();
-
         operacion.setLead(lead);
         operacion.setAgente(lead.getAgente());
-        operacion.setTitulo(operacionRequest.getTitulo());
-        operacion.setTipoOperacion(operacionRequest.getTipoOperacion());
-        operacion.setDescripcion(operacionRequest.getDescripcion());
+        operacion.setTitulo(request.titulo());
+        operacion.setTipoOperacion(request.tipoOperacion());
+        operacion.setDescripcion(request.descripcion());
         operacion.setEstadoOperacion(EstadoOperacion.PUBLICADA);
         operacion.setFechaCreacion(LocalDateTime.now(zonaHoraria));
 
-        if (operacionRequest.getTipoOperacion() == TipoOperacion.VENTA) {
-            asociarPropiedadAVenta(operacion, operacionRequest, leadId);
+        if (request.tipoOperacion() == TipoOperacion.VENTA) {
+            asociarPropiedadAVenta(operacion, request, leadId);
         }
 
-        if (operacionRequest.getTipoOperacion() == TipoOperacion.COMPRA) {
-            asociarBusquedaACompra(operacion, operacionRequest);
+        if (request.tipoOperacion() == TipoOperacion.COMPRA) {
+            asociarBusquedaACompra(operacion, request);
         }
 
         Operacion guardada = operacionRepository.save(operacion);
@@ -102,15 +104,15 @@ public class OperacionService {
             sincronizarEstadoPropiedad(guardada.getPropiedad());
         }
 
-        return guardada;
+        return toDTO(guardada);
     }
 
-    private void asociarPropiedadAVenta(Operacion operacion, Operacion operacionRequest, Long leadId) {
-        if (operacionRequest.getPropiedad() == null || operacionRequest.getPropiedad().getId() == 0) {
+    private void asociarPropiedadAVenta(Operacion operacion, CrearOperacionRequest request, Long leadId) {
+        if (request.propiedad() == null || request.propiedad().id() == null) {
             throw new BadRequestException("Una operación de venta debe tener una propiedad asociada");
         }
 
-        Long propiedadId = operacionRequest.getPropiedad().getId();
+        Long propiedadId = request.propiedad().id();
 
         Propiedad propiedad = propiedadRepository.findById(propiedadId)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe la propiedad con id: " + propiedadId));
@@ -127,45 +129,51 @@ public class OperacionService {
         operacion.setBusqueda(null);
     }
 
-    private void asociarBusquedaACompra(Operacion operacion, Operacion operacionRequest) {
-        if (operacionRequest.getBusqueda() == null) {
+    private void asociarBusquedaACompra(Operacion operacion, CrearOperacionRequest request) {
+        if (request.busqueda() == null) {
             throw new BadRequestException("Una operación de compra debe tener una búsqueda asociada");
         }
 
-        Busqueda busqueda = operacionRequest.getBusqueda();
-        busqueda.setId(null);
-        Busqueda busquedaGuardada = busquedaRepository.save(busqueda);
+        CrearOperacionRequest.BusquedaData data = request.busqueda();
+        Busqueda busqueda = new Busqueda();
+        busqueda.setPrecioMin(data.precioMin());
+        busqueda.setPrecioMax(data.precioMax());
+        busqueda.setCantidadAmbientes(data.cantidadAmbientes());
+        busqueda.setMetrosTotales(data.metrosTotales());
+        busqueda.setMetrosCubiertos(data.metrosCubiertos());
+        busqueda.setMetrosDescubiertos(data.metrosDescubiertos());
+        busqueda.setTipoVivienda(data.tipoVivienda());
+        busqueda.setZona(data.zona());
+        busqueda.setObservaciones(data.observaciones());
 
-        operacion.setBusqueda(busquedaGuardada);
+        operacion.setBusqueda(busquedaRepository.save(busqueda));
         operacion.setPropiedad(null);
     }
 
-    public List<Operacion> obtenerOperacionesDelLead(Long leadId, String emailAgente) {
+    public List<OperacionDTO> obtenerOperacionesDelLead(Long leadId, String emailAgente) {
         String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
-        return operacionRepository.findByLeadIdAndAgenteEmail(leadId, emailPropietario);
+        return operacionRepository.findByLeadIdAndAgenteEmail(leadId, emailPropietario)
+                .stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    public List<Operacion> obtenerOperacionesAbiertasDelLead(Long leadId, String emailAgente) {
+    public List<OperacionDTO> obtenerOperacionesAbiertasDelLead(Long leadId, String emailAgente) {
         String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
         return operacionRepository.findByLeadIdAndAgenteEmailAndEstadoOperacionNotIn(
                 leadId,
                 emailPropietario,
-                List.of(
-                        EstadoOperacion.CERRADA_GANADA,
-                        EstadoOperacion.CANCELADA
-                )
-        );
+                List.of(EstadoOperacion.CERRADA_GANADA, EstadoOperacion.CANCELADA)
+        ).stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    public Operacion obtenerOperacionPorId(Long leadId, Long operacionId, String emailAgente) {
+    public OperacionDTO obtenerOperacionPorId(Long leadId, Long operacionId, String emailAgente) {
         String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
         return operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailPropietario)
+                .map(this::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe la operación o no tenés permiso para verla"));
     }
 
-
     @Transactional
-    public Operacion cambiarEstadoOperacion(
+    public OperacionDTO cambiarEstadoOperacion(
             Long leadId,
             Long operacionId,
             EstadoOperacion nuevoEstado,
@@ -173,12 +181,10 @@ public class OperacionService {
     ) {
         String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
         Operacion operacion = operacionRepository.findByIdAndLeadIdAndAgenteEmail(
-                operacionId,
-                leadId,
-                emailPropietario
+                operacionId, leadId, emailPropietario
         ).orElseThrow(() -> new ResourceNotFoundException("No existe la operación o no tenés permiso para modificarla"));
 
-        return aplicarCambioDeEstado(operacion, nuevoEstado);
+        return toDTO(aplicarCambioDeEstado(operacion, nuevoEstado));
     }
 
     @Transactional
@@ -326,5 +332,22 @@ public class OperacionService {
             propiedad.setEstado(nuevoEstado);
             propiedadRepository.save(propiedad);
         }
+    }
+
+    private OperacionDTO toDTO(Operacion operacion) {
+        return new OperacionDTO(
+                operacion.getId(),
+                operacion.getTitulo(),
+                operacion.getTipoOperacion(),
+                operacion.getEstadoOperacion(),
+                operacion.getDescripcion(),
+                operacion.getFechaCreacion(),
+                operacion.getFechaCierre(),
+                operacion.getFechaProximoSeguimiento(),
+                PropiedadMapper.toDTO(operacion.getPropiedad()),
+                operacion.getBusqueda(),
+                operacion.getLead() != null ? operacion.getLead().getId() : null,
+                operacion.getMontoOperacion()
+        );
     }
 }

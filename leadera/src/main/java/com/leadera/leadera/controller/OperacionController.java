@@ -1,8 +1,9 @@
 package com.leadera.leadera.controller;
 
 import com.leadera.leadera.dto.CrearEventoRequest;
+import com.leadera.leadera.dto.CrearOperacionRequest;
 import com.leadera.leadera.dto.EventoOperacionDTO;
-import com.leadera.leadera.entity.Operacion;
+import com.leadera.leadera.dto.OperacionDTO;
 import com.leadera.leadera.enums.EstadoOperacion;
 import com.leadera.leadera.service.OperacionService;
 import jakarta.validation.Valid;
@@ -23,77 +24,48 @@ public class OperacionController {
     }
 
     @PostMapping
-    public ResponseEntity<Operacion> crearOperacion(
+    public ResponseEntity<OperacionDTO> crearOperacion(
             @PathVariable Long leadId,
-            @RequestBody Operacion operacion,
+            @Valid @RequestBody CrearOperacionRequest request,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(
-                operacionService.crearOperacion(
-                        leadId,
-                        operacion,
-                        authentication.getName()
-                )
-        );
+        return ResponseEntity.ok(operacionService.crearOperacion(leadId, request, authentication.getName()));
     }
 
     @GetMapping
-    public ResponseEntity<List<Operacion>> obtenerOperacionesDelLead(
+    public ResponseEntity<List<OperacionDTO>> obtenerOperacionesDelLead(
             @PathVariable Long leadId,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(
-                operacionService.obtenerOperacionesDelLead(
-                        leadId,
-                        authentication.getName()
-                )
-        );
+        return ResponseEntity.ok(operacionService.obtenerOperacionesDelLead(leadId, authentication.getName()));
     }
 
     @GetMapping("/abiertas")
-    public ResponseEntity<List<Operacion>> obtenerOperacionesAbiertasDelLead(
+    public ResponseEntity<List<OperacionDTO>> obtenerOperacionesAbiertasDelLead(
             @PathVariable Long leadId,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(
-                operacionService.obtenerOperacionesAbiertasDelLead(
-                        leadId,
-                        authentication.getName()
-                )
-        );
+        return ResponseEntity.ok(operacionService.obtenerOperacionesAbiertasDelLead(leadId, authentication.getName()));
     }
 
-
     @GetMapping("/{operacionId}")
-    public ResponseEntity<Operacion> obtenerOperacionPorId(
+    public ResponseEntity<OperacionDTO> obtenerOperacionPorId(
             @PathVariable Long leadId,
             @PathVariable Long operacionId,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(
-                operacionService.obtenerOperacionPorId(
-                        leadId,
-                        operacionId,
-                        authentication.getName()
-                )
-        );
+        return ResponseEntity.ok(operacionService.obtenerOperacionPorId(leadId, operacionId, authentication.getName()));
     }
 
-
     @PatchMapping("/{operacionId}/estado")
-    public ResponseEntity<Operacion> cambiarEstadoOperacion(
+    public ResponseEntity<OperacionDTO> cambiarEstadoOperacion(
             @PathVariable Long leadId,
             @PathVariable Long operacionId,
             @RequestParam EstadoOperacion estadoOperacion,
             Authentication authentication
     ) {
         return ResponseEntity.ok(
-                operacionService.cambiarEstadoOperacion(
-                        leadId,
-                        operacionId,
-                        estadoOperacion,
-                        authentication.getName()
-                )
+                operacionService.cambiarEstadoOperacion(leadId, operacionId, estadoOperacion, authentication.getName())
         );
     }
 
@@ -104,9 +76,7 @@ public class OperacionController {
             @Valid @RequestBody CrearEventoRequest request,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(
-                operacionService.registrarEvento(leadId, operacionId, request, authentication.getName())
-        );
+        return ResponseEntity.ok(operacionService.registrarEvento(leadId, operacionId, request, authentication.getName()));
     }
 
     @GetMapping("/{operacionId}/eventos")
@@ -115,8 +85,6 @@ public class OperacionController {
             @PathVariable Long operacionId,
             Authentication authentication
     ) {
-        return ResponseEntity.ok(
-                operacionService.obtenerEventos(leadId, operacionId, authentication.getName())
-        );
+        return ResponseEntity.ok(operacionService.obtenerEventos(leadId, operacionId, authentication.getName()));
     }
 }
