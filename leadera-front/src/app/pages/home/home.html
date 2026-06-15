@@ -33,6 +33,52 @@
       </div>
     </div>
 
+    @if (matches().length > 0) {
+      <section class="seccion-matches">
+        <div class="matches-header">
+          <div class="matches-titulo">
+            <span class="material-symbols-outlined matches-icono">hub</span>
+            <h2>Coincidencias encontradas</h2>
+            <span class="badge-matches">{{ totalMatches() }}</span>
+          </div>
+          <p class="matches-subtitulo">
+            Compradores de tu cartera que buscan propiedades como las tuyas
+          </p>
+        </div>
+
+        <div class="matches-lista">
+          @for (match of matches(); track match.propiedadId) {
+            <div class="match-card">
+              <div class="match-propiedad">
+                <span class="material-symbols-outlined">home_work</span>
+                <div>
+                  <span class="match-direccion">{{ match.direccion }}</span>
+                  <span class="match-zona">{{ match.zona }} · {{ match.tipoVivienda }}</span>
+                </div>
+              </div>
+              <div class="match-compradores">
+                @for (comprador of match.compradores; track comprador.leadId) {
+                  <a [routerLink]="['/leads', comprador.leadId]" class="match-comprador-chip">
+                    <span class="chip-nombre">
+                      {{ comprador.nombreLead }} {{ comprador.apellidoLead }}
+                    </span>
+                    <span class="chip-estado" [ngClass]="comprador.estadoLead.toLowerCase()">
+                      {{ comprador.estadoLead }}
+                    </span>
+                    @if (!comprador.esMio) {
+                      <span class="chip-agente">
+                        via {{ comprador.nombreAgente }}
+                      </span>
+                    }
+                  </a>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
     <app-lead-section
       title="Leads prioritarios"
       subtitle="Atención inmediata requerida por falta de contacto"

@@ -3,6 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+export interface MatchDelDia {
+  propiedadId: number;
+  direccion: string;
+  zona: string;
+  tipoVivienda: string;
+  compradores: CompradorPotencial[];
+}
+
 // Espejo de CompradorPotencialDTO. El matching es compartido a nivel
 // inmobiliaria: cuando esMio es false el lead pertenece a otro agente del
 // equipo y el backend NUNCA envía su teléfono/email.
@@ -34,6 +42,12 @@ export class MatchingService {
   obtenerCompradores(propiedadId: number): Observable<CompradorPotencial[]> {
     return this.http.get<CompradorPotencial[]>(
       `${this.apiUrl}/${propiedadId}/compradores-potenciales`,
+    );
+  }
+
+  obtenerMisMatches(): Observable<MatchDelDia[]> {
+    return this.http.get<MatchDelDia[]>(
+      `${environment.apiUrl}/propiedades/mis-matches`,
     );
   }
 }

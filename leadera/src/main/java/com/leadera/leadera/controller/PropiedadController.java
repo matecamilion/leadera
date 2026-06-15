@@ -2,6 +2,7 @@ package com.leadera.leadera.controller;
 
 import com.leadera.leadera.dto.CompradorPotencialDTO;
 import com.leadera.leadera.dto.CrearPropiedadRequest;
+import com.leadera.leadera.dto.MatchDelDiaDTO;
 import com.leadera.leadera.dto.EditarPropiedadRequest;
 import com.leadera.leadera.dto.EventoOperacionResumenDTO;
 import com.leadera.leadera.dto.PropiedadDTO;
@@ -72,6 +73,12 @@ public class PropiedadController {
     public ResponseEntity<List<CompradorPotencialDTO>> compradoresPotenciales(@PathVariable Long id,
                                                                               Authentication authentication) {
         return ResponseEntity.ok(propiedadService.buscarCompradoresPotenciales(id, authentication.getName()));
+    }
+
+    @GetMapping("/mis-matches")
+    public ResponseEntity<List<MatchDelDiaDTO>> obtenerMisMatches(Authentication authentication) {
+        return ResponseEntity.ok(
+                propiedadService.obtenerMatchesDelAgente(authentication.getName()));
     }
 
 }

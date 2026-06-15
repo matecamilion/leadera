@@ -2,6 +2,7 @@ package com.leadera.leadera.service;
 
 import com.leadera.leadera.dto.CompradorPotencialDTO;
 import com.leadera.leadera.dto.CrearPropiedadRequest;
+import com.leadera.leadera.dto.MatchDelDiaDTO;
 import com.leadera.leadera.dto.EditarPropiedadRequest;
 import com.leadera.leadera.dto.EventoOperacionResumenDTO;
 import com.leadera.leadera.dto.PropiedadDTO;
@@ -180,6 +181,36 @@ public class PropiedadService {
         return operacionRepository.findCandidatosParaMatching(inmobiliariaId).stream()
                 .filter(op -> coincide(propiedad, op.getBusqueda()))
                 .map(op -> toCompradorDTO(op, agenteActual.getId()))
+                .toList();
+    }
+
+    public List<MatchDelDiaDTO> obtenerMatchesDelAgente(String emailAgente) {
+        Agente agente = agenteAutenticadoService.obtenerPorEmail(emailAgente);
+        Long inmobiliariaId = agente.getInmobiliaria().getId();
+
+        List<Operacion> candidatos =
+                operacionRepository.findCandidatosParaMatching(inmobiliariaId);
+
+        List<Propiedad> disponibles =
+                propiedadRepository.findByLeadAgenteEmailAndEstado(
+                        emailAgente, EstadoPropiedad.DISPONIBLE);
+
+        return disponibles.stream()
+                .map(propiedad -> {
+                    List<CompradorPotencialDTO> matches = candidatos.stream()
+                            .filter(op -> coincide(propiedad, op.getBusqueda()))
+                            .map(op -> toCompradorDTO(op, agente.getId()))
+                            .toList();
+                    return new MatchDelDiaDTO(
+                            propiedad.getId(),
+                            propiedad.getDireccion(),
+                            propiedad.getZona(),
+                            propiedad.getTipoVivienda() != null
+                                    ? propiedad.getTipoVivienda().name() : null,
+                            matches
+                    );
+                })
+                .filter(m -> !m.compradores().isEmpty())
                 .toList();
     }
 

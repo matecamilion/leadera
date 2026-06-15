@@ -141,3 +141,131 @@
   .resumen-cards { gap: 8px; }
   .resumen-numero { font-size: 1.6rem; }
 }
+
+.seccion-matches {
+  margin-bottom: 1.5rem;
+}
+
+.matches-header {
+  margin-bottom: 1rem;
+}
+
+.matches-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.matches-titulo h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink-1);
+  margin: 0;
+}
+
+.matches-icono {
+  color: var(--brand);
+  font-size: 1.2rem;
+}
+
+.badge-matches {
+  background: var(--brand);
+  color: white;
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.matches-subtitulo {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  margin: 0;
+}
+
+.matches-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.match-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.match-propiedad {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink-2);
+}
+
+.match-propiedad .material-symbols-outlined {
+  color: var(--brand);
+  font-size: 1.1rem;
+}
+
+.match-direccion {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--ink-1);
+}
+
+.match-zona {
+  font-size: 0.75rem;
+  color: var(--ink-3);
+}
+
+.match-compradores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.match-comprador-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--surface-2, #f4f4f5);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.match-comprador-chip:hover {
+  border-color: var(--brand);
+}
+
+.chip-nombre {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-1);
+}
+
+.chip-estado {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.chip-estado.caliente { background: #fef3c7; color: #92400e; }
+.chip-estado.tibio    { background: #dbeafe; color: #1e40af; }
+.chip-estado.frio     { background: #e0f2fe; color: #0369a1; }
+
+.chip-agente {
+  font-size: 0.7rem;
+  color: var(--ink-3);
+}

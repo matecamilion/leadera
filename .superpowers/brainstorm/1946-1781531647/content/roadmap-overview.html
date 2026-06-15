@@ -1,0 +1,302 @@
+<style>
+  .roadmap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0 0 2rem 0;
+  }
+  .phase {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    border: 1px solid var(--border, #333);
+    border-bottom: none;
+    overflow: hidden;
+  }
+  .phase:last-child { border-bottom: 1px solid var(--border, #333); border-radius: 0 0 8px 8px; }
+  .phase:first-child { border-radius: 8px 8px 0 0; }
+  .phase-header {
+    padding: 1.2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+  .phase-0 .phase-header { background: #1a1a2e; border-right: 3px solid #e74c3c; }
+  .phase-1 .phase-header { background: #1a2e1a; border-right: 3px solid #27ae60; }
+  .phase-2 .phase-header { background: #1a251a; border-right: 3px solid #2ecc71; }
+  .phase-3 .phase-header { background: #1a1a2e; border-right: 3px solid #3498db; }
+  .phase-4 .phase-header { background: #2e1a2e; border-right: 3px solid #9b59b6; }
+  .phase-5 .phase-header { background: #2e2a1a; border-right: 3px solid #f39c12; }
+  .phase-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .phase-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .phase-duration {
+    font-size: 0.75rem;
+    opacity: 0.55;
+    margin-top: 0.2rem;
+  }
+  .phase-body {
+    padding: 1rem 1.2rem;
+    background: rgba(255,255,255,0.02);
+  }
+  .items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 0.3rem 0.6rem;
+  }
+  .item .badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    border-radius: 3px;
+    padding: 0.1rem 0.35rem;
+    text-transform: uppercase;
+  }
+  .badge-s { background: #27ae60; color: #fff; }
+  .badge-m { background: #f39c12; color: #000; }
+  .badge-l { background: #e74c3c; color: #fff; }
+  .badge-crit { background: #e74c3c; color: #fff; }
+  .badge-block { background: #c0392b; color: #fff; }
+  .impact-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+    font-size: 0.72rem;
+    opacity: 0.65;
+  }
+  .impact-dots {
+    display: flex;
+    gap: 3px;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+  .dot.on { background: #27ae60; }
+  .dot.revenue { background: #f39c12; }
+  .connector {
+    height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .gate {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    margin: 0.35rem auto;
+  }
+  .gate.green { border-color: #27ae60; color: #27ae60; }
+  .gate.orange { border-color: #f39c12; color: #f39c12; }
+  .legend {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.35rem; }
+</style>
+
+<h2>Leadera — Roadmap hacia la primera venta</h2>
+<p class="subtitle">Enfoque B · SaaS mensual + Stripe · Solo developer · Ritmo sostenido</p>
+
+<div class="legend">
+  <div class="legend-item"><span class="badge badge-s">S</span> &lt; 3 días</div>
+  <div class="legend-item"><span class="badge badge-m">M</span> 3–10 días</div>
+  <div class="legend-item"><span class="badge badge-l">L</span> &gt; 10 días</div>
+  <div class="legend-item"><span style="width:10px;height:10px;background:#27ae60;border-radius:50%;display:inline-block"></span> Impacto técnico</div>
+  <div class="legend-item"><span style="width:10px;height:10px;background:#f39c12;border-radius:50%;display:inline-block"></span> Impacto comercial</div>
+</div>
+
+<div class="roadmap">
+
+  <!-- FASE 0 -->
+  <div class="phase phase-0">
+    <div class="phase-header">
+      <span class="phase-label">Fase 0 · Bloqueo</span>
+      <span class="phase-name">Seguridad Crítica</span>
+      <span class="phase-duration">~1 semana</span>
+    </div>
+    <div class="phase-body">
+      <ul class="items">
+        <li class="item"><span class="badge badge-crit">CRIT</span> Fix cross-tenant write (entity binding en controllers) <span class="badge badge-s">S</span></li>
+        <li class="item"><span class="badge badge-crit">CRIT</span> Supabase Storage: RLS + service key (sin subida anónima) <span class="badge badge-m">M</span></li>
+        <li class="item"><span class="badge badge-s">S</span> environment.ts dev → localhost:8080</li>
+        <li class="item"><span class="badge badge-s">S</span> Remover email del log WARN (Ley 25.326)</li>
+        <li class="item"><span class="badge badge-s">S</span> CORS: quitar wildcard vercel.app</li>
+      </ul>
+      <div class="impact-bar">
+        Impacto técnico <div class="impact-dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div>
+        &nbsp;|&nbsp; Impacto comercial <div class="impact-dots"><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot"></div><div class="dot"></div></div>
+        &nbsp;— Prerequisito para todo lo demás
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:0.3rem 0">
+    <span class="gate green">✓ Gate: sin vulnerabilidades críticas abiertas</span>
+  </div>
+
+  <!-- FASE 1 -->
+  <div class="phase phase-1">
+    <div class="phase-header">
+      <span class="phase-label">Fase 1 · Core</span>
+      <span class="phase-name">Billing con Stripe</span>
+      <span class="phase-duration">~3 semanas</span>
+    </div>
+    <div class="phase-body">
+      <ul class="items">
+        <li class="item"><span class="badge badge-m">M</span> Integración Stripe backend (subscriptions, webhooks, customer)</li>
+        <li class="item"><span class="badge badge-s">S</span> Definir planes (Básico / Pro / Agencia)</li>
+        <li class="item"><span class="badge badge-m">M</span> Frontend: pantalla de planes + Stripe Checkout</li>
+        <li class="item"><span class="badge badge-s">S</span> Trial de 14 días (sin tarjeta)</li>
+        <li class="item"><span class="badge badge-m">M</span> Webhooks: pago fallido, cancelación, renovación</li>
+        <li class="item"><span class="badge badge-s">S</span> Guard de acceso según estado de suscripción</li>
+      </ul>
+      <div class="impact-bar">
+        Impacto técnico <div class="impact-dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div>
+        &nbsp;|&nbsp; Impacto comercial <div class="impact-dots"><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div></div>
+        &nbsp;— Sin esto no hay negocio
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:0.3rem 0">
+    <span class="gate green">✓ Gate: un usuario puede registrarse y pagar sin tu intervención</span>
+  </div>
+
+  <!-- FASE 2 -->
+  <div class="phase phase-2">
+    <div class="phase-header">
+      <span class="phase-label">Fase 2 · Acquisition</span>
+      <span class="phase-name">Landing + Onboarding</span>
+      <span class="phase-duration">~2 semanas</span>
+    </div>
+    <div class="phase-body">
+      <ul class="items">
+        <li class="item"><span class="badge badge-l">L</span> Landing page externa (propuesta de valor, planes, CTA)</li>
+        <li class="item"><span class="badge badge-m">M</span> Onboarding wizard (configurar inmobiliaria + primer agente)</li>
+        <li class="item"><span class="badge badge-s">S</span> Email transaccional: bienvenida + trial expira en X días</li>
+        <li class="item"><span class="badge badge-s">S</span> Flujo recuperar password (actualmente no existe)</li>
+        <li class="item"><span class="badge badge-s">S</span> Dominio propio (leadera.app o similar)</li>
+      </ul>
+      <div class="impact-bar">
+        Impacto técnico <div class="impact-dots"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        &nbsp;|&nbsp; Impacto comercial <div class="impact-dots"><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot"></div></div>
+        &nbsp;— Sin landing no hay adquisición orgánica
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:0.3rem 0">
+    <span class="gate orange">★ Gate: primera venta real (inmobiliaria de MdP pagando)</span>
+  </div>
+
+  <!-- FASE 3 -->
+  <div class="phase phase-3">
+    <div class="phase-header">
+      <span class="phase-label">Fase 3 · Solidez</span>
+      <span class="phase-name">Deuda Técnica Prioritaria</span>
+      <span class="phase-duration">~2 semanas</span>
+    </div>
+    <div class="phase-body">
+      <ul class="items">
+        <li class="item"><span class="badge badge-m">M</span> Flyway: baseline migrations (reemplaza scripts manuales)</li>
+        <li class="item"><span class="badge badge-s">S</span> Fix N+1 en stats del dueño</li>
+        <li class="item"><span class="badge badge-s">S</span> Paginación correcta (sin JOIN FETCH + Page)</li>
+        <li class="item"><span class="badge badge-m">M</span> Lazy loading en Angular (24 rutas eager actuales)</li>
+        <li class="item"><span class="badge badge-s">S</span> JWT expiry configurable (sacar hardcode 24h)</li>
+        <li class="item"><span class="badge badge-m">M</span> Tests para OperacionService (máquina de estados)</li>
+      </ul>
+      <div class="impact-bar">
+        Impacto técnico <div class="impact-dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div>
+        &nbsp;|&nbsp; Impacto comercial <div class="impact-dots"><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        &nbsp;— Escala sin deuda técnica acumulada
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 4 -->
+  <div class="phase phase-4">
+    <div class="phase-header">
+      <span class="phase-label">Fase 4 · Diferenciación</span>
+      <span class="phase-name">Features Comerciales</span>
+      <span class="phase-duration">~4-6 semanas</span>
+    </div>
+    <div class="phase-body">
+      <ul class="items">
+        <li class="item"><span class="badge badge-l">L</span> Import leads desde ZonaProp / MercadoLibre Inmuebles</li>
+        <li class="item"><span class="badge badge-l">L</span> Notificaciones WhatsApp Business (seguimiento leads)</li>
+        <li class="item"><span class="badge badge-m">M</span> Recordatorios automáticos de tareas por email</li>
+        <li class="item"><span class="badge badge-m">M</span> Reporte PDF de cierre de operación</li>
+        <li class="item"><span class="badge badge-m">M</span> Dashboard de métricas avanzadas (tasa conversión, tiempo cierre)</li>
+      </ul>
+      <div class="impact-bar">
+        Impacto técnico <div class="impact-dots"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        &nbsp;|&nbsp; Impacto comercial <div class="impact-dots"><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div></div>
+        &nbsp;— Lo que hace que no puedan volver a Excel
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 5 -->
+  <div class="phase phase-5">
+    <div class="phase-header">
+      <span class="phase-label">Fase 5 · Escala</span>
+      <span class="phase-name">Admin + Growth</span>
+      <span class="phase-duration">Después de 5 clientes</span>
+    </div>
+    <div class="phase-body">
+      <ul class="items">
+        <li class="item"><span class="badge badge-l">L</span> Panel de admin tuyo (gestión clientes, MRR, estado de suscripciones)</li>
+        <li class="item"><span class="badge badge-m">M</span> Refresh tokens (sesiones de más de 24h)</li>
+        <li class="item"><span class="badge badge-m">M</span> Integraciones Tokko Broker (sincronización propiedades)</li>
+        <li class="item"><span class="badge badge-m">M</span> Documentación (Swagger + README por proyecto)</li>
+        <li class="item"><span class="badge badge-s">S</span> Docker Compose para dev local</li>
+      </ul>
+      <div class="impact-bar">
+        Impacto técnico <div class="impact-dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div>
+        &nbsp;|&nbsp; Impacto comercial <div class="impact-dots"><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot revenue"></div><div class="dot"></div></div>
+        &nbsp;— Operación sostenible a escala
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="text-align:center;margin-top:1rem">
+  Fases 0→2 = producto listo para vender &nbsp;·&nbsp; Fase 3+ = crecimiento sostenible
+</p>
