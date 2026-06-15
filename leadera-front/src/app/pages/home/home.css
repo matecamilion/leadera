@@ -142,130 +142,174 @@
   .resumen-numero { font-size: 1.6rem; }
 }
 
-.seccion-matches {
-  margin-bottom: 1.5rem;
+/* ========================= */
+/* MATCHES DEL DÍA           */
+/* ========================= */
+
+.matches-wrapper {
+  margin-bottom: 28px;
 }
 
-.matches-header {
-  margin-bottom: 1rem;
+.matches-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
-.matches-titulo {
+.matches-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #14b8a6, #10b981);
+  border-radius: 16px 16px 0 0;
+}
+
+.matches-card-header {
+  margin-bottom: 16px;
+}
+
+.matches-card-titulo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.25rem;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
-.matches-titulo h2 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--ink-1);
-  margin: 0;
+.matches-star-icon {
+  font-size: 1.1rem;
+  color: #14b8a6;
 }
 
-.matches-icono {
-  color: var(--brand);
-  font-size: 1.2rem;
+.matches-card-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
 }
 
-.badge-matches {
-  background: var(--brand);
+.badge-matches-count {
+  background: #14b8a6;
   color: white;
   border-radius: 999px;
-  padding: 0.1rem 0.55rem;
-  font-size: 0.75rem;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.72rem;
   font-weight: 700;
 }
 
-.matches-subtitulo {
+.matches-card-sub {
   font-size: 0.8rem;
-  color: var(--ink-3);
+  color: #64748b;
   margin: 0;
+  padding-left: 2px;
 }
 
-.matches-lista {
+.matches-items {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
-.match-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+.match-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 10px;
 }
 
-.match-propiedad {
+.match-item-propiedad {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--ink-2);
+  gap: 10px;
 }
 
-.match-propiedad .material-symbols-outlined {
-  color: var(--brand);
+.match-home-icon {
   font-size: 1.1rem;
+  color: #14b8a6;
+  flex-shrink: 0;
 }
 
-.match-direccion {
-  display: block;
+.match-item-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.match-item-direccion {
+  font-size: 0.88rem;
   font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--ink-1);
+  color: #0f172a;
 }
 
-.match-zona {
+.match-item-meta {
   font-size: 0.75rem;
-  color: var(--ink-3);
+  color: #94a3b8;
 }
 
-.match-compradores {
+.match-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 6px;
 }
 
-.match-comprador-chip {
+.match-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  background: var(--surface-2, #f4f4f5);
-  border: 1px solid var(--border);
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 999px;
-  padding: 0.3rem 0.75rem;
+  padding: 5px 12px;
   text-decoration: none;
   cursor: pointer;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.match-comprador-chip:hover {
-  border-color: var(--brand);
+.match-chip:hover {
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.08);
 }
 
 .chip-nombre {
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--ink-1);
+  color: #1e293b;
 }
 
 .chip-estado {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   text-transform: uppercase;
-  padding: 0.1rem 0.4rem;
+  padding: 2px 7px;
   border-radius: 4px;
+  letter-spacing: 0.03em;
 }
 
-.chip-estado.caliente { background: #fef3c7; color: #92400e; }
-.chip-estado.tibio    { background: #dbeafe; color: #1e40af; }
-.chip-estado.frio     { background: #e0f2fe; color: #0369a1; }
+.chip-caliente { background: #fee2e2; color: #b91c1c; }
+.chip-tibio    { background: #fef3c7; color: #92400e; }
+.chip-frio     { background: #dbeafe; color: #1e40af; }
+.chip-ganado   { background: #dcfce7; color: #166534; }
+.chip-inactivo { background: #f1f5f9; color: #64748b; }
 
-.chip-agente {
+.chip-via {
   font-size: 0.7rem;
-  color: var(--ink-3);
+  color: #94a3b8;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .matches-card {
+    padding: 16px;
+  }
+  .match-item {
+    padding: 12px;
+  }
 }

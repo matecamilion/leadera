@@ -34,49 +34,47 @@
     </div>
 
     @if (matches().length > 0) {
-      <section class="seccion-matches">
-        <div class="matches-header">
-          <div class="matches-titulo">
-            <span class="material-symbols-outlined matches-icono">hub</span>
-            <h2>Coincidencias encontradas</h2>
-            <span class="badge-matches">{{ totalMatches() }}</span>
+      <div class="matches-wrapper">
+        <div class="matches-card">
+          <div class="matches-card-header">
+            <div class="matches-card-titulo">
+              <span class="material-symbols-outlined matches-star-icon">auto_awesome</span>
+              <span class="matches-card-label">Coincidencias encontradas</span>
+              <span class="badge-matches-count">{{ totalMatches() }}</span>
+            </div>
+            <p class="matches-card-sub">
+              Compradores de tu cartera que buscan propiedades como las tuyas
+            </p>
           </div>
-          <p class="matches-subtitulo">
-            Compradores de tu cartera que buscan propiedades como las tuyas
-          </p>
-        </div>
 
-        <div class="matches-lista">
-          @for (match of matches(); track match.propiedadId) {
-            <div class="match-card">
-              <div class="match-propiedad">
-                <span class="material-symbols-outlined">home_work</span>
-                <div>
-                  <span class="match-direccion">{{ match.direccion }}</span>
-                  <span class="match-zona">{{ match.zona }} · {{ match.tipoVivienda }}</span>
+          <div class="matches-items">
+            @for (match of matches(); track match.propiedadId) {
+              <div class="match-item">
+                <div class="match-item-propiedad">
+                  <span class="material-symbols-outlined match-home-icon">home_work</span>
+                  <div class="match-item-texto">
+                    <span class="match-item-direccion">{{ match.direccion }}</span>
+                    <span class="match-item-meta">{{ match.zona }} · {{ match.tipoVivienda }}</span>
+                  </div>
+                </div>
+                <div class="match-chips">
+                  @for (comprador of match.compradores; track comprador.leadId) {
+                    <a [routerLink]="['/leads', comprador.leadId]" class="match-chip">
+                      <span class="chip-nombre">{{ comprador.nombreLead }} {{ comprador.apellidoLead }}</span>
+                      <span class="chip-estado chip-{{ comprador.estadoLead.toLowerCase() }}">
+                        {{ comprador.estadoLead }}
+                      </span>
+                      @if (!comprador.esMio) {
+                        <span class="chip-via">via {{ comprador.nombreAgente }}</span>
+                      }
+                    </a>
+                  }
                 </div>
               </div>
-              <div class="match-compradores">
-                @for (comprador of match.compradores; track comprador.leadId) {
-                  <a [routerLink]="['/leads', comprador.leadId]" class="match-comprador-chip">
-                    <span class="chip-nombre">
-                      {{ comprador.nombreLead }} {{ comprador.apellidoLead }}
-                    </span>
-                    <span class="chip-estado" [ngClass]="comprador.estadoLead.toLowerCase()">
-                      {{ comprador.estadoLead }}
-                    </span>
-                    @if (!comprador.esMio) {
-                      <span class="chip-agente">
-                        via {{ comprador.nombreAgente }}
-                      </span>
-                    }
-                  </a>
-                }
-              </div>
-            </div>
-          }
+            }
+          </div>
         </div>
-      </section>
+      </div>
     }
 
     <app-lead-section
