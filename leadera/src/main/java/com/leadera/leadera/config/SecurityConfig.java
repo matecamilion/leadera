@@ -56,10 +56,9 @@ public class SecurityConfig {
                 .filter(s -> !s.isEmpty())
                 .toList();
 
-        // Patterns en vez de origins literales: permite usar comodines para
-        // los preview deployments de Vercel (https://leadera-*.vercel.app)
-        // y sigue siendo compatible con allowCredentials=true.
-        configuration.setAllowedOriginPatterns(origins);
+        // setAllowedOrigins rechaza wildcards (a diferencia de setAllowedOriginPatterns).
+        // La env var CORS_ALLOWED_ORIGINS debe listar URLs exactas.
+        configuration.setAllowedOrigins(origins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setExposedHeaders(List.of("Authorization"));
