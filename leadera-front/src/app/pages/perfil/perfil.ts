@@ -172,14 +172,37 @@ export class Perfil {
   sparkGanados = computed(() => this.linePath(this.dashboard()?.kpis.ganados.sparkline ?? [], 120, 32));
   sparkGanadosArea = computed(() => this.areaPath(this.dashboard()?.kpis.ganados.sparkline ?? [], 120, 32));
 
-  // Evolución (barras agrupadas por día). Con conteos diarios dispersos las
-  // curvas suavizadas inflaban cada evento en una "campana" de varios días.
+  private getTamañoGrupo(): number {
+    switch (this.periodoActivo()) {
+      case '7d':  return 1;
+      case '30d': return 7;
+      case '90d': return 14;
+      case 'ano': return 30;
+      default:    return 1;
+    }
+  }
+
+  // Escala calculada sobre valores ya agrupados: el eje Y refleja sumas
+  // semanales/mensuales según el período, no máximos diarios. La fórmula de
+  // ticks es idéntica a la versión anterior.
   private evolEscala = computed(() => {
     const ev = this.dashboard()?.evolucion;
-    const realMax = ev
-      ? Math.max(0, ...ev.nuevos, ...ev.ganados, ...ev.perdidos)
-      : 0;
-    // Piso de 3: un día con 1 lead no debe tocar el techo del gráfico.
+    if (!ev) {
+      return { max: 3, ticks: [0, 1, 2, 3] };
+    }
+    const tamañoGrupo = this.getTamañoGrupo();
+    const dias = ev.fechas.length;
+    let realMax = 0;
+    for (let i = 0; i < dias; i += tamañoGrupo) {
+      let sN = 0, sG = 0, sP = 0;
+      for (let j = i; j < Math.min(i + tamañoGrupo, dias); j++) {
+        sN += ev.nuevos[j]   ?? 0;
+        sG += ev.ganados[j]  ?? 0;
+        sP += ev.perdidos[j] ?? 0;
+      }
+      realMax = Math.max(realMax, sN, sG, sP);
+    }
+    // Piso de 3: una sola entrada no debe tocar el techo del gráfico.
     const maxY = Math.max(3, realMax);
     if (maxY <= 5) {
       return { max: maxY, ticks: Array.from({ length: maxY + 1 }, (_, i) => i) };
@@ -200,23 +223,36 @@ export class Perfil {
     const ev = this.dashboard()?.evolucion;
     if (!ev || ev.fechas.length === 0) return [];
 
-    // Se itera el período completo: cada día conserva su posición real en el
-    // eje X aunque no tenga eventos (los días en cero no emiten rects).
+    const tamañoGrupo = this.getTamañoGrupo();
     const dias = ev.fechas.length;
-    const groupW = (EVOL_W - EVOL_PAD_LEFT) / dias;
-    const barW = Math.max(2, +((groupW * 0.7) / 3).toFixed(2));
 
-    const series = [
-      { key: 'nuevos' as const, valores: ev.nuevos, color: 'var(--brand)' },
-      { key: 'ganados' as const, valores: ev.ganados, color: 'var(--brand-deep)' },
-      { key: 'perdidos' as const, valores: ev.perdidos, color: 'var(--ink-4)' },
+    // Acumular por grupo de días (suma de nuevos/ganados/perdidos)
+    const grupos: { nuevos: number; ganados: number; perdidos: number }[] = [];
+    for (let i = 0; i < dias; i += tamañoGrupo) {
+      let sN = 0, sG = 0, sP = 0;
+      for (let j = i; j < Math.min(i + tamañoGrupo, dias); j++) {
+        sN += ev.nuevos[j]   ?? 0;
+        sG += ev.ganados[j]  ?? 0;
+        sP += ev.perdidos[j] ?? 0;
+      }
+      grupos.push({ nuevos: sN, ganados: sG, perdidos: sP });
+    }
+
+    const nGrupos = grupos.length;
+    const groupW = (EVOL_W - EVOL_PAD_LEFT) / nGrupos;
+    const barW = Math.max(6, +((groupW * 0.75) / 3).toFixed(2));
+
+    const series: { key: 'nuevos' | 'ganados' | 'perdidos'; color: string }[] = [
+      { key: 'nuevos',   color: 'var(--brand)' },
+      { key: 'ganados',  color: 'var(--brand-deep)' },
+      { key: 'perdidos', color: 'var(--ink-4)' },
     ];
 
     const barras: EvolBarra[] = [];
-    for (let i = 0; i < dias; i++) {
+    for (let i = 0; i < nGrupos; i++) {
       const x0 = EVOL_PAD_LEFT + i * groupW + (groupW - barW * 3) / 2;
       series.forEach((s, si) => {
-        const v = s.valores[i] ?? 0;
+        const v = grupos[i][s.key];
         if (v <= 0) return;
         const y = this.evolY(v);
         barras.push({
@@ -244,8 +280,20 @@ export class Perfil {
   evolEjeX = computed(() => {
     const fechas = this.dashboard()?.evolucion.fechas ?? [];
     if (fechas.length === 0) return [];
-    const idx = [0, Math.floor(fechas.length * 0.25), Math.floor(fechas.length * 0.5), Math.floor(fechas.length * 0.75)];
-    return idx.map(i => this.formatFechaCorta(fechas[i]));
+    const tamañoGrupo = this.getTamañoGrupo();
+    if (tamañoGrupo === 1) {
+      // Período 7d: comportamiento original — 4 fechas espaciadas
+      const idx = [0, Math.floor(fechas.length * 0.25), Math.floor(fechas.length * 0.5), Math.floor(fechas.length * 0.75)];
+      return idx.map(i => this.formatFechaCorta(fechas[i]));
+    }
+    // Períodos agrupados: fecha del primer día de cada grupo (máx 5 etiquetas)
+    const nGrupos = Math.ceil(fechas.length / tamañoGrupo);
+    const paso = Math.ceil(nGrupos / 5);
+    const etiquetas: string[] = [];
+    for (let g = 0; g < nGrupos; g += paso) {
+      etiquetas.push(this.formatFechaCorta(fechas[g * tamañoGrupo]));
+    }
+    return etiquetas;
   });
 
   evolSubtitulo = computed(() => {
