@@ -26,4 +26,63 @@ public interface TareaRepository extends JpaRepository<Tarea, Long> {
             "AND t.fechaCompletada >= :inicioHoy")
     long countTareasCompletadasHoy(@Param("asistenteId") Long asistenteId,
                                    @Param("inicioHoy") LocalDateTime inicioHoy);
+
+    // Tareas de hoy + arrastre de hasta 3 días: las vencidas solo si no están
+    // completadas; las de hoy independientemente del estado (para mostrarlas tachadas).
+    @Query("""
+            SELECT t FROM Tarea t
+            WHERE t.asignadoA.id = :agenteId
+            AND (
+                (t.fechaObjetivo >= :inicioVentana AND t.fechaObjetivo <= :finHoy)
+                OR
+                (t.fechaObjetivo >= :inicioVentana AND t.fechaObjetivo < :inicioHoy AND t.completada = false)
+            )
+            ORDER BY t.completada ASC, t.fechaObjetivo ASC
+            """)
+    List<Tarea> findTareasActivasConArrastre(
+            @Param("agenteId") Long agenteId,
+            @Param("inicioVentana") LocalDateTime inicioVentana,
+            @Param("inicioHoy") LocalDateTime inicioHoy,
+            @Param("finHoy") LocalDateTime finHoy
+    );
+
+    // Historial de los últimos N días: todas las tareas ordenadas por fechaObjetivo DESC.
+    @Query("""
+            SELECT t FROM Tarea t
+            WHERE t.asignadoA.id = :agenteId
+            AND t.fechaObjetivo >= :desde
+            AND t.fechaObjetivo < :hasta
+            ORDER BY t.fechaObjetivo DESC
+            """)
+    List<Tarea> findHistorialByAgenteId(
+            @Param("agenteId") Long agenteId,
+            @Param("desde") LocalDateTime desde,
+            @Param("hasta") LocalDateTime hasta
+    );
+
+    // Métricas mensuales para la card de cumplimiento.
+    @Query("""
+            SELECT COUNT(t) FROM Tarea t
+            WHERE t.asignadoA.id = :agenteId
+            AND t.completada = true
+            AND t.fechaCompletada >= :inicioMes
+            AND t.fechaCompletada < :inicioMesSiguiente
+            """)
+    long countTareasCompletadasMes(
+            @Param("agenteId") Long agenteId,
+            @Param("inicioMes") LocalDateTime inicioMes,
+            @Param("inicioMesSiguiente") LocalDateTime inicioMesSiguiente
+    );
+
+    @Query("""
+            SELECT COUNT(t) FROM Tarea t
+            WHERE t.asignadoA.id = :agenteId
+            AND t.fechaObjetivo >= :inicioMes
+            AND t.fechaObjetivo < :inicioMesSiguiente
+            """)
+    long countTareasTotalesMes(
+            @Param("agenteId") Long agenteId,
+            @Param("inicioMes") LocalDateTime inicioMes,
+            @Param("inicioMesSiguiente") LocalDateTime inicioMesSiguiente
+    );
 }

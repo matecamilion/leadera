@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-// Espejo del TareaDTO del backend (Fase 2).
+// Espejo del TareaDTO del backend.
 export interface TareaDTO {
   id: number;
   titulo: string;
@@ -18,6 +18,14 @@ export interface TareaDTO {
   completada: boolean;
   fechaCompletada: string | null;
   fechaObjetivo: string;
+  // null si no está vencida; > 0 si pasó la fechaObjetivo y no está completada.
+  diasVencida?: number | null;
+}
+
+export interface TareasCumplimientoDTO {
+  completadas: number;
+  total: number;
+  porcentaje: number;
 }
 
 // Espejo del AsistenteResumenDTO del backend.
@@ -37,6 +45,8 @@ export interface AsistenteStats {
   activo: boolean;
   leadsActivos: number;
   tareasCompletadasHoy: number;
+  tareasCompletadasMes: number;
+  tareasTotalesMes: number;
 }
 
 // Espejo de CrearAgenteEquipoRequest (mismo DTO que usa el alta de agentes del dueño).
@@ -101,6 +111,16 @@ export class TareaService {
   // Crea una tarea (AGENTE/DUENO para su asistente; un asistente solo se autoasigna).
   crearTarea(request: CrearTareaRequest): Observable<TareaDTO> {
     return this.http.post<TareaDTO>(this.apiUrl, request);
+  }
+
+  // Historial de los últimos 30 días del actor (excluye el día de hoy).
+  obtenerHistorial(): Observable<TareaDTO[]> {
+    return this.http.get<TareaDTO[]>(`${this.apiUrl}/historial`);
+  }
+
+  // Cumplimiento de tareas del mes actual del actor.
+  obtenerCumplimientoMes(): Observable<TareasCumplimientoDTO> {
+    return this.http.get<TareasCumplimientoDTO>(`${this.apiUrl}/cumplimiento-mes`);
   }
 
   // ---- Gestión de asistentes (vista "Mi equipo" del agente) ----

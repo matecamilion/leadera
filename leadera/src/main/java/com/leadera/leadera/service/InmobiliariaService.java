@@ -136,10 +136,15 @@ public class InmobiliariaService {
         long leadsActivosDelSupervisor = leadRepository
                 .countByAgenteIdAndEstadoNot(supervisor.getId(), EstadoLead.INACTIVO);
         LocalDateTime inicioHoy = LocalDateTime.now(zonaHoraria).toLocalDate().atStartOfDay();
+        LocalDateTime inicioMes = LocalDateTime.now(zonaHoraria)
+                .toLocalDate().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime inicioMesSiguiente = inicioMes.plusMonths(1);
 
         return agenteRepository.findBySupervisorId(supervisor.getId()).stream()
                 .map(a -> toAsistenteStatsDTO(a, leadsActivosDelSupervisor,
-                        tareaRepository.countTareasCompletadasHoy(a.getId(), inicioHoy)))
+                        tareaRepository.countTareasCompletadasHoy(a.getId(), inicioHoy),
+                        tareaRepository.countTareasCompletadasMes(a.getId(), inicioMes, inicioMesSiguiente),
+                        tareaRepository.countTareasTotalesMes(a.getId(), inicioMes, inicioMesSiguiente)))
                 .toList();
     }
 
@@ -163,15 +168,23 @@ public class InmobiliariaService {
         long leadsActivosDelSupervisor = leadRepository
                 .countByAgenteIdAndEstadoNot(supervisor.getId(), EstadoLead.INACTIVO);
         LocalDateTime inicioHoy = LocalDateTime.now(zonaHoraria).toLocalDate().atStartOfDay();
+        LocalDateTime inicioMes = LocalDateTime.now(zonaHoraria)
+                .toLocalDate().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime inicioMesSiguiente = inicioMes.plusMonths(1);
         return toAsistenteStatsDTO(asistente, leadsActivosDelSupervisor,
-                tareaRepository.countTareasCompletadasHoy(asistente.getId(), inicioHoy));
+                tareaRepository.countTareasCompletadasHoy(asistente.getId(), inicioHoy),
+                tareaRepository.countTareasCompletadasMes(asistente.getId(), inicioMes, inicioMesSiguiente),
+                tareaRepository.countTareasTotalesMes(asistente.getId(), inicioMes, inicioMesSiguiente));
     }
 
     private AsistenteStatsDTO toAsistenteStatsDTO(Agente asistente, long leadsActivos,
-                                                  long tareasCompletadasHoy) {
+                                                  long tareasCompletadasHoy,
+                                                  long tareasCompletadasMes,
+                                                  long tareasTotalesMes) {
         return new AsistenteStatsDTO(
                 asistente.getId(), asistente.getNombre(), asistente.getApellido(),
-                asistente.getEmail(), asistente.isActivo(), leadsActivos, tareasCompletadasHoy);
+                asistente.getEmail(), asistente.isActivo(), leadsActivos,
+                tareasCompletadasHoy, tareasCompletadasMes, tareasTotalesMes);
     }
 
     public Page<LeadEquipoDTO> obtenerLeadsDelEquipo(Agente dueno, Pageable pageable) {
@@ -193,10 +206,19 @@ public class InmobiliariaService {
         double sumaTiempoRespuesta = 0;
         int agentesConTiempo = 0;
 
+        LocalDateTime inicioMes = LocalDateTime.now(zonaHoraria)
+                .toLocalDate().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime inicioMesSiguiente = inicioMes.plusMonths(1);
+
         for (Agente agente : activos) {
             AgenteDashboardDTO stats = leadService.obtenerEstadisticasAgente(agente.getId());
+            long tCompletadasMes = tareaRepository.countTareasCompletadasMes(
+                    agente.getId(), inicioMes, inicioMesSiguiente);
+            long tTotalesMes = tareaRepository.countTareasTotalesMes(
+                    agente.getId(), inicioMes, inicioMesSiguiente);
             porAgente.add(new EquipoStatsDTO.AgenteStatsDTO(
-                    agente.getId(), agente.getNombre(), agente.getApellido(), stats));
+                    agente.getId(), agente.getNombre(), agente.getApellido(),
+                    stats, tCompletadasMes, tTotalesMes));
 
             totalActivos += stats.getActivos();
             totalCalientes += stats.getCalientes();

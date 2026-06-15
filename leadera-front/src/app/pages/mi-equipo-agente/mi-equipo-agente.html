@@ -44,6 +44,9 @@
               <th>Rol</th>
               <th class="num">Leads activos</th>
               <th class="num">Tareas hoy</th>
+              @if (hayTareasMes()) {
+                <th class="num">Tareas mes</th>
+              }
               <th>Estado</th>
               <th></th>
             </tr>
@@ -56,6 +59,16 @@
                 <td><span class="badge-rol asistente">Asistente</span></td>
                 <td class="num">{{ a.leadsActivos }}</td>
                 <td class="num">{{ a.tareasCompletadasHoy }}</td>
+                @if (hayTareasMes()) {
+                  <td class="num">
+                    @if (a.tareasTotalesMes > 0) {
+                      {{ a.tareasCompletadasMes }}/{{ a.tareasTotalesMes }}
+                      ({{ (a.tareasCompletadasMes * 100 / a.tareasTotalesMes) | number:'1.0-0' }}%)
+                    } @else {
+                      —
+                    }
+                  </td>
+                }
                 <td>
                   <span class="badge-activo" [class.inactivo]="!a.activo">
                     {{ a.activo ? 'Activo' : 'Inactivo' }}

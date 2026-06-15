@@ -12,6 +12,19 @@
     }
   </header>
 
+  @if (cumplimiento() && cumplimiento()!.total > 0) {
+    <div class="cumplimiento-mes">
+      <span class="cumplimiento-label">Tareas este mes</span>
+      <span class="cumplimiento-valor">{{ cumplimiento()!.completadas }}/{{ cumplimiento()!.total }}</span>
+      <span class="cumplimiento-pct"
+            [class.verde]="cumplimiento()!.porcentaje >= 70"
+            [class.amarillo]="cumplimiento()!.porcentaje >= 40 && cumplimiento()!.porcentaje < 70"
+            [class.rojo]="cumplimiento()!.porcentaje < 40">
+        {{ cumplimiento()!.porcentaje }}%
+      </span>
+    </div>
+  }
+
   @if (cargando()) {
     <div class="tarjeta-blanca estado">Cargando tus tareas...</div>
   } @else if (tareas().length === 0) {
@@ -20,6 +33,39 @@
       <p>No tenés tareas para hoy. ¡Todo libre!</p>
     </div>
   } @else {
+    <!-- ===== VENCIDAS ===== -->
+    @if (vencidas().length > 0) {
+      <section class="bloque seccion-vencidas">
+        <h2 class="titulo-seccion vencida">
+          <span class="material-symbols-outlined">warning</span>
+          Vencidas ({{ vencidas().length }})
+        </h2>
+        <div class="tarjeta-blanca">
+          <ul class="lista-checklist">
+            @for (t of vencidas(); track t.id) {
+              <li class="item-tarea vencida" [class.completado]="t.completada">
+                <button
+                  type="button"
+                  class="check-btn"
+                  [disabled]="t.completada || completandoIds().has(t.id)"
+                  (click)="completarTarea(t)"
+                  [attr.aria-label]="t.completada ? 'Tarea completada' : 'Marcar como completada'">
+                  <span class="material-symbols-outlined check-icon" [class.activo]="t.completada">
+                    {{ t.completada ? 'check_box' : 'check_box_outline_blank' }}
+                  </span>
+                </button>
+                <span class="item-titulo">{{ t.titulo }}</span>
+                <span class="badge-vencida">{{ etiquetaVencida(t) }}</span>
+                @if (t.leadId != null) {
+                  <span class="chip-lead">Lead #{{ t.leadId }}</span>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+    }
+
     <!-- ===== CUOTAS ===== -->
     @if (cuotas().length > 0) {
       <section class="bloque">
@@ -70,6 +116,37 @@
       </section>
     }
   }
+
+  <!-- ===== HISTORIAL ===== -->
+  <section class="seccion-historial">
+    <button type="button" class="btn-historial-toggle" (click)="toggleHistorial()">
+      <span class="material-symbols-outlined">
+        {{ historialAbierto() ? 'expand_less' : 'expand_more' }}
+      </span>
+      Historial (últimos 30 días)
+    </button>
+
+    @if (historialAbierto()) {
+      @if (cargandoHistorial()) {
+        <p class="estado-carga">Cargando historial...</p>
+      } @else if (historial().length === 0) {
+        <p class="estado-vacio-hist">No hay tareas en los últimos 30 días.</p>
+      } @else {
+        <ul class="lista-historial">
+          @for (t of historial(); track t.id) {
+            <li class="item-historial" [class.completada]="t.completada" [class.incumplida]="!t.completada">
+              <span class="material-symbols-outlined icono-estado">
+                {{ t.completada ? 'check_circle' : 'cancel' }}
+              </span>
+              <span class="titulo-historial">{{ t.titulo }}</span>
+              <span class="fecha-historial">{{ t.fechaObjetivo | date:'dd/MM' }}</span>
+              <span class="estado-historial">{{ t.completada ? 'Completada' : 'Incumplida' }}</span>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </section>
 </div>
 
 <!-- ================= MODAL NUEVA TAREA (solo AGENTE/DUENO) ================= -->

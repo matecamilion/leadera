@@ -351,3 +351,150 @@
   .header-tareas { flex-direction: column; }
   .campo-doble { flex-direction: column; gap: 0; }
 }
+
+/* ========================= */
+/* CUMPLIMIENTO DEL MES      */
+/* ========================= */
+
+.cumplimiento-mes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.cumplimiento-label {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.cumplimiento-valor {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cumplimiento-pct {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.cumplimiento-pct.verde   { color: #10b981; }
+.cumplimiento-pct.amarillo { color: #f59e0b; }
+.cumplimiento-pct.rojo    { color: #ef4444; }
+
+/* ========================= */
+/* SECCIÓN VENCIDAS          */
+/* ========================= */
+
+.seccion-vencidas .titulo-seccion.vencida {
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.item-tarea.vencida {
+  border-left: 3px solid #ef4444;
+  background: #fef2f2;
+  padding-left: 12px;
+  border-radius: 0 6px 6px 0;
+}
+
+.badge-vencida {
+  font-size: 11px;
+  color: #ef4444;
+  font-weight: 600;
+  background: #fee2e2;
+  padding: 2px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* ========================= */
+/* HISTORIAL                 */
+/* ========================= */
+
+.seccion-historial {
+  margin-top: 32px;
+}
+
+.btn-historial-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  padding: 16px 0;
+  cursor: pointer;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.btn-historial-toggle:hover { color: #334155; }
+
+.estado-carga,
+.estado-vacio-hist {
+  padding: 12px 0;
+  font-size: 0.88rem;
+  color: #94a3b8;
+}
+
+.lista-historial {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-historial {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 0.88rem;
+}
+
+.item-historial.completada .icono-estado { color: #10b981; }
+.item-historial.incumplida .icono-estado { color: #ef4444; }
+
+.icono-estado { font-size: 1.2rem; flex-shrink: 0; }
+
+.titulo-historial {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #334155;
+  font-weight: 500;
+}
+
+.fecha-historial {
+  margin-left: auto;
+  font-size: 12px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.estado-historial {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 80px;
+  text-align: right;
+  flex-shrink: 0;
+}

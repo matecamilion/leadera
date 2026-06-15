@@ -120,6 +120,23 @@
           <path [attr.d]="sparkGanadosArea()" fill="var(--brand-softer)" />
         </svg>
       </div>
+
+      @if (cumplimiento() && cumplimiento()!.total > 0) {
+        <div class="kpi-card tareas-kpi">
+          <div class="kpi-head">
+            <span class="kpi-label">Tareas del mes</span>
+          </div>
+          <div class="kpi-value">
+            {{ cumplimiento()!.completadas }}<span class="kpi-unit">/{{ cumplimiento()!.total }}</span>
+          </div>
+          <div class="kpi-context"
+               [class.verde]="cumplimiento()!.porcentaje >= 70"
+               [class.amarillo]="cumplimiento()!.porcentaje >= 40 && cumplimiento()!.porcentaje < 70"
+               [class.rojo]="cumplimiento()!.porcentaje < 40">
+            {{ cumplimiento()!.porcentaje }}% de cumplimiento
+          </div>
+        </div>
+      }
     </section>
 
     <!-- MAIN GRID -->

@@ -3,6 +3,9 @@ package com.leadera.leadera.controller;
 import com.leadera.leadera.dto.AsistenteResumenDTO;
 import com.leadera.leadera.dto.CrearTareaRequest;
 import com.leadera.leadera.dto.TareaDTO;
+import com.leadera.leadera.dto.TareasCumplimientoDTO;
+import com.leadera.leadera.entity.Agente;
+import com.leadera.leadera.service.AgenteContextResolver;
 import com.leadera.leadera.service.TareaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,9 +20,11 @@ import java.util.List;
 public class TareaController {
 
     private final TareaService tareaService;
+    private final AgenteContextResolver agenteContextResolver;
 
-    public TareaController(TareaService tareaService) {
+    public TareaController(TareaService tareaService, AgenteContextResolver agenteContextResolver) {
         this.tareaService = tareaService;
+        this.agenteContextResolver = agenteContextResolver;
     }
 
     // El AGENTE/DUENO crea una tarea para uno de sus asistentes.
@@ -53,5 +58,18 @@ public class TareaController {
     public List<TareaDTO> tareasDeAsistente(@PathVariable Long asistenteId,
                                             Authentication authentication) {
         return tareaService.obtenerTareasDeAsistente(asistenteId, authentication.getName());
+    }
+
+    // Historial de los últimos 30 días del actor (excluye el día de hoy).
+    @GetMapping("/historial")
+    public List<TareaDTO> historial(Authentication authentication) {
+        return tareaService.obtenerHistorial(authentication.getName());
+    }
+
+    // Cumplimiento mensual del actor autenticado.
+    @GetMapping("/cumplimiento-mes")
+    public TareasCumplimientoDTO cumplimientoMes(Authentication authentication) {
+        Agente actor = agenteContextResolver.resolverActor(authentication.getName());
+        return tareaService.obtenerCumplimientoMes(actor.getId());
     }
 }

@@ -123,6 +123,7 @@
               <th class="num">Ganados (mes)</th>
               <th class="num">Conversión</th>
               <th class="num">Interacciones 7d</th>
+              <th class="num">Tareas mes</th>
             </tr>
           </thead>
           <tbody>
@@ -135,6 +136,14 @@
                 <td class="num">{{ a.stats.ganadosMes }}</td>
                 <td class="num">{{ a.stats.tasaConversion }}%</td>
                 <td class="num">{{ a.stats.interacciones7d }}</td>
+                <td class="num">
+                  @if (a.tareasTotalesMes > 0) {
+                    {{ a.tareasCompletadasMes }}/{{ a.tareasTotalesMes }}
+                    ({{ a.tareasTotalesMes > 0 ? (a.tareasCompletadasMes * 100 / a.tareasTotalesMes | number:'1.0-0') : 0 }}%)
+                  } @else {
+                    —
+                  }
+                </td>
               </tr>
             }
           </tbody>

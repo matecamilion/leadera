@@ -50,6 +50,8 @@ export class MiEquipoAgente implements OnInit {
     this.asistentes().find(a => a.id === this.asistenteSeleccionadoId()) ?? null
   );
 
+  hayTareasMes = computed(() => this.asistentes().some(a => a.tareasTotalesMes > 0));
+
   // Espejo de CrearAgenteEquipoRequest (mismas reglas que el modal del dueño).
   formAsistente: FormGroup = this.fb.group({
     nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
@@ -146,6 +148,8 @@ export class MiEquipoAgente implements OnInit {
           activo: nuevo.activo,
           leadsActivos,
           tareasCompletadasHoy: 0,
+          tareasCompletadasMes: 0,
+          tareasTotalesMes: 0,
         }]);
         this.notificaciones.exito(
           `Asistente ${nuevo.nombre} ${nuevo.apellido} creado. Pasale la contraseña temporal: la va a cambiar en su primer ingreso.`

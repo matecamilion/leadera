@@ -10,6 +10,8 @@ public record AsistenteStatsDTO(
         String email,
         boolean activo,
         long leadsActivos,
-        long tareasCompletadasHoy
+        long tareasCompletadasHoy,
+        long tareasCompletadasMes,
+        long tareasTotalesMes
 ) {
 }

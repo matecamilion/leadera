@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import {
   TareaService,
   TareaDTO,
+  TareasCumplimientoDTO,
   AsistenteStats,
 } from '../../core/services/tarea-service';
 import { AuthService } from '../../core/services/auth-service';
@@ -38,8 +39,15 @@ export class MisTareas implements OnInit {
   errorModal = signal<string>('');
   tipoTarea = signal<TipoTarea>('discreta');
 
+  historial = signal<TareaDTO[]>([]);
+  cargandoHistorial = signal(false);
+  historialAbierto = signal(false);
+  cumplimiento = signal<TareasCumplimientoDTO | null>(null);
+
   cuotas = computed(() => this.tareas().filter(t => t.objetivo != null));
   discretas = computed(() => this.tareas().filter(t => t.objetivo == null));
+  vencidas = computed(() => this.tareas().filter(t => t.diasVencida != null && t.diasVencida > 0));
+  hoy = computed(() => this.tareas().filter(t => t.diasVencida == null || t.diasVencida === 0));
 
   // 'yo' = autoasignación; un id numérico = asistente.
   formTarea: FormGroup = this.fb.group({
@@ -55,8 +63,7 @@ export class MisTareas implements OnInit {
 
   ngOnInit(): void {
     this.cargarTareas();
-    // El selector "asignar a" solo aplica a AGENTE/DUENO; un asistente no
-    // supervisa a nadie (y el modal ni se le muestra).
+    this.cargarCumplimiento();
     if (!this.esAsistente) {
       this.tareaService.listarAsistentes().subscribe({
         next: (lista) => this.asistentes.set(lista),
@@ -195,6 +202,29 @@ export class MisTareas implements OnInit {
   esInvalido(campo: string): boolean {
     const c = this.formTarea.get(campo);
     return !!(c && c.invalid && c.touched);
+  }
+
+  cargarCumplimiento(): void {
+    this.tareaService.obtenerCumplimientoMes().subscribe({
+      next: (c) => this.cumplimiento.set(c),
+      error: () => {},
+    });
+  }
+
+  toggleHistorial(): void {
+    if (!this.historialAbierto() && this.historial().length === 0) {
+      this.cargandoHistorial.set(true);
+      this.tareaService.obtenerHistorial().subscribe({
+        next: (h) => { this.historial.set(h); this.cargandoHistorial.set(false); },
+        error: () => this.cargandoHistorial.set(false),
+      });
+    }
+    this.historialAbierto.update(v => !v);
+  }
+
+  etiquetaVencida(t: TareaDTO): string {
+    if (!t.diasVencida) return '';
+    return t.diasVencida === 1 ? 'Vencida hace 1 día' : `Vencida hace ${t.diasVencida} días`;
   }
 
   // ---------- Helpers visuales (cuotas) ----------

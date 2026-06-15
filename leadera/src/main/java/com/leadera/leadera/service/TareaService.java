@@ -3,6 +3,7 @@ package com.leadera.leadera.service;
 import com.leadera.leadera.dto.AsistenteResumenDTO;
 import com.leadera.leadera.dto.CrearTareaRequest;
 import com.leadera.leadera.dto.TareaDTO;
+import com.leadera.leadera.dto.TareasCumplimientoDTO;
 import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.entity.Tarea;
@@ -16,8 +17,10 @@ import com.leadera.leadera.repository.TareaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,10 +112,11 @@ public class TareaService {
         Agente actor = agenteContextResolver.resolverActor(emailActor);
 
         LocalDateTime inicioHoy = LocalDateTime.now(zonaHoraria).toLocalDate().atStartOfDay();
-        LocalDateTime finHoyIncl = inicioHoy.plusDays(1).minusNanos(1);
+        LocalDateTime finHoy    = inicioHoy.plusDays(1).minusNanos(1);
+        LocalDateTime inicioVentana = inicioHoy.minusDays(3);
 
-        List<Tarea> tareas = tareaRepository.findByAsignadoAIdAndFechaObjetivoBetween(
-                actor.getId(), inicioHoy, finHoyIncl);
+        List<Tarea> tareas = tareaRepository.findTareasActivasConArrastre(
+                actor.getId(), inicioVentana, inicioHoy, finHoy);
 
         List<TareaDTO> salida = new ArrayList<>(tareas.size());
         for (Tarea tarea : tareas) {
@@ -192,10 +196,35 @@ public class TareaService {
                 .toList();
     }
 
+    // 3e — El actor ve su historial de los últimos 30 días (excluye el día de hoy).
+    @Transactional(readOnly = true)
+    public List<TareaDTO> obtenerHistorial(String emailActor) {
+        Agente actor = agenteContextResolver.resolverActor(emailActor);
+        LocalDateTime inicioHoy = LocalDateTime.now(zonaHoraria).toLocalDate().atStartOfDay();
+        LocalDateTime desde     = inicioHoy.minusDays(30);
+        List<Tarea> tareas = tareaRepository.findHistorialByAgenteId(
+                actor.getId(), desde, inicioHoy);
+        return tareas.stream()
+                .map(t -> toDTO(t, 0))
+                .toList();
+    }
+
+    // 3f — Cumplimiento de tareas del mes calendario actual para un agente.
+    @Transactional(readOnly = true)
+    public TareasCumplimientoDTO obtenerCumplimientoMes(Long agenteId) {
+        LocalDateTime inicioMes = LocalDateTime.now(zonaHoraria)
+                .toLocalDate().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime inicioMesSiguiente = inicioMes.plusMonths(1);
+        long completadas = tareaRepository.countTareasCompletadasMes(
+                agenteId, inicioMes, inicioMesSiguiente);
+        long total = tareaRepository.countTareasTotalesMes(
+                agenteId, inicioMes, inicioMesSiguiente);
+        int porcentaje = total > 0 ? (int) Math.round(completadas * 100.0 / total) : 0;
+        return new TareasCumplimientoDTO(completadas, total, porcentaje);
+    }
+
     // ---- helpers ----
 
-    // Progreso de una cuota: leads distintos contactados HOY por el asistente (autor).
-    // Para tareas discretas (objetivo == null) el progreso no aplica: devuelve 0.
     private int calcularProgreso(Tarea tarea, Long autorId) {
         if (tarea.getObjetivo() == null) {
             return 0;
@@ -209,6 +238,11 @@ public class TareaService {
         Agente asignadoA = tarea.getAsignadoA();
         String nombre = ((asignadoA.getNombre() != null ? asignadoA.getNombre() : "") + " "
                 + (asignadoA.getApellido() != null ? asignadoA.getApellido() : "")).trim();
+        LocalDate hoy = LocalDate.now(zonaHoraria);
+        LocalDate objetivo = tarea.getFechaObjetivo().toLocalDate();
+        Integer diasVencida = (!tarea.isCompletada() && objetivo.isBefore(hoy))
+                ? (int) ChronoUnit.DAYS.between(objetivo, hoy)
+                : null;
         return new TareaDTO(
                 tarea.getId(),
                 tarea.getTitulo(),
@@ -220,7 +254,8 @@ public class TareaService {
                 progreso,
                 tarea.isCompletada(),
                 tarea.getFechaCompletada(),
-                tarea.getFechaObjetivo()
+                tarea.getFechaObjetivo(),
+                diasVencida
         );
     }
 }

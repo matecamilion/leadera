@@ -37,6 +37,8 @@ export interface AgenteStats {
   nombre: string;
   apellido: string;
   stats: AgenteDashboard;
+  tareasCompletadasMes: number;
+  tareasTotalesMes: number;
 }
 
 export interface EquipoStats {

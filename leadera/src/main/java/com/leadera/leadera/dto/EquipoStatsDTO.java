@@ -23,5 +23,7 @@ public class EquipoStatsDTO {
         private String nombre;
         private String apellido;
         private AgenteDashboardDTO stats;
+        private long tareasCompletadasMes;
+        private long tareasTotalesMes;
     }
 }

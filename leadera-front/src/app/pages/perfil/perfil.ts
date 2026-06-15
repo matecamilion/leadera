@@ -9,6 +9,7 @@ import {
   DashboardPeriodo,
 } from '../../core/services/agente-service';
 import { LeadService } from '../../core/services/lead-service';
+import { TareaService, TareasCumplimientoDTO } from '../../core/services/tarea-service';
 import { LeadHoy } from '../../core/models/lead-hoy';
 
 const DONUT_RADIUS = 56;
@@ -47,11 +48,13 @@ export class Perfil {
   private authService = inject(AuthService);
   private agenteService = inject(AgenteService);
   private leadService = inject(LeadService);
+  private tareaService = inject(TareaService);
   private router = inject(Router);
 
   dashboard = signal<DashboardData | null>(null);
   leadsHoy = signal<LeadHoy[]>([]);
   actividadReciente = signal<ActividadReciente[]>([]);
+  cumplimiento = signal<TareasCumplimientoDTO | null>(null);
 
   periodoActivo = signal<DashboardPeriodo>('30d');
   fechaExportacion = signal<string>('');
@@ -268,9 +271,17 @@ export class Perfil {
   });
 
   ngOnInit() {
+    if (this.authService.esAsistente()) {
+      this.router.navigate(['/mis-tareas'], { replaceUrl: true });
+      return;
+    }
     this.cargarDashboard();
     this.cargarActividad();
     this.cargarLeadsHoy();
+    this.tareaService.obtenerCumplimientoMes().subscribe({
+      next: (c) => this.cumplimiento.set(c),
+      error: () => {},
+    });
   }
 
   private cargarDashboard() {
