@@ -57,7 +57,7 @@ export class ListadoLeadsComponent implements OnInit {
 
   cargarDatos() {
     this.cargando.set(true);
-    this.servicioLead.getLeads().subscribe({
+    this.servicioLead.getLeads(0, 500).subscribe({
       next: (resultado) => {
         this.leads.set(resultado.content);
         this.cargando.set(false);
