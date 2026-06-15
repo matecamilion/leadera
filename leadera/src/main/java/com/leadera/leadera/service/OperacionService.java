@@ -5,6 +5,7 @@ import com.leadera.leadera.entity.EventoOperacion;
 import com.leadera.leadera.entity.Lead;
 import com.leadera.leadera.entity.Operacion;
 import com.leadera.leadera.entity.Propiedad;
+import com.leadera.leadera.dto.BusquedaDTO;
 import com.leadera.leadera.dto.CrearEventoRequest;
 import com.leadera.leadera.dto.CrearOperacionRequest;
 import com.leadera.leadera.dto.EventoOperacionDTO;
@@ -345,9 +346,25 @@ public class OperacionService {
                 operacion.getFechaCierre(),
                 operacion.getFechaProximoSeguimiento(),
                 PropiedadMapper.toDTO(operacion.getPropiedad()),
-                operacion.getBusqueda(),
+                toBusquedaDTO(operacion.getBusqueda()),
                 operacion.getLead() != null ? operacion.getLead().getId() : null,
                 operacion.getMontoOperacion()
+        );
+    }
+
+    private BusquedaDTO toBusquedaDTO(com.leadera.leadera.entity.Busqueda busqueda) {
+        if (busqueda == null) return null;
+        return new BusquedaDTO(
+                busqueda.getId(),
+                busqueda.getPrecioMin(),
+                busqueda.getPrecioMax(),
+                busqueda.getCantidadAmbientes(),
+                busqueda.getMetrosTotales(),
+                busqueda.getMetrosCubiertos(),
+                busqueda.getMetrosDescubiertos(),
+                busqueda.getTipoVivienda(),
+                busqueda.getZona(),
+                busqueda.getObservaciones()
         );
     }
 }

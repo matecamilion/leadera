@@ -252,11 +252,12 @@ class CrossTenantWriteTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.tipoOperacion").value("COMPRA"))
-                .andExpect(jsonPath("$.leadId").value(leadB.getId().intValue()));
+                .andExpect(jsonPath("$.leadId").value(leadB.getId().intValue()))
+                .andExpect(jsonPath("$.busqueda.id").value(not(busquedaAId.intValue())));
 
         // La busqueda de A sigue intacta.
-        assertThat(busquedaRepository.findById(busquedaAId)).isPresent();
-        assertThat(busquedaRepository.findById(busquedaAId).get().getZona()).isEqualTo("Palermo");
+        Busqueda busquedaOriginal = busquedaRepository.findById(busquedaAId).orElseThrow();
+        assertThat(busquedaOriginal.getZona()).isEqualTo("Palermo");
     }
 
     @Test

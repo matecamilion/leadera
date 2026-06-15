@@ -15,7 +15,7 @@ public record CrearOperacionRequest(
 ) {
     // Referencia a propiedad existente por id (solo para VENTA).
     // Jackson ignora cualquier otro campo que venga en el JSON.
-    public record PropiedadRef(Long id) {}
+    public record PropiedadRef(@NotNull Long id) {}
 
     // Datos de búsqueda para operaciones de COMPRA.
     // No tiene campo id: imposibilita pisar una Busqueda existente.

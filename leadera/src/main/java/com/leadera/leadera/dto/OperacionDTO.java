@@ -1,6 +1,5 @@
 package com.leadera.leadera.dto;
 
-import com.leadera.leadera.entity.Busqueda;
 import com.leadera.leadera.enums.EstadoOperacion;
 import com.leadera.leadera.enums.TipoOperacion;
 
@@ -17,7 +16,7 @@ public record OperacionDTO(
         LocalDateTime fechaCierre,
         LocalDateTime fechaProximoSeguimiento,
         PropiedadDTO propiedad,   // null para operaciones de COMPRA
-        Busqueda busqueda,        // null para operaciones de VENTA; entity leaf sin circular refs
+        BusquedaDTO busqueda,     // null para operaciones de VENTA
         Long leadId,
         BigDecimal montoOperacion
 ) {}
