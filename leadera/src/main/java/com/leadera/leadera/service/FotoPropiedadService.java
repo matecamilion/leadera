@@ -2,6 +2,7 @@ package com.leadera.leadera.service;
 
 import com.leadera.leadera.dto.CrearFotoRequest;
 import com.leadera.leadera.dto.FotoPropiedadDTO;
+import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.FotoPropiedad;
 import com.leadera.leadera.entity.Propiedad;
 import com.leadera.leadera.exception.BadRequestException;
@@ -25,15 +26,18 @@ public class FotoPropiedadService {
     private final FotoPropiedadRepository fotoRepository;
     private final PropiedadRepository propiedadRepository;
     private final SupabaseStorageService storageService;
+    private final AgenteContextResolver agenteContextResolver;
     private final ZoneId zonaHoraria;
 
     public FotoPropiedadService(FotoPropiedadRepository fotoRepository,
                                 PropiedadRepository propiedadRepository,
                                 SupabaseStorageService storageService,
+                                AgenteContextResolver agenteContextResolver,
                                 ZoneId zonaHoraria) {
         this.fotoRepository = fotoRepository;
         this.propiedadRepository = propiedadRepository;
         this.storageService = storageService;
+        this.agenteContextResolver = agenteContextResolver;
         this.zonaHoraria = zonaHoraria;
     }
 
@@ -113,9 +117,10 @@ public class FotoPropiedadService {
         Propiedad propiedad = propiedadRepository.findById(propiedadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente);
         if (propiedad.getLead() == null
                 || propiedad.getLead().getAgente() == null
-                || !propiedad.getLead().getAgente().getEmail().equals(emailAgente)) {
+                || !propiedad.getLead().getAgente().getId().equals(propietario.getId())) {
             throw new UnauthorizedActionException("No tenés permiso para modificar las fotos de esta propiedad.");
         }
         return propiedad;

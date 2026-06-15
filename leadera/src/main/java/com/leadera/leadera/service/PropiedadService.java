@@ -35,6 +35,7 @@ public class PropiedadService {
     private final EventoOperacionRepository eventoOperacionRepository;
     private final OperacionRepository operacionRepository;
     private final AgenteAutenticadoService agenteAutenticadoService;
+    private final AgenteContextResolver agenteContextResolver;
     private final ZoneId zonaHoraria;
 
     public PropiedadService(PropiedadRepository propiedadRepository,
@@ -42,12 +43,14 @@ public class PropiedadService {
                             EventoOperacionRepository eventoOperacionRepository,
                             OperacionRepository operacionRepository,
                             AgenteAutenticadoService agenteAutenticadoService,
+                            AgenteContextResolver agenteContextResolver,
                             ZoneId zonaHoraria) {
         this.propiedadRepository = propiedadRepository;
         this.leadRepository = leadRepository;
         this.eventoOperacionRepository = eventoOperacionRepository;
         this.operacionRepository = operacionRepository;
         this.agenteAutenticadoService = agenteAutenticadoService;
+        this.agenteContextResolver = agenteContextResolver;
         this.zonaHoraria = zonaHoraria;
     }
 
@@ -55,7 +58,8 @@ public class PropiedadService {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
-        if (!lead.getAgente().getEmail().equals(emailAgente)) {
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente);
+        if (lead.getAgente() == null || !lead.getAgente().getId().equals(propietario.getId())) {
             throw new UnauthorizedActionException("No tenés permiso para modificar este lead.");
         }
 
@@ -79,7 +83,8 @@ public class PropiedadService {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
-        if (lead.getAgente() == null || !lead.getAgente().getEmail().equals(emailAgente)) {
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente);
+        if (lead.getAgente() == null || !lead.getAgente().getId().equals(propietario.getId())) {
             throw new UnauthorizedActionException("No tenés permiso para ver las propiedades de este lead.");
         }
 
@@ -98,9 +103,10 @@ public class PropiedadService {
         Propiedad propiedad = propiedadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente);
         if (propiedad.getLead() == null
                 || propiedad.getLead().getAgente() == null
-                || !propiedad.getLead().getAgente().getEmail().equals(emailAgente)) {
+                || !propiedad.getLead().getAgente().getId().equals(propietario.getId())) {
             throw new UnauthorizedActionException("No tenés permiso para modificar esta propiedad.");
         }
 
@@ -116,9 +122,10 @@ public class PropiedadService {
         Propiedad propiedad = propiedadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente);
         if (propiedad.getLead() == null
                 || propiedad.getLead().getAgente() == null
-                || !propiedad.getLead().getAgente().getEmail().equals(emailAgente)) {
+                || !propiedad.getLead().getAgente().getId().equals(propietario.getId())) {
             throw new UnauthorizedActionException("No tenés permiso para ver esta propiedad.");
         }
 
@@ -129,9 +136,10 @@ public class PropiedadService {
         Propiedad propiedad = propiedadRepository.findById(propiedadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente);
         if (propiedad.getLead() == null
                 || propiedad.getLead().getAgente() == null
-                || !propiedad.getLead().getAgente().getEmail().equals(emailAgente)) {
+                || !propiedad.getLead().getAgente().getId().equals(propietario.getId())) {
             throw new UnauthorizedActionException("No tenés permiso para editar esta propiedad.");
         }
 
@@ -153,9 +161,10 @@ public class PropiedadService {
         Propiedad propiedad = propiedadRepository.findById(propiedadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente);
         if (propiedad.getLead() == null
                 || propiedad.getLead().getAgente() == null
-                || !propiedad.getLead().getAgente().getEmail().equals(emailAgente)) {
+                || !propiedad.getLead().getAgente().getId().equals(propietario.getId())) {
             throw new UnauthorizedActionException("No tenés permiso para ver esta propiedad.");
         }
 
@@ -245,9 +254,10 @@ public class PropiedadService {
         Propiedad propiedad = propiedadRepository.findById(propiedadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Propiedad no encontrada"));
 
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente);
         if (propiedad.getLead() == null
                 || propiedad.getLead().getAgente() == null
-                || !propiedad.getLead().getAgente().getEmail().equals(emailAgente)) {
+                || !propiedad.getLead().getAgente().getId().equals(propietario.getId())) {
             throw new UnauthorizedActionException("No tenés permiso para ver esta propiedad.");
         }
 

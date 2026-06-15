@@ -39,6 +39,7 @@ public class OperacionService {
     private final PropiedadRepository propiedadRepository;
     private final BusquedaRepository busquedaRepository;
     private final EventoOperacionRepository eventoOperacionRepository;
+    private final AgenteContextResolver agenteContextResolver;
     private final ZoneId zonaHoraria;
 
     private static final Map<EstadoOperacion, Set<EstadoOperacion>> TRANSICIONES_VALIDAS = Map.of(
@@ -55,6 +56,7 @@ public class OperacionService {
             PropiedadRepository propiedadRepository,
             BusquedaRepository busquedaRepository,
             EventoOperacionRepository eventoOperacionRepository,
+            AgenteContextResolver agenteContextResolver,
             ZoneId zonaHoraria
     ) {
         this.operacionRepository = operacionRepository;
@@ -62,6 +64,7 @@ public class OperacionService {
         this.propiedadRepository = propiedadRepository;
         this.busquedaRepository = busquedaRepository;
         this.eventoOperacionRepository = eventoOperacionRepository;
+        this.agenteContextResolver = agenteContextResolver;
         this.zonaHoraria = zonaHoraria;
     }
 
@@ -70,7 +73,8 @@ public class OperacionService {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe el lead con id: " + leadId));
 
-        if (lead.getAgente() == null || !lead.getAgente().getEmail().equals(emailAgente)) {
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
+        if (lead.getAgente() == null || !lead.getAgente().getEmail().equals(emailPropietario)) {
             throw new UnauthorizedActionException("No tenés permiso para crear operaciones en este lead");
         }
 
@@ -137,13 +141,15 @@ public class OperacionService {
     }
 
     public List<Operacion> obtenerOperacionesDelLead(Long leadId, String emailAgente) {
-        return operacionRepository.findByLeadIdAndAgenteEmail(leadId, emailAgente);
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
+        return operacionRepository.findByLeadIdAndAgenteEmail(leadId, emailPropietario);
     }
 
     public List<Operacion> obtenerOperacionesAbiertasDelLead(Long leadId, String emailAgente) {
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
         return operacionRepository.findByLeadIdAndAgenteEmailAndEstadoOperacionNotIn(
                 leadId,
-                emailAgente,
+                emailPropietario,
                 List.of(
                         EstadoOperacion.CERRADA_GANADA,
                         EstadoOperacion.CANCELADA
@@ -152,7 +158,8 @@ public class OperacionService {
     }
 
     public Operacion obtenerOperacionPorId(Long leadId, Long operacionId, String emailAgente) {
-        return operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailAgente)
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
+        return operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailPropietario)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe la operación o no tenés permiso para verla"));
     }
 
@@ -164,10 +171,11 @@ public class OperacionService {
             EstadoOperacion nuevoEstado,
             String emailAgente
     ) {
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
         Operacion operacion = operacionRepository.findByIdAndLeadIdAndAgenteEmail(
                 operacionId,
                 leadId,
-                emailAgente
+                emailPropietario
         ).orElseThrow(() -> new ResourceNotFoundException("No existe la operación o no tenés permiso para modificarla"));
 
         return aplicarCambioDeEstado(operacion, nuevoEstado);
@@ -179,7 +187,8 @@ public class OperacionService {
             EstadoOperacion nuevoEstado,
             String emailAgente
     ) {
-        Operacion operacion = operacionRepository.findByIdAndAgenteEmail(operacionId, emailAgente)
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
+        Operacion operacion = operacionRepository.findByIdAndAgenteEmail(operacionId, emailPropietario)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe la operación o no tenés permiso para modificarla"));
 
@@ -188,19 +197,22 @@ public class OperacionService {
     }
 
     public List<OperacionPipelineDTO> obtenerPipelineDelAgente(String emailAgente) {
-        return operacionRepository.findPipelineByAgenteEmail(emailAgente).stream()
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
+        return operacionRepository.findPipelineByAgenteEmail(emailPropietario).stream()
                 .map(OperacionPipelineDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
     public List<OperacionPipelineDTO> obtenerOperacionesCerradasDelAgente(String emailAgente) {
-        return operacionRepository.findCerradasByAgenteEmail(emailAgente).stream()
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
+        return operacionRepository.findCerradasByAgenteEmail(emailPropietario).stream()
                 .map(OperacionPipelineDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
     public EventoOperacionDTO registrarEvento(Long leadId, Long operacionId, CrearEventoRequest request, String emailAgente) {
-        Operacion operacion = operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailAgente)
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
+        Operacion operacion = operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailPropietario)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe la operación o no tenés permiso para modificarla"));
 
@@ -216,7 +228,8 @@ public class OperacionService {
     }
 
     public List<EventoOperacionDTO> obtenerEventos(Long leadId, Long operacionId, String emailAgente) {
-        operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailAgente)
+        String emailPropietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente).getEmail();
+        operacionRepository.findByIdAndLeadIdAndAgenteEmail(operacionId, leadId, emailPropietario)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe la operación o no tenés permiso para verla"));
 
