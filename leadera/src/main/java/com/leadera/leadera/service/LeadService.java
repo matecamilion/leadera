@@ -8,6 +8,7 @@ import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
 import com.leadera.leadera.dto.InteraccionDTO;
 import com.leadera.leadera.dto.LeadEquipoDTO;
+import com.leadera.leadera.dto.LeadHoyDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Lead;
