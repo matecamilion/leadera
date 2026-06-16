@@ -60,13 +60,36 @@
                 <div class="match-chips">
                   @for (comprador of match.compradores; track comprador.leadId) {
                     <a [routerLink]="['/leads', comprador.leadId]" class="match-chip">
-                      <span class="chip-nombre">{{ comprador.nombreLead }} {{ comprador.apellidoLead }}</span>
-                      <span class="chip-estado chip-{{ comprador.estadoLead.toLowerCase() }}">
-                        {{ comprador.estadoLead }}
-                      </span>
-                      @if (!comprador.esMio) {
-                        <span class="chip-via">via {{ comprador.nombreAgente }}</span>
-                      }
+                      <div class="match-chip-header">
+                        <span class="chip-nombre">{{ comprador.nombreLead }} {{ comprador.apellidoLead }}</span>
+                        <span class="chip-estado chip-{{ comprador.estadoLead.toLowerCase() }}">
+                          {{ comprador.estadoLead }}
+                        </span>
+                        @if (!comprador.esMio) {
+                          <span class="chip-via">via {{ comprador.nombreAgente }}</span>
+                        }
+                      </div>
+                      <div class="comprador-busqueda-titulo">
+                        <span class="material-symbols-outlined">search</span>
+                        Busca {{ comprador.busquedaTipoVivienda }} en {{ comprador.busquedaZona }}
+                      </div>
+                      <div class="comprador-chips">
+                        @if (comprador.busquedaPrecioMin && comprador.busquedaPrecioMax) {
+                          <span class="chip chip-precio">
+                            USD {{ comprador.busquedaPrecioMin | number:'1.0-0' }} – {{ comprador.busquedaPrecioMax | number:'1.0-0' }}
+                          </span>
+                        } @else if (comprador.busquedaPrecioMax) {
+                          <span class="chip chip-precio">hasta USD {{ comprador.busquedaPrecioMax | number:'1.0-0' }}</span>
+                        } @else if (comprador.busquedaPrecioMin) {
+                          <span class="chip chip-precio">desde USD {{ comprador.busquedaPrecioMin | number:'1.0-0' }}</span>
+                        }
+                        @if (comprador.busquedaAmbientes) {
+                          <span class="chip">{{ comprador.busquedaAmbientes }}+ amb.</span>
+                        }
+                        @if (comprador.busquedaMetros) {
+                          <span class="chip">{{ comprador.busquedaMetros }}+ m²</span>
+                        }
+                      </div>
                     </a>
                   }
                 </div>

@@ -261,13 +261,14 @@
 }
 
 .match-chip {
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 6px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 999px;
-  padding: 5px 12px;
+  border-radius: 10px;
+  padding: 10px 12px;
   text-decoration: none;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -276,6 +277,13 @@
 .match-chip:hover {
   border-color: #14b8a6;
   box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.08);
+}
+
+.match-chip-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .chip-nombre {
@@ -303,6 +311,45 @@
   font-size: 0.7rem;
   color: #94a3b8;
   font-style: italic;
+}
+
+.comprador-busqueda-titulo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.comprador-busqueda-titulo .material-symbols-outlined {
+  font-size: 0.95rem;
+  color: #14b8a6;
+}
+
+.comprador-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.chip-precio {
+  background: #f0fdf4;
+  color: #166534;
+  border-color: #bbf7d0;
+  font-weight: 600;
 }
 
 @media (max-width: 600px) {
