@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { NgClass, DecimalPipe } from '@angular/common';
 import { LeadService } from '../../core/services/lead-service';
 import { LeadsHoyResponse } from '../../core/models/leads-hoy-response';
 import { LeadSection } from '../../shared/lead-section/lead-section';
@@ -9,7 +9,7 @@ import { MatchingService, MatchDelDia } from '../../core/services/matching-servi
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [LeadSection, RouterModule, NgClass],
+  imports: [LeadSection, RouterModule, NgClass, DecimalPipe],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
