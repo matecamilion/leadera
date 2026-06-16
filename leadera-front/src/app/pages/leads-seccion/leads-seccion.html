@@ -1,0 +1,102 @@
+<div class="seccion-container">
+
+  <!-- HEADER -->
+  <div class="seccion-header">
+    <a routerLink="/" class="btn-volver">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver al home
+    </a>
+    <div class="seccion-titulo-bloque">
+      <h1>{{ infoSeccion().titulo }}</h1>
+      <p class="seccion-subtitulo">{{ infoSeccion().subtitulo }}</p>
+    </div>
+    @if (!cargando()) {
+      <span class="seccion-total-badge">{{ totalElementos() }} leads</span>
+    }
+  </div>
+
+  <!-- FILTROS -->
+  <div class="seccion-filtros">
+    <div class="filtro-busqueda">
+      <span class="material-symbols-outlined">search</span>
+      <input
+        type="text"
+        placeholder="Buscar por nombre o apellido..."
+        [ngModel]="busqueda()"
+        (ngModelChange)="busqueda.set($event)"
+        (keyup.enter)="onBuscar()"
+        class="input-busqueda"
+      />
+    </div>
+
+    <select
+      [ngModel]="filtroOperacion()"
+      (ngModelChange)="filtroOperacion.set($event); onBuscar()"
+      class="select-filtro"
+    >
+      <option value="">Todos los tipos de operación</option>
+      <option value="COMPRA">Compra</option>
+      <option value="VENTA">Venta</option>
+      <option value="ALQUILER">Alquiler</option>
+    </select>
+
+    <button class="btn-buscar" (click)="onBuscar()">Buscar</button>
+
+    @if (hayFiltros()) {
+      <button class="btn-limpiar" (click)="limpiarFiltros()">
+        <span class="material-symbols-outlined">close</span>
+        Limpiar
+      </button>
+    }
+  </div>
+
+  <!-- CONTENIDO -->
+  @if (cargando()) {
+    <div class="seccion-loader">Cargando leads...</div>
+  } @else if (error()) {
+    <div class="seccion-error">{{ error() }}</div>
+  } @else if (leads().length === 0) {
+    <div class="seccion-vacia">
+      <span class="material-symbols-outlined">inbox</span>
+      <p>No hay leads en esta sección{{ hayFiltros() ? ' con los filtros aplicados' : '' }}.</p>
+      @if (hayFiltros()) {
+        <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar filtros</button>
+      }
+    </div>
+  } @else {
+    <div class="seccion-lista">
+      @for (lead of leads(); track lead.id) {
+        <app-lead-card [lead]="lead"></app-lead-card>
+      }
+    </div>
+
+    <!-- PAGINACIÓN -->
+    @if (totalPaginas() > 1) {
+      <div class="paginacion">
+        <button
+          class="btn-pag"
+          [disabled]="paginaActual() === 0"
+          (click)="irPagina(paginaActual() - 1)">
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+
+        @for (p of paginas(); track p) {
+          <button
+            class="btn-pag"
+            [class.activa]="paginaActual() === p - 1"
+            (click)="irPagina(p - 1)">
+            {{ p }}
+          </button>
+        }
+
+        <button
+          class="btn-pag"
+          [disabled]="paginaActual() === totalPaginas() - 1"
+          (click)="irPagina(paginaActual() + 1)">
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </div>
+    }
+  }
+
+</div>

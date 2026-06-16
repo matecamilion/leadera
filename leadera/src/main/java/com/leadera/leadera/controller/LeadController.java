@@ -9,6 +9,7 @@ import com.leadera.leadera.dto.LeadDetalleResponse;
 import com.leadera.leadera.dto.LeadResponseDTO;
 import com.leadera.leadera.dto.InteraccionDTO;
 import com.leadera.leadera.dto.LeadResumenDTO;
+import com.leadera.leadera.dto.LeadHoyDTO;
 import com.leadera.leadera.dto.LeadsHoyResponse;
 import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Lead;
@@ -151,6 +152,21 @@ public class LeadController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/seccion")
+    public Page<LeadHoyDTO> obtenerLeadsPorSeccion(
+            @RequestParam String seccion,
+            @RequestParam(defaultValue = "") String nombre,
+            @RequestParam(required = false) String tipoOperacion,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            Authentication authentication
+    ) {
+        return leadService.obtenerLeadsPorSeccion(
+                seccion, nombre, tipoOperacion,
+                PageRequest.of(page, size),
+                authentication.getName()
+        );
+    }
 
 
 }

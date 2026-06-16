@@ -18,6 +18,13 @@
           {{ leads().length }} {{ badgeText() }}
         </span>
 
+        @if (verTodosRuta() && totalReal() !== null && totalReal()! > leads().length) {
+          <a [routerLink]="verTodosRuta()" class="seccion-ver-todos">
+            Ver todos ({{ totalReal() }})
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        }
+
       </div>
 
       <p class="section-subtitle">

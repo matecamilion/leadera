@@ -327,6 +327,28 @@
   color: #94a3b8;
 }
 
+.seccion-ver-todos {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-primary, #4f46e5);
+  text-decoration: none;
+  margin-left: auto;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.seccion-ver-todos:hover {
+  background: var(--color-primary-light, #eef2ff);
+}
+
+.seccion-ver-todos .material-symbols-outlined {
+  font-size: 1rem;
+}
+
 /* Visibilidad lista vs carrusel según breakpoint */
 @media (max-width: 768px) {
   .leads-list { display: none; }

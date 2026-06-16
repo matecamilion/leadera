@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LeadsHoyResponse } from '../models/leads-hoy-response';
 import { Lead } from '../models/lead';
+import { LeadHoy } from '../models/lead-hoy';
 import { LeadResumen } from '../models/lead-resumen';
 import { CrearLeadRequest } from '../models/crear-lead-request';
 import { Page } from '../models/page';
@@ -54,5 +55,25 @@ export class LeadService {
 
   eliminarLead(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getLeadsPorSeccion(
+    seccion: string,
+    nombre: string,
+    tipoOperacion: string,
+    page: number,
+    size: number
+  ): Observable<{ content: LeadHoy[]; totalElements: number; totalPages: number }> {
+    let params = new HttpParams()
+      .set('seccion', seccion)
+      .set('nombre', nombre)
+      .set('page', page)
+      .set('size', size);
+    if (tipoOperacion) {
+      params = params.set('tipoOperacion', tipoOperacion);
+    }
+    return this.http.get<{ content: LeadHoy[]; totalElements: number; totalPages: number }>(
+      `${this.apiUrl}/seccion`, { params }
+    );
   }
 }

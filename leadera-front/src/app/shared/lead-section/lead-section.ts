@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, effect, input, signal, viewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TitleCasePipe } from '@angular/common';
 import { LeadHoy } from '../../core/models/lead-hoy';
 import { LeadCard } from '../lead-card/lead-card';
@@ -7,7 +7,7 @@ import { LeadCard } from '../lead-card/lead-card';
 @Component({
   selector: 'app-lead-section',
   standalone: true,
-  imports: [LeadCard, TitleCasePipe],
+  imports: [LeadCard, TitleCasePipe, RouterModule],
   templateUrl: './lead-section.html',
   styleUrl: './lead-section.css',
 })
@@ -17,6 +17,8 @@ export class LeadSection implements OnDestroy {
   badgeText = input.required<string>();
   variant = input.required<'prioritarios' | 'seguimientos' | 'nuevos' | 'completados'>();
   leads = input.required<LeadHoy[]>();
+  totalReal = input<number | null>(null);
+  verTodosRuta = input<string | null>(null);
 
   viewport = viewChild<ElementRef<HTMLDivElement>>('viewport');
   canScrollLeft = signal(false);

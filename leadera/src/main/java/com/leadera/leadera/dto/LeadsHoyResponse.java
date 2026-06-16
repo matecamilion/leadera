@@ -20,4 +20,8 @@ public class LeadsHoyResponse {
     private int totalTareasDelDia;
     private int tareasCompletadasDelDia;
 
+    private int totalPrioritarios;
+    private int totalNuevos;
+    private int totalSeguimientos;
+
 }

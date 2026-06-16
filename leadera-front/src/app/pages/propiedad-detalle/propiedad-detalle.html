@@ -73,39 +73,39 @@
                         {{ c.estadoLead }}
                       </span>
                     </div>
-                    @if (!c.esMio) {
-                      <span class="badge-agente-ajeno">
-                        <span class="material-symbols-outlined">person</span>
-                        Lead de {{ c.nombreAgente }} {{ c.apellidoAgente }}
-                      </span>
-                    }
-                    <div class="comprador-data">
-                      <span><strong>Zona:</strong> {{ c.busquedaZona }}</span>
-                      <span>
-                        <strong>Presupuesto:</strong>
-                        @if (c.busquedaPrecioMin && c.busquedaPrecioMax) {
-                          USD {{ c.busquedaPrecioMin | number }} – {{ c.busquedaPrecioMax | number }}
-                        } @else if (c.busquedaPrecioMax) {
-                          hasta USD {{ c.busquedaPrecioMax | number }}
-                        } @else if (c.busquedaPrecioMin) {
-                          desde USD {{ c.busquedaPrecioMin | number }}
-                        } @else {
-                          sin tope
-                        }
-                      </span>
+
+                    <div class="comprador-busqueda-titulo">
+                      <span class="material-symbols-outlined">search</span>
+                      Busca {{ c.busquedaTipoVivienda }} en {{ c.busquedaZona }}
+                    </div>
+
+                    <div class="comprador-chips">
+                      @if (c.busquedaPrecioMin && c.busquedaPrecioMax) {
+                        <span class="chip chip-precio">
+                          USD {{ c.busquedaPrecioMin | number:'1.0-0' }} – {{ c.busquedaPrecioMax | number:'1.0-0' }}
+                        </span>
+                      } @else if (c.busquedaPrecioMax) {
+                        <span class="chip chip-precio">hasta USD {{ c.busquedaPrecioMax | number:'1.0-0' }}</span>
+                      } @else if (c.busquedaPrecioMin) {
+                        <span class="chip chip-precio">desde USD {{ c.busquedaPrecioMin | number:'1.0-0' }}</span>
+                      }
                       @if (c.busquedaAmbientes) {
-                        <span><strong>Ambientes:</strong> {{ c.busquedaAmbientes }}+</span>
+                        <span class="chip">{{ c.busquedaAmbientes }}+ amb.</span>
                       }
                       @if (c.busquedaMetros) {
-                        <span><strong>Metros:</strong> {{ c.busquedaMetros }}+ m²</span>
+                        <span class="chip">{{ c.busquedaMetros }}+ m²</span>
                       }
                     </div>
-                    @if (c.esMio) {
-                      <a class="link-ver-lead" [routerLink]="['/leads', c.leadId]">Ver lead →</a>
+
+                    @if (!c.esMio) {
+                      <div class="comprador-footer-ajeno">
+                        <span class="material-symbols-outlined">person</span>
+                        Lead de <strong>{{ c.nombreAgente }} {{ c.apellidoAgente }}</strong> — coordiná con él
+                      </div>
                     } @else {
-                      <p class="hint-agente-ajeno">
-                        Hablá con {{ c.nombreAgente }}: tiene un comprador para tu propiedad.
-                      </p>
+                      <a class="link-ver-lead" [routerLink]="['/leads', c.leadId]">
+                        Ver lead →
+                      </a>
                     }
                   </div>
                 }

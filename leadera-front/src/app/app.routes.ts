@@ -25,6 +25,7 @@ import { OperacionesLead } from './pages/operaciones-lead/operaciones-lead';
 import { InteraccionesLead } from './pages/interacciones-lead/interacciones-lead';
 import { OperacionesCerradasComponent } from './pages/operaciones-cerradas/operaciones-cerradas';
 import { OperacionesPorEstado } from './pages/operaciones-por-estado/operaciones-por-estado';
+import { LeadsSeccion } from './pages/leads-seccion/leads-seccion';
 
 export const routes: Routes = [
     // 1. Rutas de Autenticación (Públicas)
@@ -41,6 +42,7 @@ export const routes: Routes = [
   { path: 'home', component: Home, canActivate: [authGuard] },
   { path: 'leads', component: ListadoLeadsComponent, canActivate: [authGuard] },
   { path: 'leads/nuevo', component: NuevoLead, canActivate: [authGuard] },
+  { path: 'leads/seccion/:seccion', component: LeadsSeccion, canActivate: [authGuard], title: 'LeadEra - Sección' },
   { path: 'leads/:id', component: DetalleLead, canActivate: [authGuard] },
   { path: 'gestion-del-dia', component: GestionDelDia, canActivate: [authGuard] },
   { path: 'leads/:id/interaccion', component: NuevaInteraccion, canActivate: [authGuard] },

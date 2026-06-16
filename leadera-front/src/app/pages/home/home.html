@@ -82,7 +82,9 @@
       subtitle="Atención inmediata requerida por falta de contacto"
       badgeText="urgentes"
       variant="prioritarios"
-      [leads]="leadsHoy()?.prioritarios || []">
+      [leads]="leadsHoy()?.prioritarios || []"
+      [totalReal]="leadsHoy()?.totalPrioritarios ?? null"
+      verTodosRuta="/leads/seccion/prioritarios">
     </app-lead-section>
 
     <app-lead-section
@@ -90,7 +92,9 @@
       subtitle="Personas que consultaron recientemente y esperan respuesta"
       badgeText="nuevos"
       variant="nuevos"
-      [leads]="leadsHoy()?.nuevosSinContacto || []">
+      [leads]="leadsHoy()?.nuevosSinContacto || []"
+      [totalReal]="leadsHoy()?.totalNuevos ?? null"
+      verTodosRuta="/leads/seccion/nuevos">
     </app-lead-section>
 
     <app-lead-section
@@ -98,7 +102,9 @@
       subtitle="Contactos activos que necesitan un recordatorio hoy"
       badgeText="pendientes"
       variant="seguimientos"
-      [leads]="leadsHoy()?.seguimientosDeHoy || []">
+      [leads]="leadsHoy()?.seguimientosDeHoy || []"
+      [totalReal]="leadsHoy()?.totalSeguimientos ?? null"
+      verTodosRuta="/leads/seccion/seguimientos">
     </app-lead-section>
   }
 </section>

@@ -44,6 +44,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.springframework.data.domain.PageImpl;
+import com.leadera.leadera.exception.BadRequestException;
 
 @Service
 public class LeadService {
@@ -216,13 +219,29 @@ public class LeadService {
         int totalTareas = nuevos.size() + prioritarios.size() + seguimientosUnicos.size() + yaContactados.size();
         int completadas = yaContactados.size();
 
+        int totalPrioritarios = prioritarios.size();
+        int totalNuevos = nuevos.size();
+        int totalSeguimientos = seguimientosUnicos.size();
+
+        List<LeadHoyDTO> prioritariosPreview = prioritarios.stream()
+                .limit(5).map(LeadMapper::toHoyDTO).toList();
+        List<LeadHoyDTO> nuevosPreview = nuevos.stream()
+                .limit(5).map(LeadMapper::toHoyDTO).toList();
+        List<LeadHoyDTO> seguimientosPreview = seguimientosUnicos.stream()
+                .limit(5).map(LeadMapper::toHoyDTO).toList();
+        List<LeadHoyDTO> contactadosDTO = yaContactados.stream()
+                .map(LeadMapper::toHoyDTO).toList();
+
         return new LeadsHoyResponse(
-                nuevos.stream().map(LeadMapper::toHoyDTO).toList(),
-                prioritarios.stream().map(LeadMapper::toHoyDTO).toList(),
-                seguimientosUnicos.stream().map(LeadMapper::toHoyDTO).toList(),
-                yaContactados.stream().map(LeadMapper::toHoyDTO).toList(),
+                nuevosPreview,
+                prioritariosPreview,
+                seguimientosPreview,
+                contactadosDTO,
                 totalTareas,
-                completadas
+                completadas,
+                totalPrioritarios,
+                totalNuevos,
+                totalSeguimientos
         );
     }
 
@@ -421,6 +440,65 @@ public class LeadService {
             conteos.computeIfAbsent(leadId, k -> new EnumMap<>(TipoOperacion.class)).put(tipo, cantidad);
         }
         return conteos;
+    }
+
+    public Page<LeadHoyDTO> obtenerLeadsPorSeccion(
+            String seccion,
+            String nombre,
+            String tipoOperacion,
+            Pageable pageable,
+            String email
+    ) {
+        String emailDuenio = emailPropietario(email);
+        LocalDateTime ahora = LocalDateTime.now(zonaHoraria);
+        LocalDateTime inicioHoy = ahora.toLocalDate().atStartOfDay();
+
+        List<Lead> leads = switch (seccion.toUpperCase()) {
+            case "PRIORITARIOS" -> leadRepository
+                    .findByEstadoAndUltimoContactoBeforeAndAgenteEmail(
+                            EstadoLead.CALIENTE,
+                            ahora.minusDays(diasSinContactoPrioritario),
+                            emailDuenio
+                    );
+            case "NUEVOS" -> leadRepository
+                    .findByUltimoContactoIsNullAndAgenteEmailAndEstadoNot(
+                            emailDuenio, EstadoLead.INACTIVO
+                    );
+            case "SEGUIMIENTOS" -> leadRepository
+                    .findSeguimientosPendientes(
+                            inicioHoy.plusDays(1),
+                            emailDuenio,
+                            EstadoLead.INACTIVO
+                    );
+            default -> throw new BadRequestException("Sección inválida: " + seccion);
+        };
+
+        Stream<Lead> stream = leads.stream();
+
+        if (nombre != null && !nombre.isBlank()) {
+            String q = nombre.toLowerCase().trim();
+            stream = stream.filter(l ->
+                    l.getNombre().toLowerCase().contains(q) ||
+                    l.getApellido().toLowerCase().contains(q)
+            );
+        }
+
+        if (tipoOperacion != null && !tipoOperacion.isBlank()) {
+            TipoOperacion tipo = TipoOperacion.valueOf(tipoOperacion.toUpperCase());
+            stream = stream.filter(l ->
+                    l.getOperaciones() != null &&
+                    l.getOperaciones().stream().anyMatch(op -> op.getTipo() == tipo)
+            );
+        }
+
+        List<LeadHoyDTO> filtrados = stream.map(LeadMapper::toHoyDTO).toList();
+
+        int total = filtrados.size();
+        int inicio = (int) pageable.getOffset();
+        int fin = Math.min(inicio + pageable.getPageSize(), total);
+        List<LeadHoyDTO> pagina = inicio >= total ? List.of() : filtrados.subList(inicio, fin);
+
+        return new PageImpl<>(pagina, pageable, total);
     }
 
     private LeadResumenDTO toResumenDTO(Lead lead, Map<Long, Map<TipoOperacion, Long>> conteos) {
