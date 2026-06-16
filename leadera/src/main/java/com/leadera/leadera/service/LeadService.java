@@ -484,13 +484,6 @@ public class LeadService {
             );
         }
 
-        if (tipoOperacion != null && !tipoOperacion.isBlank()) {
-            TipoOperacion tipo = TipoOperacion.valueOf(tipoOperacion.toUpperCase());
-            stream = stream.filter(l ->
-                    l.getOperaciones() != null &&
-                    l.getOperaciones().stream().anyMatch(op -> op.getTipo() == tipo)
-            );
-        }
 
         List<LeadHoyDTO> filtrados = stream.map(LeadMapper::toHoyDTO).toList();
 
