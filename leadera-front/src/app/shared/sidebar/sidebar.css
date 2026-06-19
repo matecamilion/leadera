@@ -5,7 +5,7 @@
   width: 220px;
   height: 100vh;
   background: white;
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   padding: 20px 12px;
@@ -51,8 +51,8 @@
 }
 
 .nav-item.active {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: #E6F0EE;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -62,32 +62,32 @@
 
 /* Ítems destacados: Home y Gestión del día */
 .nav-item-primary {
-  background: #ecfdf5;
-  color: #15803d;
+  background: #E6F0EE;
+  color: var(--color-primary);
   font-weight: 600;
-  border: 1px solid #d1fae5;
+  border: 1px solid var(--color-border);
 }
 
 .nav-item-primary:hover {
-  background: #d1fae5;
-  color: #14532d;
+  background: #d8e8e4;
+  color: var(--color-primary-dark);
 }
 
 .nav-item-primary.active {
-  background: #15803d;
+  background: var(--color-primary);
   color: white;
-  border-color: #15803d;
+  border-color: var(--color-primary);
 }
 
 .nav-divider {
   height: 1px;
-  background: #e2e8f0;
+  background: var(--color-border);
   margin: 12px 4px;
 }
 
 /* Sección de usuario al pie */
 .sidebar-user {
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--color-border);
   padding-top: 12px;
   position: relative;
 }
@@ -112,7 +112,7 @@
 .user-avatar {
   width: 36px;
   height: 36px;
-  background: #1e293b;
+  background: var(--color-text);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -144,7 +144,7 @@
   left: 8px;
   right: 8px;
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   padding: 6px 0;
