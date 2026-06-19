@@ -156,20 +156,7 @@
   text-transform: uppercase;
 }
 
-.badge-estado.disponible {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.badge-estado.reservada {
-  background: #fef3c7;
-  color: #b45309;
-}
-
-.badge-estado.vendida {
-  background: #f3f4f6;
-  color: #4b5563;
-}
+/* colores migrados a styles.css — Phase 1 */
 
 .link-lead {
   color: #2563eb;

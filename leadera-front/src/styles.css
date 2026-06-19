@@ -39,6 +39,37 @@ main {
   box-sizing: border-box; /* Asegura que el padding no sume ancho extra */
 }
 
+/* =====================================================
+   SISTEMA DE BADGES — Phase 1
+   Solo colores. Shape/sizing sigue en cada component.
+   Dos prefijos por razón histórica de naming:
+     detalle-lead usa .badge-tipo-operacion / .badge-estado-operacion
+     detalle-operacion usa .badge-tipo / .badge-estado
+   ===================================================== */
+
+/* Lead — estado de temperatura */
+.badge-estado.caliente { background: #fde8e0; color: var(--color-caliente); }
+.badge-estado.tibio    { background: #fef3c7; color: #92400e; }
+.badge-estado.frio     { background: #dbeafe; color: var(--color-frio); }
+.badge-estado.inactivo { background: #f1f5f9; color: var(--color-inactivo); }
+
+/* Operación — tipo */
+.badge-tipo-operacion.venta,    .badge-tipo.venta    { background: #d1fae5; color: var(--color-primary); }
+.badge-tipo-operacion.compra,   .badge-tipo.compra   { background: #dbeafe; color: var(--color-frio); }
+.badge-tipo-operacion.alquiler, .badge-tipo.alquiler { background: #fef3c7; color: #92400e; }
+
+/* Operación — estado */
+.badge-estado-operacion.abierta,        .badge-estado.abierta        { background: #f1f5f9; color: #334155; }
+.badge-estado-operacion.publicada,      .badge-estado.publicada      { background: #d1fae5; color: var(--color-primary); }
+.badge-estado-operacion.reservada,      .badge-estado.reservada      { background: #fef3c7; color: #92400e; }
+.badge-estado-operacion.en_negociacion, .badge-estado.en_negociacion { background: #fef3c7; color: #92400e; }
+.badge-estado-operacion.cerrada_ganada, .badge-estado.cerrada_ganada { background: #d1fae5; color: var(--color-primary-dark); }
+.badge-estado-operacion.cancelada,      .badge-estado.cancelada      { background: #fde8e0; color: var(--color-caliente); }
+
+/* Propiedad — estado (.reservada ya cubierta arriba, mismo token tibio) */
+.badge-estado.disponible { background: #d1fae5; color: var(--color-primary); }
+.badge-estado.vendida    { background: #f1f5f9; color: var(--color-inactivo); }
+
 /* Print: sidebar y elementos de chrome fuera del PDF */
 @media print {
   app-sidebar,
