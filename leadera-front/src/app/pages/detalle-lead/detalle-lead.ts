@@ -30,6 +30,7 @@ export class DetalleLead implements OnInit {
   public id: number = 0;
   operaciones = signal<Operacion[]>([]);
   errorGeneral = signal<string>('');
+  tabActiva = signal<'operaciones' | 'interacciones' | 'propiedades'>('operaciones');
 
   ultimasOperaciones = computed(() => {
     const ops = this.operaciones();
@@ -84,6 +85,19 @@ export class DetalleLead implements OnInit {
     error: (err) => this.errorGeneral.set(err.mensajeAmigable || 'No se pudieron cargar las operaciones.')
   });
 }
+
+  iniciales(nombre: string, apellido: string): string {
+    return `${nombre?.charAt(0) ?? ''}${apellido?.charAt(0) ?? ''}`.toUpperCase();
+  }
+
+  claseAvatar(estado: string): string {
+    switch (estado?.toUpperCase()) {
+      case 'CALIENTE': return 'av-caliente';
+      case 'TIBIO':    return 'av-tibio';
+      case 'FRIO':     return 'av-frio';
+      default:         return 'av-inactivo';
+    }
+  }
 
   agregarPropiedad(modal: HTMLDialogElement) {
   const propiedadAEnviar: any = { ...this.nuevaPropiedad };
