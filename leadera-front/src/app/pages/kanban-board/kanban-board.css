@@ -52,12 +52,12 @@
   max-height: calc(100vh - 180px);
 }
 
-.columna[data-estado='ABIERTA']        { border-top: 4px solid #3b82f6; }
-.columna[data-estado='PUBLICADA']      { border-top: 4px solid #0ea5e9; }
-.columna[data-estado='RESERVADA']      { border-top: 4px solid #8b5cf6; }
-.columna[data-estado='EN_NEGOCIACION'] { border-top: 4px solid #f59e0b; }
-.columna[data-estado='CERRADA_GANADA'] { border-top: 4px solid #10b981; }
-.columna[data-estado='CANCELADA']      { border-top: 4px solid #ef4444; }
+.columna[data-estado='ABIERTA']        { border-top: 4px solid #cbd5e1; }
+.columna[data-estado='PUBLICADA']      { border-top: 4px solid var(--color-primary); }
+.columna[data-estado='RESERVADA']      { border-top: 4px solid var(--color-tibio); }
+.columna[data-estado='EN_NEGOCIACION'] { border-top: 4px solid var(--color-tibio); }
+.columna[data-estado='CERRADA_GANADA'] { border-top: 4px solid var(--color-primary-dark); }
+.columna[data-estado='CANCELADA']      { border-top: 4px solid var(--color-caliente); }
 
 .columna-header {
   display: flex;
