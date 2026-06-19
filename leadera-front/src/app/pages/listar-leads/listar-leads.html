@@ -60,6 +60,62 @@
 
   </nav>
 
+  <!-- DESKTOP: tabla (>768px) -->
+  <div class="tabla-desktop">
+    <table class="leads-tabla">
+      <colgroup>
+        <col style="width: 30%">
+        <col style="width: 12%">
+        <col style="width: 12%">
+        <col style="width: 14%">
+        <col style="width: 14%">
+        <col style="width: 18%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Lead</th>
+          <th>Temperatura</th>
+          <th>Origen</th>
+          <th>Último contacto</th>
+          <th>Próx. seguimiento</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (lead of leadsFiltrados(); track lead.id) {
+          <tr>
+            <td>
+              <span class="tbl-nombre">{{ lead.nombre }} {{ lead.apellido }}</span>
+              <span class="tbl-ultima-int">{{ obtenerUltimoDetalle(lead) }}</span>
+            </td>
+            <td>
+              <span class="badge-estado" [ngClass]="lead.estado.toLowerCase()">{{ lead.estado }}</span>
+            </td>
+            <td>{{ lead.origen || '—' }}</td>
+            <td>{{ lead.ultimoContacto | tiempoTranscurrido }}</td>
+            <td [class.celda-vencida]="esVencido(lead.fechaProximoSeguimiento)">
+              @if (esVencido(lead.fechaProximoSeguimiento)) {
+                Vencido
+              } @else {
+                {{ formatearSeguimiento(lead.fechaProximoSeguimiento) }}
+              }
+            </td>
+            <td class="tbl-acciones">
+              <button class="tbl-btn" [routerLink]="['/leads', lead.id, 'interaccion']">Registrar</button>
+              <button class="tbl-btn tbl-btn-ver" [routerLink]="['/leads', lead.id]">Ver</button>
+            </td>
+          </tr>
+        }
+        @empty {
+          <tr>
+            <td colspan="6" class="tbl-vacio">No hay leads que coincidan con el filtro.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MOBILE: cards (<768px) -->
   <div class="lista-contenedor">
     @for (lead of leadsFiltrados(); track lead.id) {
       <div class="tarjeta-lead">

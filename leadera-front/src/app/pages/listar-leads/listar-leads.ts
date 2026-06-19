@@ -79,6 +79,16 @@ export class ListadoLeadsComponent implements OnInit {
     return lead.operacionesCompra;
   }
 
+  esVencido(fecha: string | null): boolean {
+    if (!fecha) return false;
+    return new Date(fecha) < new Date();
+  }
+
+  formatearSeguimiento(fecha: string | null): string {
+    if (!fecha) return '—';
+    return new Date(fecha).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
   exportarExcel(): void {
     if (this.exportandoExcel()) return;
     const filtrados = this.leadsFiltrados();

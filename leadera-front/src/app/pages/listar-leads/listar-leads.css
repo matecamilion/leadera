@@ -325,3 +325,124 @@
     align-self: flex-end;
   }
 }
+
+/* ============================
+   TABLA DESKTOP
+   ============================ */
+
+.tabla-desktop {
+  display: none;
+}
+
+.lista-contenedor {
+  display: block;
+}
+
+@media (min-width: 769px) {
+  .tabla-desktop  { display: block; }
+  .lista-contenedor { display: none; }
+}
+
+.leads-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.88rem;
+}
+
+.leads-tabla thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.leads-tabla tbody tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.12s;
+}
+
+.leads-tabla tbody tr:last-child {
+  border-bottom: none;
+}
+
+.leads-tabla tbody tr:hover {
+  background: #f8f6f2;
+}
+
+.leads-tabla tbody td {
+  padding: 12px 14px;
+  vertical-align: middle;
+  color: var(--color-text);
+}
+
+.tbl-nombre {
+  display: block;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tbl-ultima-int {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.celda-vencida {
+  color: var(--color-caliente);
+  font-weight: 700;
+}
+
+.tbl-acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tbl-btn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.tbl-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.tbl-btn-ver {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.tbl-btn-ver:hover {
+  background: #E6F0EE;
+  border-color: var(--color-primary-dark);
+}
+
+.tbl-vacio {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  font-style: italic;
+}
