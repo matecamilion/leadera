@@ -89,6 +89,15 @@ export class LeadSection implements OnDestroy {
     }
   }
 
+  claseBordeTemperatura(estado: string): string {
+    switch (estado) {
+      case 'CALIENTE': return 'borde-caliente';
+      case 'TIBIO':    return 'borde-tibio';
+      case 'FRIO':     return 'borde-frio';
+      default:         return 'borde-inactivo';
+    }
+  }
+
   tiempoDesde(ultimoContacto?: string | null): string {
     if (!ultimoContacto) return 'Sin contacto';
     const fecha = new Date(ultimoContacto);

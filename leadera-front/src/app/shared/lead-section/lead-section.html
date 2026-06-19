@@ -33,19 +33,12 @@
 
     </div>
 
-    @if (variant() === 'prioritarios') {
-      <div class="urgent-box">
-        <div class="number">{{ leads().length }}</div>
-        <div class="label">Urgentes</div>
-      </div>
-    }
-
   </div>
 
   <!-- DESKTOP: lista compacta -->
   <div class="leads-list">
     @for (lead of leads(); track lead.id) {
-      <div class="lead-row" (click)="irADetalle(lead.id)">
+      <div class="lead-row" [class]="claseBordeTemperatura(lead.estado)" (click)="irADetalle(lead.id)">
         <div class="lead-avatar" [class]="claseAvatar(lead.estado)">
           {{ iniciales(lead) }}
         </div>

@@ -80,33 +80,6 @@
 .count-badge.completados  { background: #dcfce7; color: #15803d; }
 
 /* ========================= */
-/* CAJA URGENTES (derecha) */
-/* ========================= */
-
-.urgent-box {
-  border-radius: 14px;
-  padding: 10px 16px;
-  text-align: center;
-  min-width: 80px;
-  flex-shrink: 0;
-  background: #ff0000;
-  color: white;
-}
-
-.urgent-box .number {
-  font-size: 1.6rem;
-  font-weight: 800;
-  display: block;
-  line-height: 1;
-}
-
-.urgent-box .label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  margin-top: 2px;
-}
-
-/* ========================= */
 /* CARRUSEL DE CARDS */
 /* ========================= */
 
@@ -234,12 +207,17 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 4px;
+  padding: 11px 4px 11px 10px;
   border-bottom: 1px solid #f1f5f9;
+  border-left: 3px solid transparent;
   cursor: pointer;
   transition: background 0.15s;
   border-radius: 8px;
 }
+.lead-row.borde-caliente { border-left-color: var(--color-caliente); }
+.lead-row.borde-tibio    { border-left-color: var(--color-tibio); }
+.lead-row.borde-frio     { border-left-color: var(--color-frio); }
+.lead-row.borde-inactivo { border-left-color: var(--color-inactivo); }
 
 .lead-row:last-child { border-bottom: none; }
 .lead-row:hover { background: #f8fafc; }
