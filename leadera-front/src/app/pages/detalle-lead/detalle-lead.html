@@ -158,17 +158,6 @@
       </div>
     </dialog>
 
-    <!-- Modal: Detalle Propiedad -->
-    <dialog #modalDetalleProp class="modal-leadera modal-wide">
-      @if (propiedadSeleccionada()) {
-        <app-propiedad-detalle
-          [propiedad]="propiedadSeleccionada()!"
-          (cerrar)="modalDetalleProp.close()"
-          (estadoActualizado)="cargarPropiedades()"
-        ></app-propiedad-detalle>
-      }
-    </dialog>
-
     <!-- Modal: Nueva Operación -->
     <dialog #modalNuevaOperacion class="modal-leadera modal-wide">
       <div class="modal-content" style="text-align:left">
@@ -377,7 +366,7 @@
           </div>
         } @else {
           @for (prop of propiedades(); track prop.id) {
-            <div class="tarjeta-propiedad" (click)="propiedadSeleccionada.set(prop); modalDetalleProp.showModal()">
+            <div class="tarjeta-propiedad" [routerLink]="['/propiedades', prop.id]">
               <div class="prop-header">
                 <span class="prop-tipo">{{ prop.tipoVivienda }}</span>
                 @if (prop.estado) {

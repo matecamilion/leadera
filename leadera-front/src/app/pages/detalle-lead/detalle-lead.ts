@@ -7,14 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { PropiedadService } from '../../core/services/propiedad-service';
 import { Propiedad } from '../../core/models/propiedad';
 import { Busqueda } from '../../core/models/busqueda';
-import { PropiedadDetalle } from '../propiedad-detalle/propiedad-detalle';
 import { OperacionService, Operacion, CrearOperacionRequest } from '../../core/services/operacion-service';
 import { Lead } from '../../core/models/lead';
 
 @Component({
   selector: 'app-detalle-lead',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, PropiedadDetalle],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './detalle-lead.html',
   styleUrl: './detalle-lead.css'
 })
@@ -50,7 +49,6 @@ export class DetalleLead implements OnInit {
 
   // Propiedades
   propiedades = signal<Propiedad[]>([]);
-  propiedadSeleccionada = signal<Propiedad | null>(null);
   nuevaPropiedad: Partial<Propiedad> = {};
 
   ngOnInit(): void {
