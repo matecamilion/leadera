@@ -7,6 +7,7 @@
 
     <div class="acciones-header">
       <div class="buscador-wrapper">
+        <span class="material-symbols-outlined buscador-icono">search</span>
         <input
           type="text"
           placeholder="Buscar por nombre, email, teléfono o propiedad..."
@@ -14,6 +15,11 @@
           (ngModelChange)="filtroBusqueda.set($event)"
         />
       </div>
+
+      <a routerLink="/leads/nuevo" class="btn-nuevo-lead">
+        <span class="material-symbols-outlined">add</span>
+        Nuevo Lead
+      </a>
 
       <button
         type="button"
@@ -26,39 +32,24 @@
     </div>
   </header>
 
-  <nav class="pestañas-filtro">
-    <button
-      [class.activa]="estadoSeleccionado() === 'TODOS'"
-      (click)="estadoSeleccionado.set('TODOS')"
-    >
-      Todos ({{ leads().length }})
-    </button>
-    <button
-      [class.activa]="estadoSeleccionado() === 'CALIENTE'"
-      (click)="estadoSeleccionado.set('CALIENTE')"
-    >
-      Calientes
-    </button>
-    <button
-      [class.activa]="estadoSeleccionado() === 'TIBIO'"
-      (click)="estadoSeleccionado.set('TIBIO')"
-    >
-      Tibios
-    </button>
-    <button
-      [class.activa]="estadoSeleccionado() === 'FRIO'"
-      (click)="estadoSeleccionado.set('FRIO')"
-    >
-      Frios
-    </button>
-    <button
-      [class.activa]="estadoSeleccionado() === 'INACTIVO'"
-      (click)="estadoSeleccionado.set('INACTIVO')"
-    >
-      Inactivos
-    </button>
-
-  </nav>
+  <div class="tabla-card">
+    <nav class="pestañas-filtro">
+      <button [class.activa]="estadoSeleccionado() === 'TODOS'" (click)="estadoSeleccionado.set('TODOS')">
+        <span class="dot dot-todos"></span>Todos ({{ leads().length }})
+      </button>
+      <button [class.activa]="estadoSeleccionado() === 'CALIENTE'" (click)="estadoSeleccionado.set('CALIENTE')">
+        <span class="dot dot-caliente"></span>Calientes
+      </button>
+      <button [class.activa]="estadoSeleccionado() === 'TIBIO'" (click)="estadoSeleccionado.set('TIBIO')">
+        <span class="dot dot-tibio"></span>Tibios
+      </button>
+      <button [class.activa]="estadoSeleccionado() === 'FRIO'" (click)="estadoSeleccionado.set('FRIO')">
+        <span class="dot dot-frio"></span>Frios
+      </button>
+      <button [class.activa]="estadoSeleccionado() === 'INACTIVO'" (click)="estadoSeleccionado.set('INACTIVO')">
+        <span class="dot dot-inactivo"></span>Inactivos
+      </button>
+    </nav>
 
   <!-- DESKTOP: tabla (>768px) -->
   <div class="tabla-desktop">
@@ -114,6 +105,7 @@
       </tbody>
     </table>
   </div>
+  </div><!-- /tabla-card -->
 
   <!-- MOBILE: cards (<768px) -->
   <div class="lista-contenedor">

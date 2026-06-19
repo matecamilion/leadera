@@ -141,37 +141,58 @@
   box-sizing: border-box;
 }
 
-/* 4. PESTAÑAS (TABS CON SCROLL LATERAL) */
+/* 4. FILTROS COMO CHIPS */
 .pestañas-filtro {
   display: flex;
   gap: 8px;
-  background: #f1f5f9;
-  padding: 4px;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-  overflow-x: auto; /* Permite deslizar los filtros si no entran */
+  margin-bottom: 20px;
+  overflow-x: auto;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
+  padding: 2px 0;
 }
 
-.pestañas-filtro::-webkit-scrollbar { display: none; } /* Oculta barra scroll estética */
+.pestañas-filtro::-webkit-scrollbar { display: none; }
 
 .pestañas-filtro button {
-  padding: 8px 20px;
-  border: none;
-  background: transparent;
-  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border: 1px solid var(--color-border);
+  background: white;
+  color: var(--color-text);
   font-weight: 600;
-  font-size: 0.9rem;
-  border-radius: 8px;
+  font-size: 0.85rem;
+  border-radius: 999px;
   cursor: pointer;
-  flex-shrink: 0; /* Evita que el botón se achique */
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.pestañas-filtro button.activa {
-  background: var(--color-primary);
-  color: white;
+/* Punto de color */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.15s;
 }
+.dot-todos    { background: var(--color-primary); }
+.dot-caliente { background: var(--color-caliente); }
+.dot-tibio    { background: var(--color-tibio); }
+.dot-frio     { background: var(--color-frio); }
+.dot-inactivo { background: var(--color-inactivo); }
+
+/* Estado activo: fondo sólido, punto blanco */
+.pestañas-filtro button.activa      { color: white; }
+.pestañas-filtro button.activa .dot { background: rgba(255,255,255,0.7); }
+
+.pestañas-filtro button:has(.dot-todos).activa    { background: var(--color-primary);  border-color: var(--color-primary); }
+.pestañas-filtro button:has(.dot-caliente).activa { background: var(--color-caliente); border-color: var(--color-caliente); }
+.pestañas-filtro button:has(.dot-tibio).activa    { background: var(--color-tibio);    border-color: var(--color-tibio); }
+.pestañas-filtro button:has(.dot-frio).activa     { background: var(--color-frio);     border-color: var(--color-frio); }
+.pestañas-filtro button:has(.dot-inactivo).activa { background: var(--color-inactivo); border-color: var(--color-inactivo); }
 
 /* 5. TARJETAS DE LEAD (EL CAMBIO CLAVE) */
 .tarjeta-lead {
@@ -445,4 +466,68 @@
   color: var(--color-text-muted);
   font-size: 0.88rem;
   font-style: italic;
+}
+
+/* ============================
+   CARD CONTENEDOR (filtros + tabla)
+   ============================ */
+
+.tabla-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 20px;
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .tabla-card { display: block; }
+}
+
+/* Más aire en las filas de tabla */
+.leads-tabla tbody td {
+  padding: 16px 14px;
+}
+
+/* ============================
+   BOTÓN NUEVO LEAD
+   ============================ */
+
+.btn-nuevo-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: var(--color-primary);
+  color: white;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.btn-nuevo-lead:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn-nuevo-lead .material-symbols-outlined {
+  font-size: 20px;
+  color: white;
+}
+
+/* ============================
+   ÍCONO DE LUPA EN BUSCADOR
+   ============================ */
+
+.buscador-icono {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--color-text-muted);
+  pointer-events: none;
 }
