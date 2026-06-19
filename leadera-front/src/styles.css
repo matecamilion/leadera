@@ -28,6 +28,7 @@ html, body {
   overflow-x: hidden; /* Corta cualquier cosa que intente salir por el costado */
   margin: 0;
   padding: 0;
+  background: var(--color-bg);
 }
 
 /* El contenedor principal también debe ser respetuoso */
