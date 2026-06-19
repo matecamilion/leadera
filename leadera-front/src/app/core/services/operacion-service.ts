@@ -45,6 +45,10 @@ export class OperacionService {
     return this.http.get<Operacion[]>(`${this.apiUrl}/leads/${leadId}/operaciones`);
   }
 
+  obtenerOperacionesDePropiedad(propiedadId: number): Observable<Operacion[]> {
+    return this.http.get<Operacion[]>(`${this.apiUrl}/propiedades/${propiedadId}/operaciones`);
+  }
+
   obtenerOperacionesAbiertasDelLead(leadId: number): Observable<Operacion[]> {
     return this.http.get<Operacion[]>(`${this.apiUrl}/leads/${leadId}/operaciones/abiertas`);
   }

@@ -1,5 +1,6 @@
 package com.leadera.leadera.service;
 
+import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Busqueda;
 import com.leadera.leadera.entity.EventoOperacion;
 import com.leadera.leadera.entity.Lead;
@@ -149,6 +150,21 @@ public class OperacionService {
 
         operacion.setBusqueda(busquedaRepository.save(busqueda));
         operacion.setPropiedad(null);
+    }
+
+    public List<OperacionDTO> obtenerOperacionesDePropiedad(Long propiedadId, String emailAgente) {
+        Propiedad propiedad = propiedadRepository.findById(propiedadId)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe la propiedad con id: " + propiedadId));
+
+        Agente propietario = agenteContextResolver.resolverPropietarioPorEmail(emailAgente);
+        if (propiedad.getLead() == null
+                || propiedad.getLead().getAgente() == null
+                || !propiedad.getLead().getAgente().getId().equals(propietario.getId())) {
+            throw new UnauthorizedActionException("No tenés permiso para ver las operaciones de esta propiedad.");
+        }
+
+        return operacionRepository.findByPropiedadId(propiedadId)
+                .stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     public List<OperacionDTO> obtenerOperacionesDelLead(Long leadId, String emailAgente) {

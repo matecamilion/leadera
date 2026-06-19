@@ -5,8 +5,10 @@ import com.leadera.leadera.dto.CrearPropiedadRequest;
 import com.leadera.leadera.dto.MatchDelDiaDTO;
 import com.leadera.leadera.dto.EditarPropiedadRequest;
 import com.leadera.leadera.dto.EventoOperacionResumenDTO;
+import com.leadera.leadera.dto.OperacionDTO;
 import com.leadera.leadera.dto.PropiedadDTO;
 import com.leadera.leadera.dto.PropiedadResumenDTO;
+import com.leadera.leadera.service.OperacionService;
 import com.leadera.leadera.service.PropiedadService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
@@ -21,9 +23,11 @@ import java.util.Map;
 public class PropiedadController {
 
     private final PropiedadService propiedadService;
+    private final OperacionService operacionService;
 
-    public PropiedadController(PropiedadService propiedadService) {
+    public PropiedadController(PropiedadService propiedadService, OperacionService operacionService) {
         this.propiedadService = propiedadService;
+        this.operacionService = operacionService;
     }
 
     @GetMapping
@@ -73,6 +77,12 @@ public class PropiedadController {
     public ResponseEntity<List<CompradorPotencialDTO>> compradoresPotenciales(@PathVariable Long id,
                                                                               Authentication authentication) {
         return ResponseEntity.ok(propiedadService.buscarCompradoresPotenciales(id, authentication.getName()));
+    }
+
+    @GetMapping("/{propiedadId}/operaciones")
+    public ResponseEntity<List<OperacionDTO>> listarOperacionesDePropiedad(@PathVariable Long propiedadId,
+                                                                            Authentication authentication) {
+        return ResponseEntity.ok(operacionService.obtenerOperacionesDePropiedad(propiedadId, authentication.getName()));
     }
 
     @GetMapping("/mis-matches")

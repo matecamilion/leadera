@@ -1,0 +1,3593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeadEra — Mockup Visual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    /* ================================================
+       DESIGN TOKENS
+       ================================================ */
+    :root {
+      --color-bg:            #FBF8F4;
+      --color-card:          #FFFFFF;
+      --color-text:          #16213B;
+      --color-text-muted:    #7C7568;
+      --color-border:        #EAE3D8;
+      --color-primary:       #0F6E5C;
+      --color-primary-dark:  #0A4F42;
+      --color-primary-light: #E6F3F0;
+      --color-caliente:      #D85A30;
+      --color-caliente-bg:   #FDEEE8;
+      --color-tibio:         #EF9F27;
+      --color-tibio-bg:      #FEF5E0;
+      --color-frio:          #378ADD;
+      --color-frio-bg:       #E8F1FC;
+      --color-inactivo:      #888780;
+      --color-inactivo-bg:   #F0EFED;
+
+      --gradient-temp: linear-gradient(90deg, #378ADD 0%, #EF9F27 52%, #D85A30 100%);
+
+      --sidebar-w: 228px;
+      --r-sm:  6px;
+      --r-md: 10px;
+      --r-lg: 14px;
+      --shadow-sm: 0 1px 3px rgba(22,33,59,.05), 0 1px 2px rgba(22,33,59,.03);
+      --shadow-md: 0 4px 14px rgba(22,33,59,.09), 0 2px 4px rgba(22,33,59,.04);
+    }
+
+    /* ================================================
+       RESET & BASE
+       ================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-size: 14px;
+      line-height: 1.5;
+      display: flex;
+      min-height: 100vh;
+    }
+    button { font-family: inherit; cursor: pointer; }
+    a { text-decoration: none; }
+
+    /* ================================================
+       SIDEBAR
+       ================================================ */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--color-card);
+      border-right: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 22px 20px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .logo-mark {
+      font-family: 'Fraunces', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-primary);
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .logo-tagline {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--color-text-muted);
+      margin-top: 3px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+    }
+    .nav-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--color-text-muted);
+      padding: 10px 12px 4px;
+      margin-top: 6px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--r-md);
+      color: var(--color-text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: background .12s, color .12s;
+    }
+    .nav-item:hover { background: var(--color-bg); color: var(--color-text); }
+    .nav-item.active { background: var(--color-primary); color: #fff; }
+    .nav-item .ni { width: 16px; height: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .nav-item .ni svg { width: 16px; height: 16px; stroke-width: 2; }
+
+    .sidebar-user {
+      padding: 12px 16px;
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .user-av {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .user-name { font-size: 12px; font-weight: 600; color: var(--color-text); }
+    .user-role { font-size: 10px; color: var(--color-text-muted); }
+
+    /* ================================================
+       MAIN
+       ================================================ */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-height: 100vh;
+    }
+
+    .screen { display: none; padding: 36px 40px 60px; max-width: 1080px; width: 100%; margin: 0 auto; }
+    .screen.active { display: block; }
+    #screen-pipeline { max-width: 100%; }
+    #screen-pipeline.active {
+      padding: 24px 20px 0;
+      height: 100vh;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+
+    /* ================================================
+       SHARED: CARD
+       ================================================ */
+    .card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ================================================
+       SHARED: BADGES
+       ================================================ */
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+    /* Temperatura lead */
+    .b-caliente { background: var(--color-caliente-bg); color: var(--color-caliente); }
+    .b-tibio    { background: var(--color-tibio-bg);    color: #A06800; }
+    .b-frio     { background: var(--color-frio-bg);     color: #1A5FAA; }
+    .b-inactivo { background: var(--color-inactivo-bg); color: var(--color-inactivo); }
+    /* Estado operación */
+    .b-op-abierta     { background: #F0EFED; color: #888780; }
+    .b-op-publicada   { background: var(--color-primary-light); color: var(--color-primary); }
+    .b-op-reservada   { background: var(--color-tibio-bg); color: #A06800; }
+    .b-op-negociacion { background: var(--color-tibio-bg); color: #A06800; }
+    .b-op-ganada      { background: #D6EDE8; color: var(--color-primary-dark); }
+    .b-op-cancelada   { background: var(--color-caliente-bg); color: var(--color-caliente); }
+    /* Estado propiedad */
+    .b-pr-disponible  { background: var(--color-primary-light); color: var(--color-primary); }
+    .b-pr-reservada   { background: var(--color-tibio-bg); color: #A06800; }
+    .b-pr-vendida     { background: #F0EFED; color: #888780; }
+    /* Tipo neutro */
+    .b-tipo-venta   { background: #EFF6FF; color: #2563EB; }
+    .b-tipo-compra  { background: #F5F3FF; color: #7C3AED; }
+    .b-urgente { background: var(--color-caliente-bg); color: var(--color-caliente); }
+
+    /* ================================================
+       SHARED: BUTTONS
+       ================================================ */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 16px;
+      border-radius: var(--r-md);
+      font-size: 13px; font-weight: 600;
+      border: 1px solid transparent;
+      transition: opacity .12s, box-shadow .12s;
+    }
+    .btn:hover { opacity: .88; }
+    .btn-primary { background: var(--color-primary); color: #fff; }
+    .btn-secondary { background: transparent; border-color: var(--color-border); color: var(--color-text); }
+    .btn-ghost-danger {
+      background: transparent;
+      border-color: var(--color-border);
+      color: var(--color-text-muted);
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+    .btn-ghost-danger:hover { border-color: var(--color-caliente); color: var(--color-caliente); opacity: 1; }
+
+    /* ================================================
+       SHARED: PAGE HEADER
+       ================================================ */
+    .page-hd { margin-bottom: 28px; }
+    .page-hd h1 {
+      font-size: 26px; font-weight: 700;
+      color: var(--color-text); line-height: 1.2; margin-bottom: 4px;
+    }
+    .page-hd h1 .accent { color: var(--color-primary); }
+    .page-hd p { font-size: 13px; color: var(--color-text-muted); }
+
+    .sec-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .sec-hd h2 { font-size: 15px; font-weight: 700; }
+
+    /* ================================================
+       SCREEN 1: HOME
+       ================================================ */
+
+    /* progress */
+    .prog-card { padding: 18px 20px; margin-bottom: 20px; }
+    .prog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .prog-label { font-size: 13px; font-weight: 600; }
+    .prog-value { font-size: 13px; color: var(--color-text-muted); }
+    .prog-bar { height: 9px; background: var(--color-border); border-radius: 99px; overflow: hidden; }
+    .prog-fill {
+      height: 100%;
+      background: var(--gradient-temp);
+      border-radius: 99px;
+    }
+    .prog-legend {
+      display: flex; justify-content: space-between;
+      margin-top: 8px; font-size: 10px; color: var(--color-text-muted);
+    }
+    .prog-legend span { display: flex; align-items: center; gap: 4px; }
+
+    /* stat cards */
+    .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+    .stat-card {
+      padding: 18px 20px 14px;
+      cursor: pointer;
+      transition: box-shadow .15s, transform .15s;
+    }
+    .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .stat-num {
+      font-family: 'Fraunces', serif;
+      font-size: 44px; font-weight: 700; line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-num.c { color: var(--color-caliente); }
+    .stat-num.g { color: var(--color-primary); }
+    .stat-num.f { color: var(--color-frio); }
+    .stat-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--color-text-muted); }
+
+    /* matches */
+    .match-card { padding: 18px 20px; margin-bottom: 20px; }
+    .match-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+    .match-title { font-size: 14px; font-weight: 700; }
+    .match-cnt { background: var(--color-primary); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
+    .match-sub { font-size: 12px; color: var(--color-text-muted); margin-bottom: 14px; }
+    .match-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 14px;
+      background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--r-md);
+      margin-bottom: 8px;
+    }
+    .match-item:last-child { margin-bottom: 0; }
+    .match-ico { font-size: 20px; margin-top: 1px; }
+    .match-body { flex: 1; }
+    .match-addr { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+    .match-meta { font-size: 11px; color: var(--color-text-muted); margin-bottom: 8px; }
+    .match-buyers { display: flex; flex-wrap: wrap; gap: 6px; }
+    .buyer-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fff; border: 1px solid var(--color-border);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 500; color: var(--color-text);
+    }
+    .buyer-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .bd-c { background: var(--color-caliente); }
+    .bd-t { background: var(--color-tibio); }
+    .bd-f { background: var(--color-frio); }
+
+    /* lead rows */
+    .leads-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+    .lead-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      transition: box-shadow .12s, transform .1s;
+    }
+    .lead-row:hover { box-shadow: var(--shadow-md); transform: translateX(1px); }
+    .lead-row.rc { border-left-color: var(--color-caliente); }
+    .lead-row.rt { border-left-color: var(--color-tibio); }
+    .lead-row.rf { border-left-color: var(--color-frio); }
+    .lead-av {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--color-bg); border: 1px solid var(--color-border);
+      font-size: 12px; font-weight: 700; color: var(--color-text-muted);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .lead-info { flex: 1; min-width: 0; }
+    .lead-name { font-size: 13px; font-weight: 600; }
+    .lead-detail { font-size: 11px; color: var(--color-text-muted); }
+    .lead-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .lead-time { font-size: 11px; color: var(--color-text-muted); }
+
+    /* ================================================
+       SCREEN 2: GESTIÓN DEL DÍA
+       ================================================ */
+    .task-group { margin-bottom: 24px; }
+    .task-group-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--color-text-muted);
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 10px; padding-left: 4px;
+    }
+    .tg-count { background: var(--color-border); color: var(--color-text-muted); padding: 1px 6px; border-radius: 999px; font-size: 10px; }
+    .task-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; margin-bottom: 8px;
+      border-left: 3px solid transparent;
+      cursor: pointer; transition: box-shadow .12s;
+    }
+    .task-row:hover { box-shadow: var(--shadow-md); }
+    .task-row.rc { border-left-color: var(--color-caliente); }
+    .task-row.rt { border-left-color: var(--color-tibio); }
+    .task-row.rf { border-left-color: var(--color-frio); }
+    .task-row.done { border-left-color: var(--color-border); opacity: .55; }
+    .check-box {
+      width: 18px; height: 18px; border-radius: 4px;
+      border: 2px solid var(--color-border); flex-shrink: 0;
+    }
+    .check-box.checked { background: var(--color-primary); border-color: var(--color-primary); position: relative; }
+    .check-box.checked::after {
+      content: '✓'; position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #fff; font-weight: 700;
+    }
+    .task-body { flex: 1; min-width: 0; }
+    .task-lead { font-size: 13px; font-weight: 600; }
+    .task-lead.done-text { text-decoration: line-through; color: var(--color-text-muted); }
+    .task-desc { font-size: 11px; color: var(--color-text-muted); }
+    .task-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .task-time { font-size: 11px; color: var(--color-text-muted); }
+
+    /* ================================================
+       SCREEN 3: PIPELINE KANBAN
+       ================================================ */
+    .kanban-board {
+      display: flex; gap: 10px;
+      flex: 1; min-height: 0; /* el board crece y permite scroll interno en cols */
+      padding-bottom: 16px;
+      overflow: visible;
+    }
+    .kcol {
+      flex: 1; min-width: 0; /* columnas se reparten el ancho sin desbordarse */
+      background: #EFEBE5;
+      border-radius: var(--r-lg);
+      border-top: 4px solid transparent;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .kcol[data-e='ABIERTA']        { border-top-color: var(--color-inactivo); }
+    .kcol[data-e='PUBLICADA']      { border-top-color: var(--color-primary); }
+    .kcol[data-e='RESERVADA']      { border-top-color: var(--color-tibio); }
+    .kcol[data-e='EN_NEGOCIACION'] { border-top-color: var(--color-tibio); }
+    .kcol[data-e='CERRADA_GANADA'] { border-top-color: var(--color-primary-dark); }
+    .kcol[data-e='CANCELADA']      { border-top-color: var(--color-caliente); }
+
+    .kcol-hd {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 11px 8px;
+      border-bottom: 1px solid #DDD7CF;
+      gap: 6px;
+    }
+    .kcol-name { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #4A4540; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .kcol-cnt { background: #fff; color: #4A4540; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 999px; flex-shrink: 0; }
+
+    .kcol-cards { flex: 1; min-height: 0; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+    .kcol-empty { text-align: center; font-size: 12px; color: #9A9590; font-style: italic; padding: 24px 10px; }
+
+    .kcard {
+      background: #fff; border-radius: var(--r-md);
+      padding: 10px 11px; box-shadow: var(--shadow-sm);
+      cursor: grab; transition: box-shadow .12s;
+    }
+    .kcard:hover { box-shadow: var(--shadow-md); }
+    .kc-lead { font-size: 12px; font-weight: 600; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .kc-tipo { font-size: 9px; text-transform: uppercase; letter-spacing: .04em; color: var(--color-text-muted); margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .kc-price { font-size: 13px; font-weight: 700; color: var(--color-primary-dark); margin-bottom: 7px; }
+    .kc-foot { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+    .kc-link { font-size: 10px; color: var(--color-primary); font-weight: 600; flex-shrink: 0; }
+
+    /* ================================================
+       SCREEN 4: DASHBOARD
+       ================================================ */
+    .kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 12px; }
+    .kpi-card {
+      padding: 18px 20px;
+      border-left: 3px solid var(--color-border);
+      position: relative;
+    }
+    .kpi-card.alert { border-left-color: var(--color-caliente); }
+    .kpi-card.success { border-left-color: var(--color-primary); }
+    .kpi-card.warn { border-left-color: var(--color-tibio); }
+    .kpi-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+    .kpi-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--color-text-muted); }
+    .kpi-icon { display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); }
+    .kpi-icon svg { width: 14px; height: 14px; stroke-width: 2; }
+    .kpi-num {
+      font-family: 'Fraunces', serif;
+      font-size: 38px; font-weight: 700; line-height: 1;
+      color: var(--color-text); margin-bottom: 4px;
+    }
+    .kpi-num.alert { color: var(--color-caliente); }
+    .kpi-num.success { color: var(--color-primary-dark); }
+    .kpi-delta { font-size: 11px; font-weight: 600; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+    .delta-up   { color: var(--color-primary); }
+    .delta-down { color: var(--color-caliente); }
+    .delta-neutral { color: var(--color-text-muted); }
+    .kpi-sub { font-size: 11px; color: var(--color-text-muted); margin-top: 2px; }
+
+    /* Mini bar chart */
+    .mini-bar-chart { display: flex; flex-direction: column; height: 100%; }
+    .mb-bars {
+      display: flex; align-items: flex-end; gap: 6px;
+      flex: 1; padding: 8px 0 0;
+    }
+    .mb-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+    .mb-bar {
+      width: 100%; border-radius: 3px 3px 0 0;
+      background: var(--color-primary-light);
+      transition: background .15s;
+      min-height: 4px;
+    }
+    .mb-bar.current { background: var(--color-primary); }
+    .mb-val { font-size: 9px; font-weight: 700; color: var(--color-text); }
+    .mb-lbl { font-size: 9px; color: var(--color-text-muted); font-weight: 500; }
+    .mb-axis { border-top: 1px solid var(--color-border); margin-top: 4px; }
+
+    /* Pipeline summary */
+    .pipe-summary { display: flex; flex-direction: column; gap: 6px; }
+    .ps-row {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ps-estado {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .04em; width: 96px; flex-shrink: 0;
+      color: var(--color-text-muted);
+    }
+    .ps-bar-bg { flex: 1; height: 6px; background: var(--color-bg); border-radius: 3px; overflow: hidden; }
+    .ps-bar-fill { height: 100%; border-radius: 3px; background: var(--color-primary); }
+    .ps-cnt { font-size: 12px; font-weight: 700; color: var(--color-text); width: 18px; text-align: right; flex-shrink: 0; }
+    .ps-monto { font-size: 10px; color: var(--color-text-muted); width: 60px; text-align: right; flex-shrink: 0; }
+
+    /* Urgentes table */
+    .urgentes-table { width: 100%; border-collapse: collapse; }
+    .urgentes-table th {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--color-text-muted);
+      padding: 0 10px 10px; text-align: left;
+    }
+    .urgentes-table td {
+      padding: 10px; border-top: 1px solid var(--color-border);
+      font-size: 12px; vertical-align: middle;
+    }
+    .urgentes-table tr:hover td { background: var(--color-bg); }
+    .urgentes-name { font-weight: 600; margin-bottom: 1px; }
+    .urgentes-sub  { font-size: 10px; color: var(--color-text-muted); }
+    .dias-sin {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 2px 7px; border-radius: 4px;
+    }
+    .dias-sin.alta  { background: var(--color-caliente-bg); color: var(--color-caliente); }
+    .dias-sin.media { background: var(--color-tibio-bg); color: #A06800; }
+
+    /* Operaciones en negociación */
+    .neg-list { display: flex; flex-direction: column; gap: 8px; }
+    .neg-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; background: var(--color-bg);
+      border-radius: var(--r-md); font-size: 12px;
+    }
+    .neg-title { font-weight: 600; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .neg-lead  { color: var(--color-text-muted); flex-shrink: 0; font-size: 11px; }
+    .neg-price { font-weight: 700; color: var(--color-primary-dark); flex-shrink: 0; }
+    .neg-days  { font-size: 10px; color: var(--color-text-muted); flex-shrink: 0; }
+
+    /* dash layout helpers */
+    .dash-grid-3 { display: grid; grid-template-columns: 2fr 1.2fr 1.2fr; gap: 12px; margin-bottom: 12px; }
+    .dash-grid-halves { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .dash-card-sm { padding: 18px 20px; }
+    .dc-title-sm { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--color-text-muted); margin-bottom: 14px; }
+    .dc-title-sm span { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--color-text); text-transform: none; letter-spacing: 0; margin-left: 8px; }
+
+    /* Alerta vencidos banner */
+    .alert-banner {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-radius: var(--r-md);
+      background: var(--color-caliente-bg);
+      border: 1px solid #F4C0A8;
+      margin-bottom: 12px; font-size: 13px;
+    }
+    .alert-banner svg { width: 18px; height: 18px; stroke: var(--color-caliente); flex-shrink: 0; }
+    .ab-text { flex: 1; }
+    .ab-title { font-weight: 700; color: var(--color-caliente); margin-bottom: 1px; }
+    .ab-sub { font-size: 11px; color: #B04010; }
+    .ab-action { font-size: 11px; font-weight: 700; color: var(--color-caliente); white-space: nowrap; cursor: pointer; }
+
+    .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .dash-card { padding: 20px 22px; }
+    .dc-title { font-size: 13px; font-weight: 700; margin-bottom: 18px; }
+
+    /* donut */
+    .donut-wrap { display: flex; align-items: center; gap: 28px; }
+    .donut {
+      width: 148px; height: 148px; border-radius: 50%; flex-shrink: 0;
+      background: conic-gradient(
+        var(--color-caliente)   0%  19%,
+        var(--color-tibio)     19%  46%,
+        var(--color-frio)      46%  84%,
+        var(--color-inactivo)  84% 100%
+      );
+      position: relative;
+    }
+    .donut-hole {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 88px; height: 88px;
+      background: #fff; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+    }
+    .dh-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--color-text); line-height: 1; }
+    .dh-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--color-text-muted); }
+    .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+    .dl-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .dl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dl-name { color: var(--color-text-muted); flex: 1; }
+    .dl-cnt { font-weight: 700; min-width: 24px; text-align: right; }
+
+    /* funnel */
+    .funnel-list { display: flex; flex-direction: column; gap: 12px; }
+    .funnel-row { display: flex; align-items: center; gap: 10px; }
+    .funnel-lbl { font-size: 12px; color: var(--color-text-muted); width: 106px; flex-shrink: 0; }
+    .funnel-bar-bg { flex: 1; height: 10px; background: var(--color-border); border-radius: 99px; overflow: hidden; }
+    .funnel-bar-fill { height: 100%; background: var(--color-primary); border-radius: 99px; }
+    .funnel-n { font-size: 12px; font-weight: 700; width: 28px; text-align: right; }
+
+    /* próximas acciones */
+    .prox-list { display: flex; flex-direction: column; gap: 10px; }
+    .prox-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; background: var(--color-bg);
+      border-radius: var(--r-md);
+    }
+    .prox-ico { font-size: 17px; }
+    .prox-body { flex: 1; }
+    .prox-lead { font-size: 12px; font-weight: 600; }
+    .prox-desc { font-size: 11px; color: var(--color-text-muted); }
+    .prox-time { font-size: 11px; color: var(--color-text-muted); white-space: nowrap; }
+
+    /* ================================================
+       SCREEN: LISTA DE LEADS
+       ================================================ */
+    .leads-toolbar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .search-box {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--color-card); border: 1px solid var(--color-border);
+      border-radius: var(--r-md); padding: 8px 14px;
+      flex: 1; min-width: 200px; max-width: 320px;
+    }
+    .search-box input {
+      border: none; outline: none; font-family: 'Inter', sans-serif;
+      font-size: 13px; color: var(--color-text); background: transparent; width: 100%;
+    }
+    .search-box input::placeholder { color: var(--color-text-muted); }
+    .search-icon { font-size: 15px; color: var(--color-text-muted); flex-shrink: 0; }
+
+    .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip {
+      padding: 6px 13px; border-radius: 999px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      border: 1.5px solid var(--color-border);
+      background: var(--color-card); color: var(--color-text-muted);
+      transition: all .12s; white-space: nowrap;
+    }
+    .chip:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .chip.chip-active { border-color: var(--color-primary); background: var(--color-primary-light); color: var(--color-primary); }
+    .chip.chip-c { border-color: var(--color-caliente); background: var(--color-caliente-bg); color: var(--color-caliente); }
+    .chip.chip-t { border-color: var(--color-tibio);    background: var(--color-tibio-bg);    color: #A06800; }
+    .chip.chip-f { border-color: var(--color-frio);     background: var(--color-frio-bg);     color: #1A5FAA; }
+    .chip.chip-i { border-color: var(--color-inactivo); background: var(--color-inactivo-bg); color: var(--color-inactivo); }
+
+    /* tabla */
+    .leads-table-wrap { overflow: hidden; }
+    .leads-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13px; table-layout: fixed;
+    }
+    .leads-table thead th {
+      text-align: left; padding: 10px 10px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--color-text-muted);
+      border-bottom: 2px solid var(--color-border);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .leads-table tbody tr {
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer; transition: background .1s;
+    }
+    .leads-table tbody tr:last-child { border-bottom: none; }
+    .leads-table tbody tr:hover { background: var(--color-bg); }
+    .leads-table td { padding: 11px 10px; vertical-align: middle; }
+
+    .tl-av {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--color-bg); border: 1px solid var(--color-border);
+      font-size: 11px; font-weight: 700; color: var(--color-text-muted);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .tl-name-cell { display: flex; align-items: center; gap: 10px; }
+    .tl-name { font-size: 13px; font-weight: 600; color: var(--color-text); }
+    .tl-phone { font-size: 11px; color: var(--color-text-muted); }
+    .tl-last-int {
+      font-size: 11px; color: var(--color-text-muted); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      font-style: italic;
+    }
+    .tl-zona { font-size: 12px; color: var(--color-text-muted); }
+    .tl-fecha { font-size: 12px; color: var(--color-text-muted); }
+    .tl-fecha.vencida { color: var(--color-caliente); font-weight: 600; }
+    .tl-actions { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; }
+    .tl-icon-btn {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1px solid var(--color-border); background: var(--color-card);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--color-text-muted); flex-shrink: 0;
+      transition: all .12s;
+    }
+    .tl-icon-btn svg { width: 12px; height: 12px; stroke-width: 2; }
+    .tl-icon-btn:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+    .tl-icon-btn.wa:hover { border-color: #25D366; color: #25D366; background: #f0fdf4; }
+    .tbl-btn {
+      padding: 5px 10px; border-radius: var(--r-sm);
+      font-size: 11px; font-weight: 600; border: 1px solid var(--color-border);
+      background: transparent; color: var(--color-text-muted); cursor: pointer;
+      transition: all .12s;
+    }
+    .tbl-btn:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+    .tbl-btn.registrar { border-color: var(--color-primary); color: var(--color-primary); }
+
+    .table-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-top: 1px solid var(--color-border);
+      font-size: 12px; color: var(--color-text-muted);
+    }
+    .pagination { display: flex; gap: 4px; }
+    .pg-btn {
+      width: 30px; height: 30px; border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; border: 1px solid var(--color-border);
+      background: transparent; color: var(--color-text-muted); cursor: pointer;
+    }
+    .pg-btn.pg-active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+
+    /* ================================================
+       SCREEN 5: DETALLE DE LEAD
+       ================================================ */
+    .ld-header { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 28px; }
+    .ld-av {
+      width: 58px; height: 58px; border-radius: 50%;
+      background: var(--color-caliente-bg); color: var(--color-caliente);
+      font-size: 20px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .ld-info { flex: 1; }
+    .ld-name { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .ld-meta { font-size: 13px; color: var(--color-text-muted); display: flex; gap: 16px; flex-wrap: wrap; }
+    .ld-actions { display: flex; gap: 8px; align-items: center; padding-top: 2px; }
+
+    /* tabs */
+    .tabs { display: flex; border-bottom: 2px solid var(--color-border); margin-bottom: 20px; gap: 0; }
+    .tab-btn {
+      padding: 10px 18px; font-size: 13px; font-weight: 600;
+      color: var(--color-text-muted); border: none; background: none;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      cursor: pointer; transition: color .12s, border-color .12s;
+    }
+    .tab-btn:hover { color: var(--color-text); }
+    .tab-btn.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* operaciones */
+    .op-card { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; margin-bottom: 10px; }
+    .op-ico {
+      width: 38px; height: 38px; border-radius: var(--r-md);
+      background: var(--color-primary-light); color: var(--color-primary);
+      font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .op-body { flex: 1; }
+    .op-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .op-meta { font-size: 12px; color: var(--color-text-muted); display: flex; gap: 12px; margin-bottom: 8px; }
+    .op-badges { display: flex; gap: 6px; }
+
+    /* interacciones */
+    .int-list { padding: 20px; }
+    .int-item {
+      display: flex; gap: 14px; padding-bottom: 18px; margin-bottom: 18px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .int-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .int-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      margin-top: 5px; flex-shrink: 0;
+    }
+    .int-body { flex: 1; }
+    .int-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .int-tipo { font-size: 13px; font-weight: 700; }
+    .int-fecha { font-size: 11px; color: var(--color-text-muted); }
+    .int-nota { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; }
+
+    /* propiedad simple */
+    .prop-card { display: flex; gap: 14px; align-items: center; padding: 16px 18px; }
+    .prop-ico { font-size: 28px; }
+    .prop-body { flex: 1; }
+    .prop-addr { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .prop-meta { font-size: 12px; color: var(--color-text-muted); margin-bottom: 8px; }
+
+    /* danger zone */
+    .danger-zone { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--color-border); display: flex; justify-content: flex-end; }
+
+    /* ================================================
+       MISC
+       ================================================ */
+    .mt-12 { margin-top: 12px; }
+    .mb-20 { margin-bottom: 20px; }
+
+    /* ================================================
+       DETALLE PROPIEDAD / OPERACIÓN — COMPARTIDO
+       ================================================ */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: var(--color-text-muted);
+      margin-bottom: 20px; cursor: pointer; border: none; background: none;
+      padding: 0; transition: color .12s;
+    }
+    .back-link:hover { color: var(--color-primary); }
+
+    .detail-hero {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 20px; margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .detail-hero-left { flex: 1; min-width: 0; }
+    .detail-hero-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .detail-hero-meta  { font-size: 13px; color: var(--color-text-muted); display: flex; gap: 14px; flex-wrap: wrap; }
+    .detail-hero-actions { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .detail-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 768px) {
+      .detail-grid { grid-template-columns: 1fr; }
+      .detail-hero { flex-direction: column; }
+      .detail-hero-actions { width: 100%; }
+    }
+
+    .detail-section-title {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--color-text-muted);
+      margin-bottom: 12px; margin-top: 28px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--color-border);
+    }
+    .detail-section-title:first-of-type { margin-top: 0; }
+
+    /* Ficha de datos */
+    .ficha-card { padding: 20px 24px; }
+    .ficha-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    @media (max-width: 600px) { .ficha-grid { grid-template-columns: 1fr 1fr; } }
+    .ficha-item {}
+    .ficha-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--color-text-muted); margin-bottom: 3px; }
+    .ficha-val { font-size: 14px; font-weight: 600; color: var(--color-text); }
+    .ficha-val.big { font-family: 'Fraunces', serif; font-size: 22px; color: var(--color-primary-dark); }
+
+    /* Fotos placeholder */
+    .fotos-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 160px 160px; gap: 8px; border-radius: var(--r-lg); overflow: hidden; margin-bottom: 14px; }
+    .foto-slot { background: var(--color-border); display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--color-text-muted); cursor: pointer; transition: background .12s; }
+    .foto-slot:hover { background: #DDD7CE; }
+    .foto-slot.main { grid-row: span 2; font-size: 48px; }
+    @media (max-width: 600px) { .fotos-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 120px 120px; } .foto-slot.main { grid-row: span 1; grid-column: span 2; } }
+
+    /* Info lead chip */
+    .lead-chip {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; background: var(--color-bg);
+      border: 1px solid var(--color-border); border-radius: var(--r-lg);
+    }
+    .lead-chip-av {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--color-caliente-bg); color: var(--color-caliente);
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .lead-chip-name { font-size: 13px; font-weight: 600; }
+    .lead-chip-meta { font-size: 11px; color: var(--color-text-muted); }
+    .lead-chip-link { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--color-primary); cursor: pointer; }
+
+    /* Timeline de eventos */
+    .timeline { display: flex; flex-direction: column; }
+    .tl-item { display: flex; gap: 14px; padding-bottom: 20px; position: relative; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-line-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; flex-shrink: 0; }
+    .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--color-primary); flex-shrink: 0; margin-top: 4px; }
+    .tl-dot.c { background: var(--color-caliente); }
+    .tl-dot.t { background: var(--color-tibio); }
+    .tl-dot.g { background: var(--color-primary); }
+    .tl-connector { width: 2px; flex: 1; background: var(--color-border); margin-top: 4px; min-height: 20px; }
+    .tl-item:last-child .tl-connector { display: none; }
+    .tl-body { flex: 1; padding-bottom: 4px; }
+    .tl-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+    .tl-tipo { font-size: 13px; font-weight: 700; }
+    .tl-fecha { font-size: 11px; color: var(--color-text-muted); }
+    .tl-nota { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; }
+
+    /* Estado visual operación */
+    .estado-stepper { display: flex; align-items: center; gap: 0; margin-bottom: 20px; overflow-x: auto; }
+    .step {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      flex: 1; min-width: 80px;
+    }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--color-border); background: var(--color-card);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--color-text-muted);
+      position: relative; z-index: 1;
+    }
+    .step-dot.done { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+    .step-dot.active { background: var(--color-tibio); border-color: var(--color-tibio); color: #fff; }
+    .step-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-muted); text-align: center; }
+    .step-label.done { color: var(--color-primary); }
+    .step-label.active { color: #A06800; }
+    .step-connector { flex: 1; height: 2px; background: var(--color-border); margin-top: -20px; }
+    .step-connector.done { background: var(--color-primary); }
+
+    /* ================================================
+       FORMULARIOS — compartido
+       ================================================ */
+    .form-screen {
+      max-width: 100% !important;
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+    .form-screen.active {
+      display: flex !important;
+      flex-direction: column;
+      align-items: center;
+    }
+    .form-screen > * {
+      width: 100%;
+      max-width: 620px;
+    }
+    .form-card { padding: 28px 32px; }
+    .form-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .form-subtitle { font-size: 13px; color: var(--color-text-muted); margin-bottom: 28px; }
+
+    .field { margin-bottom: 20px; }
+    .field label {
+      display: block; font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: var(--color-text-muted); margin-bottom: 6px;
+    }
+    .field label .req { color: var(--color-caliente); margin-left: 2px; }
+    .field input, .field select, .field textarea {
+      width: 100%; box-sizing: border-box;
+      padding: 10px 14px;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--r-md);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; color: var(--color-text);
+      background: var(--color-card);
+      outline: none; transition: border-color .12s, box-shadow .12s;
+      appearance: none; -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(15,110,92,.1);
+    }
+    .field textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
+    .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237C7568' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+    .field-hint { font-size: 11px; color: var(--color-text-muted); margin-top: 4px; }
+    .field-error { font-size: 11px; color: var(--color-caliente); margin-top: 4px; display: none; }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) {
+      .field-row, .field-row-3 { grid-template-columns: 1fr; }
+      .form-card { padding: 20px 18px; }
+    }
+
+    .form-section-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--color-text-muted);
+      margin: 24px 0 14px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    /* Atajos de fecha */
+    .date-shortcuts { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .ds-btn {
+      font-size: 11px; font-weight: 600; padding: 4px 10px;
+      border: 1px solid var(--color-border); border-radius: 4px;
+      background: var(--color-bg); color: var(--color-text-muted);
+      cursor: pointer; transition: all .12s;
+    }
+    .ds-btn:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+
+    /* Toggle tipo operación */
+    .tipo-toggle { display: flex; gap: 0; border: 1.5px solid var(--color-border); border-radius: var(--r-md); overflow: hidden; }
+    .tt-btn {
+      flex: 1; padding: 9px 0; font-size: 12px; font-weight: 700;
+      text-align: center; cursor: pointer; border: none;
+      background: var(--color-card); color: var(--color-text-muted);
+      transition: all .12s; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .tt-btn.active { background: var(--color-primary); color: #fff; }
+    .tt-btn:not(:last-child) { border-right: 1.5px solid var(--color-border); }
+
+    /* Bloque condicional búsqueda (COMPRA) */
+    .busqueda-block { background: var(--color-bg); border-radius: var(--r-lg); padding: 18px 20px; border: 1px solid var(--color-border); }
+
+    /* Upload de fotos */
+    .upload-zone {
+      border: 2px dashed var(--color-border);
+      border-radius: var(--r-lg);
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      background: var(--color-bg);
+    }
+    .upload-zone:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+    .upload-zone .uz-icon { margin-bottom: 8px; color: var(--color-text-muted); }
+    .upload-zone .uz-icon svg { width: 28px; height: 28px; stroke-width: 1.5; }
+    .upload-zone .uz-title { font-size: 13px; font-weight: 600; color: var(--color-text); margin-bottom: 4px; }
+    .upload-zone .uz-sub { font-size: 11px; color: var(--color-text-muted); }
+    .upload-zone .uz-sub span { color: var(--color-primary); font-weight: 600; cursor: pointer; }
+
+    .foto-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .foto-thumb {
+      aspect-ratio: 4/3;
+      border-radius: var(--r-md);
+      background: var(--color-border);
+      position: relative;
+      overflow: hidden;
+    }
+    .foto-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .foto-thumb .ft-remove {
+      position: absolute; top: 4px; right: 4px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(0,0,0,.55); color: #fff;
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; line-height: 1;
+    }
+    .foto-thumb.ft-portada::after {
+      content: 'Portada';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(15,110,92,.85);
+      color: #fff; font-size: 9px; font-weight: 700;
+      text-align: center; padding: 3px 0;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .foto-hint { font-size: 11px; color: var(--color-text-muted); margin-top: 6px; }
+
+    /* Pie del formulario */
+    .form-footer {
+      display: flex; gap: 10px; justify-content: flex-end;
+      padding-top: 20px; margin-top: 8px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    /* scrollbar sutil */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 99px; }
+
+    /* ================================================
+       TOPBAR (solo mobile)
+       ================================================ */
+    .topbar {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; height: 54px;
+      background: var(--color-card); border-bottom: 1px solid var(--color-border);
+      padding: 0 16px; align-items: center; justify-content: space-between;
+      z-index: 90;
+    }
+    .topbar-logo { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--color-primary); }
+    .topbar-btn { background: none; border: none; font-size: 22px; color: var(--color-text); padding: 4px; cursor: pointer; }
+
+    /* ================================================
+       BOTTOM NAV (solo mobile)
+       ================================================ */
+    .bottom-nav {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0; height: 62px;
+      background: var(--color-card); border-top: 1px solid var(--color-border);
+      padding: 0 4px; align-items: center; justify-content: space-around;
+      z-index: 90;
+    }
+    .bn-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 6px 10px; border-radius: var(--r-md);
+      font-size: 10px; font-weight: 600; color: var(--color-text-muted);
+      border: none; background: none; cursor: pointer; flex: 1; min-width: 0;
+      transition: color .12s;
+    }
+    .bn-item .bn-ico { display: flex; align-items: center; justify-content: center; }
+    .bn-item .bn-ico svg { width: 22px; height: 22px; stroke-width: 1.8; }
+    .bn-item.active { color: var(--color-primary); }
+
+    /* ================================================
+       OVERLAY (sidebar drawer)
+       ================================================ */
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(22,33,59,.45); z-index: 99;
+    }
+    .overlay.open { display: block; }
+
+    /* ================================================
+       RESPONSIVE — 768px
+       ================================================ */
+    @media (max-width: 768px) {
+
+      /* --- Sidebar: drawer deslizable --- */
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform .25s ease;
+        z-index: 100;
+        box-shadow: none;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 6px 0 24px rgba(22,33,59,.18);
+      }
+
+      /* --- Layout base --- */
+      .topbar    { display: flex; }
+      .bottom-nav { display: flex; }
+      .main { margin-left: 0; padding-top: 54px; padding-bottom: 70px; }
+      .screen { padding: 20px 16px 40px; max-width: 100%; }
+      #screen-pipeline.active { padding: 12px 10px 0; height: calc(100vh - 54px - 62px); }
+
+      /* --- Page header con split row → columna --- */
+      .page-hd-split { flex-direction: column !important; gap: 12px !important; }
+      .page-hd-split .btn { width: 100%; justify-content: center; }
+
+      /* --- Stat cards: 3 cols, números más chicos --- */
+      .stat-row { gap: 8px; }
+      .stat-card { padding: 12px 14px 10px; }
+      .stat-num  { font-size: 32px; }
+
+      /* --- KPIs: 3 → 2 cols en mobile --- */
+      .kpi-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .kpi-num { font-size: 30px; }
+      .dash-grid-3 { grid-template-columns: 1fr; }
+      .dash-grid-halves { grid-template-columns: 1fr; }
+
+      /* --- Dashboard: 2 cols → 1 col --- */
+      .dash-grid { grid-template-columns: 1fr; }
+
+      /* --- Donut: stack vertical --- */
+      .donut-wrap { flex-direction: column; align-items: flex-start; gap: 16px; }
+
+      /* --- Lead detail header: stack --- */
+      .ld-header { flex-wrap: wrap; }
+      .ld-actions { flex-wrap: wrap; width: 100%; margin-top: 6px; }
+
+      /* --- Toolbar: columna --- */
+      .leads-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+      .search-box { max-width: 100%; }
+      .filter-chips { flex-wrap: wrap; }
+
+      /* ==============================================
+         TABLAS → CARDS
+         ============================================== */
+      .leads-table-wrap { overflow-x: visible; }
+
+      table.leads-table,
+      table.leads-table tbody,
+      table.leads-table tr,
+      table.leads-table td { display: block; width: 100%; }
+
+      table.leads-table thead { display: none; }
+
+      /* cada fila se convierte en una card */
+      table.leads-table tbody tr {
+        background: var(--color-card);
+        border: 1px solid var(--color-border);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 10px;
+        padding: 14px 16px;
+      }
+
+      /* celdas de datos: label a la izquierda, valor a la derecha */
+      table.leads-table tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 5px 0;
+        border: none;
+        font-size: 12px;
+        min-height: 0;
+      }
+      table.leads-table tbody td::before {
+        content: attr(data-label);
+        font-size: 10px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .06em;
+        color: var(--color-text-muted);
+        white-space: nowrap; flex-shrink: 0;
+      }
+
+      /* primera celda (nombre/propiedad): sin label, más prominente */
+      table.leads-table tbody td:first-child {
+        padding-bottom: 12px;
+        margin-bottom: 6px;
+        border-bottom: 1px solid var(--color-border);
+        align-items: flex-start;
+      }
+      table.leads-table tbody td:first-child::before { content: none; }
+
+      /* última celda (acción): sin label, alineada a la derecha */
+      table.leads-table tbody td:last-child {
+        padding-top: 10px;
+        margin-top: 4px;
+        border-top: 1px solid var(--color-border);
+        justify-content: flex-end;
+      }
+      table.leads-table tbody td:last-child::before { content: none; }
+
+      /* paginación */
+      .table-footer { flex-direction: column; gap: 10px; align-items: flex-start; }
+
+    } /* fin @media 768px */
+  </style>
+</head>
+<body>
+
+<!-- Overlay para cerrar sidebar en mobile -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- Topbar mobile -->
+<header class="topbar">
+  <span class="topbar-logo">leadera</span>
+  <button class="topbar-btn" onclick="openSidebar()">☰</button>
+</header>
+
+<!-- ============================================================
+     SIDEBAR
+     ============================================================ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">leadera</div>
+    <div class="logo-tagline">CRM inmobiliario</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <span class="nav-label">Principal</span>
+    <button class="nav-item active" onclick="go('home',this)">
+      <span class="ni"><i data-lucide="home"></i></span> Inicio
+    </button>
+    <button class="nav-item" onclick="go('gestion',this)">
+      <span class="ni"><i data-lucide="clipboard-check"></i></span> Gestión del día
+    </button>
+    <button class="nav-item" onclick="go('pipeline',this)">
+      <span class="ni"><i data-lucide="kanban"></i></span> Pipeline
+    </button>
+    <button class="nav-item" onclick="go('dashboard',this)">
+      <span class="ni"><i data-lucide="bar-chart-2"></i></span> Dashboard
+    </button>
+
+    <span class="nav-label">Mis datos</span>
+    <button class="nav-item" onclick="go('leads',this)">
+      <span class="ni"><i data-lucide="users"></i></span> Leads
+    </button>
+    <button class="nav-item" onclick="go('propiedades',this)">
+      <span class="ni"><i data-lucide="building-2"></i></span> Propiedades
+    </button>
+    <button class="nav-item" onclick="go('operaciones',this)">
+      <span class="ni"><i data-lucide="briefcase"></i></span> Operaciones
+    </button>
+
+    <span class="nav-label">Cuenta</span>
+    <button class="nav-item" onclick="go('config',this)">
+      <span class="ni"><i data-lucide="settings"></i></span> Configuración
+    </button>
+  </nav>
+
+  <div class="sidebar-user">
+    <div class="user-av">VM</div>
+    <div>
+      <div class="user-name">Valentina Marcos</div>
+      <div class="user-role">Agente</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main class="main">
+
+  <!-- ==================== SCREEN: HOME ==================== -->
+  <div class="screen active" id="screen-home">
+    <div class="page-hd">
+      <h1>Buenos días, <span class="accent">Valentina</span> 👋</h1>
+      <p>Jueves 19 de junio · Tenés <strong>7 tareas</strong> para hoy</p>
+    </div>
+
+    <!-- Progress -->
+    <div class="card prog-card">
+      <div class="prog-header">
+        <span class="prog-label">Progreso del día</span>
+        <span class="prog-value">3 de 7 completadas</span>
+      </div>
+      <div class="prog-bar">
+        <div class="prog-fill" style="width:43%"></div>
+      </div>
+      <div class="prog-legend">
+        <span><span style="color:var(--color-frio)">●</span> Frío</span>
+        <span><span style="color:var(--color-tibio)">●</span> Tibio</span>
+        <span><span style="color:var(--color-caliente)">●</span> Caliente</span>
+      </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stat-row">
+      <div class="card stat-card">
+        <div class="stat-num c">3</div>
+        <div class="stat-lbl">Calientes</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-num g">2</div>
+        <div class="stat-lbl">Nuevos hoy</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-num f">5</div>
+        <div class="stat-lbl">Seguimientos</div>
+      </div>
+    </div>
+
+    <!-- Coincidencias -->
+    <div class="card match-card">
+      <div class="match-hd">
+        <span style="font-size:16px">⭐</span>
+        <span class="match-title">Coincidencias encontradas</span>
+        <span class="match-cnt">3</span>
+      </div>
+      <p class="match-sub">Propiedades de tus leads que encajan con búsquedas activas</p>
+
+      <div class="match-item">
+        <span class="match-ico">🏢</span>
+        <div class="match-body">
+          <div class="match-addr">Depto en Güemes · Av. Colón 2340 3°A</div>
+          <div class="match-meta">3 amb · 82 m² · $128.000</div>
+          <div class="match-buyers">
+            <span class="buyer-chip"><span class="buyer-dot bd-c"></span>Rodrigo Sosa — caliente</span>
+            <span class="buyer-chip"><span class="buyer-dot bd-t"></span>Marcela Torres — tibio</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="match-item">
+        <span class="match-ico">🏠</span>
+        <div class="match-body">
+          <div class="match-addr">Casa en Playa Grande · Av. Constitución 890</div>
+          <div class="match-meta">4 amb · 210 m² · $285.000</div>
+          <div class="match-buyers">
+            <span class="buyer-chip"><span class="buyer-dot bd-c"></span>Laura Castillo — caliente</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leads prioritarios -->
+    <div class="sec-hd">
+      <h2>Leads prioritarios</h2>
+      <span class="badge b-urgente">1 urgente</span>
+    </div>
+    <div class="leads-list">
+      <div class="card lead-row rc">
+        <div class="lead-av">RS</div>
+        <div class="lead-info">
+          <div class="lead-name">Rodrigo Sosa</div>
+          <div class="lead-detail">Playa Grande · Llamado pendiente desde hace 2 días ⚠️</div>
+        </div>
+        <div class="lead-right">
+          <span class="badge b-caliente">CALIENTE</span>
+          <span class="lead-time">hace 2d</span>
+        </div>
+      </div>
+      <div class="card lead-row rc">
+        <div class="lead-av">LC</div>
+        <div class="lead-info">
+          <div class="lead-name">Laura Castillo</div>
+          <div class="lead-detail">Centro · Seguimiento post-visita coordinada</div>
+        </div>
+        <div class="lead-right">
+          <span class="badge b-caliente">CALIENTE</span>
+          <span class="lead-time">hoy</span>
+        </div>
+      </div>
+      <div class="card lead-row rt">
+        <div class="lead-av">MP</div>
+        <div class="lead-info">
+          <div class="lead-name">Martín Pérez</div>
+          <div class="lead-detail">Güemes · Enviar propuesta de precio</div>
+        </div>
+        <div class="lead-right">
+          <span class="badge b-tibio">TIBIO</span>
+          <span class="lead-time">ayer</span>
+        </div>
+      </div>
+      <div class="card lead-row rf">
+        <div class="lead-av">GR</div>
+        <div class="lead-info">
+          <div class="lead-name">Gabriela Rivas</div>
+          <div class="lead-detail">Centro · Sin interacción en 10 días</div>
+        </div>
+        <div class="lead-right">
+          <span class="badge b-frio">FRÍO</span>
+          <span class="lead-time">hace 10d</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seguimientos -->
+    <div class="sec-hd">
+      <h2>Próximos seguimientos</h2>
+    </div>
+    <div class="leads-list">
+      <div class="card lead-row rt">
+        <div class="lead-av">AF</div>
+        <div class="lead-info">
+          <div class="lead-name">Ana Fernández</div>
+          <div class="lead-detail">Playa Grande · Seguimiento pactado</div>
+        </div>
+        <div class="lead-right">
+          <span class="badge b-tibio">TIBIO</span>
+          <span class="lead-time">hoy 15:00</span>
+        </div>
+      </div>
+      <div class="card lead-row rf">
+        <div class="lead-av">CO</div>
+        <div class="lead-info">
+          <div class="lead-name">Carlos Ortega</div>
+          <div class="lead-detail">Güemes · Primer contacto post-registro</div>
+        </div>
+        <div class="lead-right">
+          <span class="badge b-frio">FRÍO</span>
+          <span class="lead-time">mañana 10:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== SCREEN: GESTIÓN DEL DÍA ==================== -->
+  <div class="screen" id="screen-gestion">
+    <div class="page-hd">
+      <h1>Gestión del día</h1>
+      <p>Jueves 19 de junio · 4 tareas pendientes</p>
+    </div>
+
+    <!-- Progress -->
+    <div class="card prog-card mb-20">
+      <div class="prog-header">
+        <span class="prog-label">Avance de hoy</span>
+        <span class="prog-value">3 de 7 completadas</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:43%"></div></div>
+    </div>
+
+    <!-- Urgentes -->
+    <div class="task-group">
+      <div class="task-group-title">🔴 Urgentes <span class="tg-count">1</span></div>
+      <div class="card task-row rc">
+        <div class="check-box"></div>
+        <div class="task-body">
+          <div class="task-lead">Rodrigo Sosa</div>
+          <div class="task-desc">Llamado pendiente desde hace 2 días · Playa Grande ⚠️</div>
+        </div>
+        <div class="task-right">
+          <span class="badge b-caliente">CALIENTE</span>
+          <span class="task-time">hace 2d</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Por llamar -->
+    <div class="task-group">
+      <div class="task-group-title">📞 Por llamar <span class="tg-count">3</span></div>
+      <div class="card task-row rc">
+        <div class="check-box"></div>
+        <div class="task-body">
+          <div class="task-lead">Laura Castillo</div>
+          <div class="task-desc">Confirmar visita a la propiedad de Centro</div>
+        </div>
+        <div class="task-right">
+          <span class="badge b-caliente">CALIENTE</span>
+          <span class="task-time">hoy</span>
+        </div>
+      </div>
+      <div class="card task-row rt">
+        <div class="check-box"></div>
+        <div class="task-body">
+          <div class="task-lead">Martín Pérez</div>
+          <div class="task-desc">Enviar propuesta de precio actualizada</div>
+        </div>
+        <div class="task-right">
+          <span class="badge b-tibio">TIBIO</span>
+          <span class="task-time">ayer</span>
+        </div>
+      </div>
+      <div class="card task-row rf">
+        <div class="check-box"></div>
+        <div class="task-body">
+          <div class="task-lead">Gabriela Rivas</div>
+          <div class="task-desc">Reactivar contacto — sin interacción en 10 días</div>
+        </div>
+        <div class="task-right">
+          <span class="badge b-frio">FRÍO</span>
+          <span class="task-time">hace 10d</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seguimientos -->
+    <div class="task-group">
+      <div class="task-group-title">📅 Seguimientos programados <span class="tg-count">2</span></div>
+      <div class="card task-row rt">
+        <div class="check-box"></div>
+        <div class="task-body">
+          <div class="task-lead">Ana Fernández</div>
+          <div class="task-desc">Seguimiento post-visita · Playa Grande</div>
+        </div>
+        <div class="task-right">
+          <span class="badge b-tibio">TIBIO</span>
+          <span class="task-time">15:00</span>
+        </div>
+      </div>
+      <div class="card task-row rf">
+        <div class="check-box"></div>
+        <div class="task-body">
+          <div class="task-lead">Carlos Ortega</div>
+          <div class="task-desc">Primer contacto post-registro · Güemes</div>
+        </div>
+        <div class="task-right">
+          <span class="badge b-frio">FRÍO</span>
+          <span class="task-time">mañana 10:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completadas -->
+    <div class="task-group">
+      <div class="task-group-title" style="opacity:.45">✓ Completadas hoy <span class="tg-count">3</span></div>
+      <div class="card task-row done">
+        <div class="check-box checked"></div>
+        <div class="task-body">
+          <div class="task-lead done-text">Diego Noriega</div>
+          <div class="task-desc">Llamado realizado · Centro</div>
+        </div>
+      </div>
+      <div class="card task-row done">
+        <div class="check-box checked"></div>
+        <div class="task-body">
+          <div class="task-lead done-text">Paula Gómez</div>
+          <div class="task-desc">WhatsApp enviado · Güemes</div>
+        </div>
+      </div>
+      <div class="card task-row done">
+        <div class="check-box checked"></div>
+        <div class="task-body">
+          <div class="task-lead done-text">Sebastián Ríos</div>
+          <div class="task-desc">Visita realizada · Playa Grande</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== SCREEN: PIPELINE ==================== -->
+  <div class="screen" id="screen-pipeline">
+    <div class="page-hd">
+      <h1>Pipeline de operaciones</h1>
+      <p>12 operaciones activas · Junio 2026</p>
+    </div>
+
+    <div class="kanban-board">
+
+      <!-- ABIERTA -->
+      <div class="kcol" data-e="ABIERTA">
+        <div class="kcol-hd">
+          <span class="kcol-name">Abierta</span>
+          <span class="kcol-cnt">0</span>
+        </div>
+        <div class="kcol-cards">
+          <div class="kcol-empty">Sin operaciones</div>
+        </div>
+      </div>
+
+      <!-- PUBLICADA -->
+      <div class="kcol" data-e="PUBLICADA">
+        <div class="kcol-hd">
+          <span class="kcol-name">Publicada</span>
+          <span class="kcol-cnt">3</span>
+        </div>
+        <div class="kcol-cards">
+          <div class="kcard">
+            <div class="kc-lead">Rodrigo Sosa</div>
+            <div class="kc-tipo">Venta · Depto · Güemes</div>
+            <div class="kc-price">$128.000</div>
+            <div class="kc-foot">
+              <span class="badge b-caliente" style="font-size:9px">CALIENTE</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+          <div class="kcard">
+            <div class="kc-lead">Gabriela Rivas</div>
+            <div class="kc-tipo">Venta · Casa · Centro</div>
+            <div class="kc-price">$195.000</div>
+            <div class="kc-foot">
+              <span class="badge b-frio" style="font-size:9px">FRÍO</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+          <div class="kcard">
+            <div class="kc-lead">Marcela Torres</div>
+            <div class="kc-tipo">Búsqueda · Compra</div>
+            <div class="kc-price">Hasta $180.000</div>
+            <div class="kc-foot">
+              <span class="badge b-tibio" style="font-size:9px">TIBIO</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESERVADA -->
+      <div class="kcol" data-e="RESERVADA">
+        <div class="kcol-hd">
+          <span class="kcol-name">Reservada</span>
+          <span class="kcol-cnt">2</span>
+        </div>
+        <div class="kcol-cards">
+          <div class="kcard">
+            <div class="kc-lead">Martín Pérez</div>
+            <div class="kc-tipo">Venta · Casa · Güemes</div>
+            <div class="kc-price">$265.000</div>
+            <div class="kc-foot">
+              <span class="badge b-tibio" style="font-size:9px">TIBIO</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+          <div class="kcard">
+            <div class="kc-lead">Ana Fernández</div>
+            <div class="kc-tipo">Venta · Depto · Playa Grande</div>
+            <div class="kc-price">$112.000</div>
+            <div class="kc-foot">
+              <span class="badge b-tibio" style="font-size:9px">TIBIO</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EN NEGOCIACION -->
+      <div class="kcol" data-e="EN_NEGOCIACION">
+        <div class="kcol-hd">
+          <span class="kcol-name">En negociación</span>
+          <span class="kcol-cnt">2</span>
+        </div>
+        <div class="kcol-cards">
+          <div class="kcard">
+            <div class="kc-lead">Laura Castillo</div>
+            <div class="kc-tipo">Venta · Casa · Playa Grande</div>
+            <div class="kc-price">$285.000</div>
+            <div class="kc-foot">
+              <span class="badge b-caliente" style="font-size:9px">CALIENTE</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+          <div class="kcard">
+            <div class="kc-lead">Diego Noriega</div>
+            <div class="kc-tipo">Venta · PH · Centro</div>
+            <div class="kc-price">$148.000</div>
+            <div class="kc-foot">
+              <span class="badge b-tibio" style="font-size:9px">TIBIO</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CERRADA GANADA -->
+      <div class="kcol" data-e="CERRADA_GANADA">
+        <div class="kcol-hd">
+          <span class="kcol-name">Cerrada ganada</span>
+          <span class="kcol-cnt">4</span>
+        </div>
+        <div class="kcol-cards">
+          <div class="kcard">
+            <div class="kc-lead">Fernando Quiroga</div>
+            <div class="kc-tipo">Venta · Casa · Centro</div>
+            <div class="kc-price">$310.000</div>
+            <div class="kc-foot">
+              <span class="badge b-op-ganada" style="font-size:9px">GANADA</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+          <div class="kcard">
+            <div class="kc-lead">Claudia Méndez</div>
+            <div class="kc-tipo">Venta · Depto · Güemes</div>
+            <div class="kc-price">$95.000</div>
+            <div class="kc-foot">
+              <span class="badge b-op-ganada" style="font-size:9px">GANADA</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+          <div class="kcard">
+            <div class="kc-lead">Pablo Morán</div>
+            <div class="kc-tipo">Venta · Depto · Playa Grande</div>
+            <div class="kc-price">$140.000</div>
+            <div class="kc-foot">
+              <span class="badge b-op-ganada" style="font-size:9px">GANADA</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+          <div class="kcard">
+            <div class="kc-lead">Natalia Vidal</div>
+            <div class="kc-tipo">Venta · Casa · Playa Grande</div>
+            <div class="kc-price">$230.000</div>
+            <div class="kc-foot">
+              <span class="badge b-op-ganada" style="font-size:9px">GANADA</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CANCELADA -->
+      <div class="kcol" data-e="CANCELADA">
+        <div class="kcol-hd">
+          <span class="kcol-name">Cancelada</span>
+          <span class="kcol-cnt">1</span>
+        </div>
+        <div class="kcol-cards">
+          <div class="kcard">
+            <div class="kc-lead">Carlos Ortega</div>
+            <div class="kc-tipo">Venta · Depto · Güemes</div>
+            <div class="kc-price">$78.000</div>
+            <div class="kc-foot">
+              <span class="badge b-op-cancelada" style="font-size:9px">CANCELADA</span>
+              <a class="kc-link" href="#">Ver →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ==================== SCREEN: DASHBOARD ==================== -->
+  <div class="screen" id="screen-dashboard">
+    <div class="page-hd-split" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px">
+      <div>
+        <h1 style="font-size:20px;font-weight:700;margin-bottom:2px">Dashboard</h1>
+        <p style="font-size:12px;color:var(--color-text-muted)">Junio 2026 · Agente: Santiago Gómez</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <button class="btn btn-secondary" style="font-size:12px">Exportar</button>
+        <select style="font-size:12px;padding:6px 10px;border:1px solid var(--color-border);border-radius:var(--r-md);background:var(--color-card);color:var(--color-text);cursor:pointer">
+          <option>Este mes</option><option>Mes anterior</option><option>Últimos 3 meses</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Alerta vencidos -->
+    <div class="alert-banner">
+      <i data-lucide="alert-triangle"></i>
+      <div class="ab-text">
+        <div class="ab-title">7 leads sin contacto hace más de 7 días</div>
+        <div class="ab-sub">Rodrigo Sosa (10 d), Florencia Ríos (9 d), Diego Noriega (8 d) y 4 más</div>
+      </div>
+      <span class="ab-action" onclick="go('gestion',null)">Ver gestión →</span>
+    </div>
+
+    <!-- KPIs fila 1 -->
+    <div class="kpi-row">
+      <div class="card kpi-card success">
+        <div class="kpi-card-top">
+          <div class="kpi-lbl">Leads activos</div>
+          <div class="kpi-icon"><i data-lucide="users"></i></div>
+        </div>
+        <div class="kpi-num success">63</div>
+        <div class="kpi-delta delta-up"><span>↑</span> +8 vs mayo</div>
+        <div class="kpi-sub">12 calientes · 17 tibios · 24 fríos</div>
+      </div>
+      <div class="card kpi-card success">
+        <div class="kpi-card-top">
+          <div class="kpi-lbl">Op. ganadas en junio</div>
+          <div class="kpi-icon"><i data-lucide="trophy"></i></div>
+        </div>
+        <div class="kpi-num success">6</div>
+        <div class="kpi-delta delta-up"><span>↑</span> +2 vs mayo</div>
+        <div class="kpi-sub">Monto total: $890.000</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-card-top">
+          <div class="kpi-lbl">Cartera activa</div>
+          <div class="kpi-icon"><i data-lucide="building-2"></i></div>
+        </div>
+        <div class="kpi-num" style="font-size:30px;padding-top:4px">$2.4M</div>
+        <div class="kpi-delta delta-up"><span>↑</span> +$320K vs mayo</div>
+        <div class="kpi-sub">18 propiedades disponibles</div>
+      </div>
+    </div>
+
+    <!-- KPIs fila 2 -->
+    <div class="kpi-row">
+      <div class="card kpi-card alert">
+        <div class="kpi-card-top">
+          <div class="kpi-lbl">Vencidos hoy</div>
+          <div class="kpi-icon"><i data-lucide="clock"></i></div>
+        </div>
+        <div class="kpi-num alert">7</div>
+        <div class="kpi-delta delta-down"><span>↑</span> +3 vs ayer</div>
+        <div class="kpi-sub">Seguimientos sin realizar</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-card-top">
+          <div class="kpi-lbl">Tasa de cierre</div>
+          <div class="kpi-icon"><i data-lucide="percent"></i></div>
+        </div>
+        <div class="kpi-num">9.5%</div>
+        <div class="kpi-delta delta-neutral">= igual que mayo</div>
+        <div class="kpi-sub">6 ganadas de 63 leads</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-card-top">
+          <div class="kpi-lbl">Tiempo prom. cierre</div>
+          <div class="kpi-icon"><i data-lucide="calendar-check"></i></div>
+        </div>
+        <div class="kpi-num">14</div>
+        <div class="kpi-delta delta-up"><span>↓</span> −3 días vs mayo</div>
+        <div class="kpi-sub">días desde primer contacto</div>
+      </div>
+    </div>
+
+    <!-- Gráficos: bar chart + donut + pipeline -->
+    <div class="dash-grid-3">
+      <!-- Mini bar chart: leads por mes -->
+      <div class="card dash-card-sm">
+        <div class="dc-title-sm">Leads nuevos por mes <span>63</span></div>
+        <div class="mini-bar-chart">
+          <div class="mb-bars">
+            <div class="mb-col">
+              <div class="mb-val">34</div>
+              <div class="mb-bar" style="height:54%"></div>
+              <div class="mb-lbl">Ene</div>
+            </div>
+            <div class="mb-col">
+              <div class="mb-val">38</div>
+              <div class="mb-bar" style="height:60%"></div>
+              <div class="mb-lbl">Feb</div>
+            </div>
+            <div class="mb-col">
+              <div class="mb-val">42</div>
+              <div class="mb-bar" style="height:67%"></div>
+              <div class="mb-lbl">Mar</div>
+            </div>
+            <div class="mb-col">
+              <div class="mb-val">51</div>
+              <div class="mb-bar" style="height:81%"></div>
+              <div class="mb-lbl">Abr</div>
+            </div>
+            <div class="mb-col">
+              <div class="mb-val">58</div>
+              <div class="mb-bar" style="height:92%"></div>
+              <div class="mb-lbl">May</div>
+            </div>
+            <div class="mb-col">
+              <div class="mb-val" style="color:var(--color-primary);font-weight:800">63</div>
+              <div class="mb-bar current" style="height:100%"></div>
+              <div class="mb-lbl" style="color:var(--color-primary);font-weight:700">Jun</div>
+            </div>
+          </div>
+          <div class="mb-axis"></div>
+        </div>
+      </div>
+
+      <!-- Donut temperatura -->
+      <div class="card dash-card-sm">
+        <div class="dc-title-sm">Temperatura</div>
+        <div class="donut-wrap" style="gap:16px">
+          <div class="donut" style="width:110px;height:110px">
+            <div class="donut-hole" style="width:66px;height:66px">
+              <div class="dh-num" style="font-size:20px">63</div>
+              <div class="dh-lbl">leads</div>
+            </div>
+          </div>
+          <div class="donut-legend">
+            <div class="dl-item">
+              <div class="dl-dot" style="background:var(--color-caliente)"></div>
+              <span class="dl-name">Calientes</span>
+              <span class="dl-cnt" style="color:var(--color-caliente)">12</span>
+            </div>
+            <div class="dl-item">
+              <div class="dl-dot" style="background:var(--color-tibio)"></div>
+              <span class="dl-name">Tibios</span>
+              <span class="dl-cnt" style="color:var(--color-tibio)">17</span>
+            </div>
+            <div class="dl-item">
+              <div class="dl-dot" style="background:var(--color-frio)"></div>
+              <span class="dl-name">Fríos</span>
+              <span class="dl-cnt" style="color:var(--color-frio)">24</span>
+            </div>
+            <div class="dl-item">
+              <div class="dl-dot" style="background:var(--color-inactivo)"></div>
+              <span class="dl-name">Inactivos</span>
+              <span class="dl-cnt" style="color:var(--color-inactivo)">10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pipeline por estado -->
+      <div class="card dash-card-sm">
+        <div class="dc-title-sm">Pipeline</div>
+        <div class="pipe-summary">
+          <div class="ps-row">
+            <span class="ps-estado">Abierta</span>
+            <div class="ps-bar-bg"><div class="ps-bar-fill" style="width:37%;background:var(--color-inactivo)"></div></div>
+            <span class="ps-cnt">3</span>
+            <span class="ps-monto">—</span>
+          </div>
+          <div class="ps-row">
+            <span class="ps-estado">Publicada</span>
+            <div class="ps-bar-bg"><div class="ps-bar-fill" style="width:50%"></div></div>
+            <span class="ps-cnt">4</span>
+            <span class="ps-monto">$536K</span>
+          </div>
+          <div class="ps-row">
+            <span class="ps-estado">Reservada</span>
+            <div class="ps-bar-bg"><div class="ps-bar-fill" style="width:25%;background:var(--color-tibio)"></div></div>
+            <span class="ps-cnt">2</span>
+            <span class="ps-monto">$413K</span>
+          </div>
+          <div class="ps-row">
+            <span class="ps-estado">Negociación</span>
+            <div class="ps-bar-bg"><div class="ps-bar-fill" style="width:37%;background:var(--color-tibio)"></div></div>
+            <span class="ps-cnt">3</span>
+            <span class="ps-monto">$731K</span>
+          </div>
+          <div class="ps-row">
+            <span class="ps-estado" style="color:var(--color-primary-dark)">Ganada ✓</span>
+            <div class="ps-bar-bg"><div class="ps-bar-fill" style="width:75%;background:var(--color-primary-dark)"></div></div>
+            <span class="ps-cnt" style="color:var(--color-primary-dark)">6</span>
+            <span class="ps-monto" style="color:var(--color-primary-dark);font-weight:600">$890K</span>
+          </div>
+          <div class="ps-row">
+            <span class="ps-estado" style="color:var(--color-caliente)">Cancelada</span>
+            <div class="ps-bar-bg"><div class="ps-bar-fill" style="width:25%;background:var(--color-caliente)"></div></div>
+            <span class="ps-cnt" style="color:var(--color-caliente)">2</span>
+            <span class="ps-monto">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leads urgentes + Operaciones en negociación -->
+    <div class="dash-grid-halves">
+      <!-- Leads sin contacto -->
+      <div class="card dash-card-sm">
+        <div class="dc-title-sm" style="margin-bottom:10px">
+          Leads sin contacto
+          <span style="margin-left:6px;font-family:inherit;font-size:11px;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--color-caliente-bg);color:var(--color-caliente)">7 urgentes</span>
+        </div>
+        <table class="urgentes-table">
+          <thead>
+            <tr>
+              <th>Lead</th>
+              <th>Días sin contacto</th>
+              <th>Temp.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="urgentes-name">Rodrigo Sosa</div>
+                <div class="urgentes-sub">Playa Grande · Zonaprop</div>
+              </td>
+              <td><span class="dias-sin alta">10 días</span></td>
+              <td><span class="badge b-caliente">CALIENTE</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="urgentes-name">Florencia Ríos</div>
+                <div class="urgentes-sub">Centro · Instagram</div>
+              </td>
+              <td><span class="dias-sin alta">9 días</span></td>
+              <td><span class="badge b-caliente">CALIENTE</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="urgentes-name">Diego Noriega</div>
+                <div class="urgentes-sub">Centro · MercadoLibre</div>
+              </td>
+              <td><span class="dias-sin alta">8 días</span></td>
+              <td><span class="badge b-tibio">TIBIO</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="urgentes-name">Claudia Méndez</div>
+                <div class="urgentes-sub">Güemes · Referido</div>
+              </td>
+              <td><span class="dias-sin media">7 días</span></td>
+              <td><span class="badge b-tibio">TIBIO</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;text-align:right">
+          <button class="btn btn-secondary" style="font-size:11px;padding:5px 12px" onclick="go('gestion',null)">Ver todos →</button>
+        </div>
+      </div>
+
+      <!-- Operaciones en negociación -->
+      <div class="card dash-card-sm">
+        <div class="dc-title-sm" style="margin-bottom:10px">
+          En negociación
+          <span style="margin-left:6px;font-family:inherit;font-size:11px;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--color-tibio-bg);color:#A06800">3 ops · $731K</span>
+        </div>
+        <div class="neg-list">
+          <div class="neg-row">
+            <div style="min-width:0;flex:1">
+              <div class="neg-title">Venta Depto en Güemes</div>
+              <div class="neg-lead">Rodrigo Sosa · <span style="color:var(--color-tibio);font-weight:600">14 días en neg.</span></div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div class="neg-price">$128.000</div>
+              <div class="neg-days">ult. evento hace 2 días</div>
+            </div>
+          </div>
+          <div class="neg-row">
+            <div style="min-width:0;flex:1">
+              <div class="neg-title">Venta Casa en Centro</div>
+              <div class="neg-lead">Fernando Quiroga · <span style="color:var(--color-caliente);font-weight:600">21 días en neg.</span></div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div class="neg-price">$310.000</div>
+              <div class="neg-days">ult. evento hace 4 días</div>
+            </div>
+          </div>
+          <div class="neg-row">
+            <div style="min-width:0;flex:1">
+              <div class="neg-title">Venta PH en Centro</div>
+              <div class="neg-lead">Diego Noriega · <span style="color:var(--color-tibio);font-weight:600">9 días en neg.</span></div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div class="neg-price">$293.000</div>
+              <div class="neg-days">ult. evento ayer</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:10px;text-align:right">
+          <button class="btn btn-secondary" style="font-size:11px;padding:5px 12px" onclick="go('pipeline',null)">Ver pipeline →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== SCREEN: LISTA DE LEADS ==================== -->
+  <div class="screen" id="screen-leads">
+    <div class="page-hd" style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px;">
+      <div>
+        <h1>Mis leads</h1>
+        <p>63 leads en total · 12 calientes · 17 tibios · 24 fríos · 10 inactivos</p>
+      </div>
+      <button class="btn btn-primary" style="flex-shrink:0; margin-top:4px" onclick="go('form-lead',null)">+ Nuevo lead</button>
+    </div>
+
+    <!-- Toolbar: búsqueda + filtros -->
+    <div class="leads-toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar por nombre, teléfono, zona…" readonly>
+      </div>
+      <div class="filter-chips">
+        <span class="chip chip-active">Todos</span>
+        <span class="chip chip-c">● Caliente</span>
+        <span class="chip chip-t">● Tibio</span>
+        <span class="chip chip-f">● Frío</span>
+        <span class="chip chip-i">● Inactivo</span>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card leads-table-wrap">
+      <table class="leads-table">
+        <colgroup>
+          <col style="width:27%">
+          <col style="width:9%">
+          <col style="width:10%">
+          <col style="width:12%">
+          <col style="width:14%">
+          <col style="width:28%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Lead</th>
+            <th>Temperatura</th>
+            <th>Origen</th>
+            <th>Último contacto</th>
+            <th>Próx. seguimiento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">RS</div>
+                <div>
+                  <div class="tl-name">Rodrigo Sosa</div>
+                  <div class="tl-phone">+54 9 223 4xx-xxxx</div>
+                  <div class="tl-last-int">Pidió más fotos del depto en Güemes</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-caliente">CALIENTE</span></td>
+            <td><span class="tl-zona">Zonaprop</span></td>
+            <td><span class="tl-fecha vencida">hace 2 días ⚠</span></td>
+            <td><span class="tl-fecha vencida">Vencido</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">LC</div>
+                <div>
+                  <div class="tl-name">Laura Castillo</div>
+                  <div class="tl-phone">+54 9 223 5xx-xxxx</div>
+                  <div class="tl-last-int">Confirmó que va a la visita del martes</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-caliente">CALIENTE</span></td>
+            <td><span class="tl-zona">MercadoLibre</span></td>
+            <td><span class="tl-fecha">hoy</span></td>
+            <td><span class="tl-fecha">hoy 15:00</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">MP</div>
+                <div>
+                  <div class="tl-name">Martín Pérez</div>
+                  <div class="tl-phone">+54 9 223 6xx-xxxx</div>
+                  <div class="tl-last-int">Preguntó si hay algo con pileta en Playa Grande</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-tibio">TIBIO</span></td>
+            <td><span class="tl-zona">Referido</span></td>
+            <td><span class="tl-fecha">ayer</span></td>
+            <td><span class="tl-fecha">mañana</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">AF</div>
+                <div>
+                  <div class="tl-name">Ana Fernández</div>
+                  <div class="tl-phone">+54 9 223 7xx-xxxx</div>
+                  <div class="tl-last-int">Le mandé el link de la propiedad en Colón al WhatsApp</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-tibio">TIBIO</span></td>
+            <td><span class="tl-zona">Instagram</span></td>
+            <td><span class="tl-fecha">hace 3 días</span></td>
+            <td><span class="tl-fecha vencida">Vencido</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">MT</div>
+                <div>
+                  <div class="tl-name">Marcela Torres</div>
+                  <div class="tl-phone">+54 9 223 8xx-xxxx</div>
+                  <div class="tl-last-int">Sin respuesta al mensaje de WhatsApp del lunes</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-tibio">TIBIO</span></td>
+            <td><span class="tl-zona">Zonaprop</span></td>
+            <td><span class="tl-fecha">hace 4 días</span></td>
+            <td><span class="tl-fecha">jue 26 jun</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">GR</div>
+                <div>
+                  <div class="tl-name">Gabriela Rivas</div>
+                  <div class="tl-phone">+54 9 223 9xx-xxxx</div>
+                  <div class="tl-last-int">Llamada sin contestar, dejé mensaje de voz</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-frio">FRÍO</span></td>
+            <td><span class="tl-zona">WhatsApp</span></td>
+            <td><span class="tl-fecha vencida">hace 10 días ⚠</span></td>
+            <td><span class="tl-fecha">sin programar</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">CO</div>
+                <div>
+                  <div class="tl-name">Carlos Ortega</div>
+                  <div class="tl-phone">+54 9 223 1xx-xxxx</div>
+                  <div class="tl-last-int">Interesado en dúplex, pidió precio final y expensas</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-frio">FRÍO</span></td>
+            <td><span class="tl-zona">MercadoLibre</span></td>
+            <td><span class="tl-fecha">hace 7 días</span></td>
+            <td><span class="tl-fecha">mañana 10:00</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">DN</div>
+                <div>
+                  <div class="tl-name">Diego Noriega</div>
+                  <div class="tl-phone">+54 9 223 2xx-xxxx</div>
+                  <div class="tl-last-int">Referido por Marcos Suárez, busca 3 ambientes con garaje</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-tibio">TIBIO</span></td>
+            <td><span class="tl-zona">Referido</span></td>
+            <td><span class="tl-fecha">hoy</span></td>
+            <td><span class="tl-fecha">lun 23 jun</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">PG</div>
+                <div>
+                  <div class="tl-name">Paula Gómez</div>
+                  <div class="tl-phone">+54 9 223 3xx-xxxx</div>
+                  <div class="tl-last-int">Consultó por propiedad cerca del mar, presupuesto ajustado</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-frio">FRÍO</span></td>
+            <td><span class="tl-zona">Instagram</span></td>
+            <td><span class="tl-fecha">hace 5 días</span></td>
+            <td><span class="tl-fecha">sin programar</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+          <tr onclick="go('lead', null)">
+            <td>
+              <div class="tl-name-cell">
+                <div class="tl-av">SR</div>
+                <div>
+                  <div class="tl-name">Sebastián Ríos</div>
+                  <div class="tl-phone">+54 9 223 0xx-xxxx</div>
+                  <div class="tl-last-int">No responde desde hace 4 semanas</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge b-inactivo">INACTIVO</span></td>
+            <td><span class="tl-zona">Zonaprop</span></td>
+            <td><span class="tl-fecha">hace 28 días</span></td>
+            <td><span class="tl-fecha">sin programar</span></td>
+            <td><div class="tl-actions">
+              <button class="tl-icon-btn" title="Llamar" onclick="event.stopPropagation()"><i data-lucide="phone"></i></button>
+              <button class="tl-icon-btn wa" title="WhatsApp" onclick="event.stopPropagation()"><i data-lucide="message-circle"></i></button>
+              <button class="tbl-btn registrar" onclick="go('form-interaccion',null);event.stopPropagation()">Registrar</button>
+              <button class="tbl-btn" onclick="go('lead',null);event.stopPropagation()">Ver</button>
+            </div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-footer">
+        <span>Mostrando 10 de 63 leads</span>
+        <div class="pagination">
+          <button class="pg-btn pg-active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <button class="pg-btn">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN: DETALLE LEAD ==================== -->
+  <div class="screen" id="screen-lead">
+    <div class="ld-header">
+      <div class="ld-av">RS</div>
+      <div class="ld-info">
+        <div class="ld-name">
+          Rodrigo Sosa
+          <span class="badge b-caliente">CALIENTE</span>
+        </div>
+        <div class="ld-meta">
+          <span>📞 +54 9 223 4xx-xxxx</span>
+          <span>📍 Playa Grande</span>
+          <span>🗓 Desde 3 jun 2026</span>
+          <span>🔗 Zonaprop</span>
+        </div>
+      </div>
+      <div class="ld-actions">
+        <button class="btn btn-secondary" onclick="go('form-propiedad',null)">+ Propiedad</button>
+        <button class="btn btn-secondary" onclick="go('form-interaccion',null)">+ Interacción</button>
+        <button class="btn btn-primary" onclick="go('form-operacion',null)">+ Operación</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="tab('op',this)">Operaciones (1)</button>
+      <button class="tab-btn" onclick="tab('int',this)">Interacciones (3)</button>
+      <button class="tab-btn" onclick="tab('prop',this)">Propiedades (1)</button>
+    </div>
+
+    <!-- Operaciones -->
+    <div class="tab-pane active" id="tab-op">
+      <div class="card op-card">
+        <div class="op-ico">🏢</div>
+        <div class="op-body">
+          <div class="op-title">Venta Depto en Güemes — Av. Colón 2340 3°A</div>
+          <div class="op-meta">
+            <span>Creada 5 jun 2026</span>
+            <span>$128.000</span>
+          </div>
+          <div class="op-badges">
+            <span class="badge b-op-publicada">PUBLICADA</span>
+            <span class="badge b-tipo-venta">VENTA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interacciones -->
+    <div class="tab-pane" id="tab-int">
+      <div class="card int-list">
+        <div class="int-item">
+          <div class="int-dot" style="background:var(--color-caliente)"></div>
+          <div class="int-body">
+            <div class="int-hd">
+              <span class="int-tipo">📞 Llamado</span>
+              <span class="int-fecha">hoy, 10:30</span>
+            </div>
+            <div class="int-nota">Confirmó interés en la propiedad de Güemes. Pide visita para esta semana. Disponible martes o miércoles.</div>
+          </div>
+        </div>
+        <div class="int-item">
+          <div class="int-dot" style="background:var(--color-tibio)"></div>
+          <div class="int-body">
+            <div class="int-hd">
+              <span class="int-tipo">💬 WhatsApp</span>
+              <span class="int-fecha">ayer, 17:45</span>
+            </div>
+            <div class="int-nota">Envié ficha de la propiedad con fotos y precio. Respondió con interés, preguntó por expensas y antigüedad.</div>
+          </div>
+        </div>
+        <div class="int-item">
+          <div class="int-dot" style="background:var(--color-border)"></div>
+          <div class="int-body">
+            <div class="int-hd">
+              <span class="int-tipo">🏠 Visita</span>
+              <span class="int-fecha">12 jun, 11:00</span>
+            </div>
+            <div class="int-nota">Visita realizada en Av. Constitución 890. Le gustó la ubicación pero el precio le parece alto. Dispuesto a negociar.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Propiedades -->
+    <div class="tab-pane" id="tab-prop">
+      <div class="card prop-card">
+        <span class="prop-ico">🏢</span>
+        <div class="prop-body">
+          <div class="prop-addr">Av. Colón 2340 · Piso 3°A · Güemes</div>
+          <div class="prop-meta">3 ambientes · 82 m² · $128.000</div>
+          <span class="badge b-pr-disponible">DISPONIBLE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="danger-zone">
+      <button class="btn btn-ghost-danger">Eliminar lead</button>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN: PROPIEDADES ==================== -->
+  <div class="screen" id="screen-propiedades">
+    <div class="page-hd page-hd-split" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+      <div>
+        <h1>Mis propiedades</h1>
+        <p>18 propiedades · 11 disponibles · 4 reservadas · 3 vendidas</p>
+      </div>
+      <button class="btn btn-primary" style="flex-shrink:0;margin-top:4px">+ Nueva propiedad</button>
+    </div>
+
+    <div class="leads-toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar por dirección, zona, precio…" readonly>
+      </div>
+      <div class="filter-chips">
+        <span class="chip chip-active">Todas</span>
+        <span class="chip" style="border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-light)">Disponible</span>
+        <span class="chip" style="border-color:var(--color-tibio);color:#A06800;background:var(--color-tibio-bg)">Reservada</span>
+        <span class="chip" style="border-color:var(--color-inactivo);color:var(--color-inactivo);background:var(--color-inactivo-bg)">Vendida</span>
+      </div>
+    </div>
+
+    <div class="card leads-table-wrap">
+      <table class="leads-table">
+        <thead>
+          <tr>
+            <th>Propiedad</th>
+            <th>Tipo</th>
+            <th>Zona</th>
+            <th>Precio</th>
+            <th>Lead propietario</th>
+            <th>Estado</th>
+            <th>Publicada</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:20px">🏢</span>
+                <div>
+                  <div class="tl-name">Av. Colón 2340 · 3°A</div>
+                  <div class="tl-phone">3 amb · 82 m²</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tl-zona">Depto</span></td>
+            <td><span class="tl-zona">Güemes</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$128.000</span></td>
+            <td><span class="tl-zona">Rodrigo Sosa</span></td>
+            <td><span class="badge b-pr-disponible">DISPONIBLE</span></td>
+            <td><span class="tl-fecha">5 jun</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:20px">🏠</span>
+                <div>
+                  <div class="tl-name">Av. Constitución 890</div>
+                  <div class="tl-phone">4 amb · 210 m²</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tl-zona">Casa</span></td>
+            <td><span class="tl-zona">Playa Grande</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$285.000</span></td>
+            <td><span class="tl-zona">Laura Castillo</span></td>
+            <td><span class="badge b-pr-reservada">RESERVADA</span></td>
+            <td><span class="tl-fecha">1 jun</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:20px">🏠</span>
+                <div>
+                  <div class="tl-name">Belgrano 1540 · PB</div>
+                  <div class="tl-phone">3 amb · 145 m²</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tl-zona">Casa</span></td>
+            <td><span class="tl-zona">Güemes</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$265.000</span></td>
+            <td><span class="tl-zona">Martín Pérez</span></td>
+            <td><span class="badge b-pr-reservada">RESERVADA</span></td>
+            <td><span class="tl-fecha">12 may</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:20px">🏢</span>
+                <div>
+                  <div class="tl-name">San Martín 450 · 7°B</div>
+                  <div class="tl-phone">2 amb · 58 m²</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tl-zona">Depto</span></td>
+            <td><span class="tl-zona">Centro</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$95.000</span></td>
+            <td><span class="tl-zona">Claudia Méndez</span></td>
+            <td><span class="badge b-pr-vendida">VENDIDA</span></td>
+            <td><span class="tl-fecha">3 abr</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:20px">🏢</span>
+                <div>
+                  <div class="tl-name">Independencia 770 · 2°A</div>
+                  <div class="tl-phone">3 amb · 76 m²</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tl-zona">Depto</span></td>
+            <td><span class="tl-zona">Centro</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$112.000</span></td>
+            <td><span class="tl-zona">Ana Fernández</span></td>
+            <td><span class="badge b-pr-disponible">DISPONIBLE</span></td>
+            <td><span class="tl-fecha">8 jun</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:20px">🏠</span>
+                <div>
+                  <div class="tl-name">Rivadavia 2890</div>
+                  <div class="tl-phone">5 amb · 320 m²</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tl-zona">Casa</span></td>
+            <td><span class="tl-zona">Playa Grande</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$480.000</span></td>
+            <td><span class="tl-zona">Fernando Quiroga</span></td>
+            <td><span class="badge b-pr-vendida">VENDIDA</span></td>
+            <td><span class="tl-fecha">15 may</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:20px">🏢</span>
+                <div>
+                  <div class="tl-name">Córdoba 1120 · 4°C</div>
+                  <div class="tl-phone">2 amb · 64 m²</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tl-zona">Depto</span></td>
+            <td><span class="tl-zona">Centro</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$78.000</span></td>
+            <td><span class="tl-zona">Carlos Ortega</span></td>
+            <td><span class="badge b-pr-disponible">DISPONIBLE</span></td>
+            <td><span class="tl-fecha">2 jun</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:20px">🏢</span>
+                <div>
+                  <div class="tl-name">Luro 3340 · 1°A</div>
+                  <div class="tl-phone">3 amb · 88 m²</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tl-zona">Depto</span></td>
+            <td><span class="tl-zona">Güemes</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$140.000</span></td>
+            <td><span class="tl-zona">Pablo Morán</span></td>
+            <td><span class="badge b-pr-vendida">VENDIDA</span></td>
+            <td><span class="tl-fecha">28 abr</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-footer">
+        <span>Mostrando 8 de 18 propiedades</span>
+        <div class="pagination">
+          <button class="pg-btn pg-active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN: OPERACIONES ==================== -->
+  <div class="screen" id="screen-operaciones">
+    <div class="page-hd page-hd-split" style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+      <div>
+        <h1>Mis operaciones</h1>
+        <p>12 activas · 6 cerradas ganadas · 1 cancelada</p>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:4px;flex-shrink:0">
+        <button class="btn btn-secondary" onclick="go('pipeline', document.querySelectorAll('.nav-item')[3])">Vista kanban</button>
+        <button class="btn btn-primary" onclick="go('form-operacion',null)">+ Nueva operación</button>
+      </div>
+    </div>
+
+    <div class="leads-toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar por lead, dirección, monto…" readonly>
+      </div>
+      <div class="filter-chips">
+        <span class="chip chip-active">Todas</span>
+        <span class="chip">Publicada</span>
+        <span class="chip">Reservada</span>
+        <span class="chip">En negociación</span>
+        <span class="chip">Cerradas</span>
+      </div>
+    </div>
+
+    <div class="card leads-table-wrap">
+      <table class="leads-table">
+        <thead>
+          <tr>
+            <th>Operación</th>
+            <th>Tipo</th>
+            <th>Lead</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th>Temp. lead</th>
+            <th>Creada</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div>
+                <div class="tl-name">Venta depto en Güemes</div>
+                <div class="tl-phone">Av. Colón 2340 3°A</div>
+              </div>
+            </td>
+            <td><span class="badge b-tipo-venta">VENTA</span></td>
+            <td><span class="tl-zona">Rodrigo Sosa</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$128.000</span></td>
+            <td><span class="badge b-op-publicada">PUBLICADA</span></td>
+            <td><span class="badge b-caliente">CALIENTE</span></td>
+            <td><span class="tl-fecha">5 jun</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="tl-name">Venta casa Playa Grande</div>
+                <div class="tl-phone">Av. Constitución 890</div>
+              </div>
+            </td>
+            <td><span class="badge b-tipo-venta">VENTA</span></td>
+            <td><span class="tl-zona">Laura Castillo</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$285.000</span></td>
+            <td><span class="badge b-op-negociacion">EN NEGOCIACIÓN</span></td>
+            <td><span class="badge b-caliente">CALIENTE</span></td>
+            <td><span class="tl-fecha">1 jun</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="tl-name">Venta casa Güemes</div>
+                <div class="tl-phone">Belgrano 1540 PB</div>
+              </div>
+            </td>
+            <td><span class="badge b-tipo-venta">VENTA</span></td>
+            <td><span class="tl-zona">Martín Pérez</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$265.000</span></td>
+            <td><span class="badge b-op-reservada">RESERVADA</span></td>
+            <td><span class="badge b-tibio">TIBIO</span></td>
+            <td><span class="tl-fecha">12 may</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="tl-name">Búsqueda depto Güemes</div>
+                <div class="tl-phone">Hasta $180.000 · 3 amb</div>
+              </div>
+            </td>
+            <td><span class="badge b-tipo-compra">COMPRA</span></td>
+            <td><span class="tl-zona">Marcela Torres</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">—</span></td>
+            <td><span class="badge b-op-publicada">PUBLICADA</span></td>
+            <td><span class="badge b-tibio">TIBIO</span></td>
+            <td><span class="tl-fecha">9 jun</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="tl-name">Venta depto Centro</div>
+                <div class="tl-phone">San Martín 450 7°B</div>
+              </div>
+            </td>
+            <td><span class="badge b-tipo-venta">VENTA</span></td>
+            <td><span class="tl-zona">Claudia Méndez</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$95.000</span></td>
+            <td><span class="badge b-op-ganada">CERRADA GANADA</span></td>
+            <td><span class="badge b-inactivo">INACTIVO</span></td>
+            <td><span class="tl-fecha">3 abr</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="tl-name">Venta casa Playa Grande</div>
+                <div class="tl-phone">Rivadavia 2890</div>
+              </div>
+            </td>
+            <td><span class="badge b-tipo-venta">VENTA</span></td>
+            <td><span class="tl-zona">Fernando Quiroga</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$310.000</span></td>
+            <td><span class="badge b-op-ganada">CERRADA GANADA</span></td>
+            <td><span class="badge b-inactivo">INACTIVO</span></td>
+            <td><span class="tl-fecha">15 may</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="tl-name">Venta PH Centro</div>
+                <div class="tl-phone">Mitre 890 PB</div>
+              </div>
+            </td>
+            <td><span class="badge b-tipo-venta">VENTA</span></td>
+            <td><span class="tl-zona">Diego Noriega</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$148.000</span></td>
+            <td><span class="badge b-op-negociacion">EN NEGOCIACIÓN</span></td>
+            <td><span class="badge b-tibio">TIBIO</span></td>
+            <td><span class="tl-fecha">7 jun</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+          <tr>
+            <td>
+              <div>
+                <div class="tl-name">Venta depto Güemes</div>
+                <div class="tl-phone">Córdoba 1120 4°C</div>
+              </div>
+            </td>
+            <td><span class="badge b-tipo-venta">VENTA</span></td>
+            <td><span class="tl-zona">Carlos Ortega</span></td>
+            <td><span style="font-size:13px;font-weight:700;color:var(--color-primary-dark)">$78.000</span></td>
+            <td><span class="badge b-op-cancelada">CANCELADA</span></td>
+            <td><span class="badge b-frio">FRÍO</span></td>
+            <td><span class="tl-fecha">2 jun</span></td>
+            <td><div class="tl-actions"><button class="tbl-btn" onclick="go('prop-detalle',null)">Ver</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-footer">
+        <span>Mostrando 8 de 19 operaciones</span>
+        <div class="pagination">
+          <button class="pg-btn pg-active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+  <!-- ==================== SCREEN: CONFIGURACIÓN ==================== -->
+  <div class="screen" id="screen-config">
+    <div class="page-hd">
+      <h1>Configuración</h1>
+      <p>Ajustes de tu cuenta y la inmobiliaria</p>
+    </div>
+
+    <!-- Perfil -->
+    <div style="margin-bottom:28px">
+      <div class="sec-hd"><h2>Mi perfil</h2></div>
+      <div class="card" style="padding:20px 24px">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+          <div style="width:56px;height:56px;border-radius:50%;background:var(--color-primary-light);color:var(--color-primary);font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">VM</div>
+          <div>
+            <div style="font-size:16px;font-weight:700">Valentina Marcos</div>
+            <div style="font-size:12px;color:var(--color-text-muted)">Agente · Inmobiliaria del Sur</div>
+          </div>
+          <button class="btn btn-secondary" style="margin-left:auto">Editar foto</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:4px">Nombre</div>
+            <div style="font-size:13px;font-weight:500;padding:8px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--r-md)">Valentina Marcos</div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:4px">Email</div>
+            <div style="font-size:13px;font-weight:500;padding:8px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--r-md)">v.marcos@inmobsur.com</div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:4px">Teléfono</div>
+            <div style="font-size:13px;font-weight:500;padding:8px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--r-md)">+54 9 223 4xx-xxxx</div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:4px">Zona preferida</div>
+            <div style="font-size:13px;font-weight:500;padding:8px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--r-md)">Playa Grande · Güemes</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn btn-secondary">Cambiar contraseña</button>
+          <button class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notificaciones -->
+    <div style="margin-bottom:28px">
+      <div class="sec-hd"><h2>Notificaciones</h2></div>
+      <div class="card" style="padding:4px 0">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--color-border)">
+          <div>
+            <div style="font-size:13px;font-weight:600">Leads sin contactar por más de 3 días</div>
+            <div style="font-size:11px;color:var(--color-text-muted)">Recibí un recordatorio cuando un lead caliente no tuvo interacción</div>
+          </div>
+          <div style="width:40px;height:22px;background:var(--color-primary);border-radius:99px;position:relative;flex-shrink:0;cursor:pointer">
+            <div style="position:absolute;right:3px;top:3px;width:16px;height:16px;background:#fff;border-radius:50%"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--color-border)">
+          <div>
+            <div style="font-size:13px;font-weight:600">Seguimientos del día</div>
+            <div style="font-size:11px;color:var(--color-text-muted)">Resumen matutino de tareas programadas para hoy</div>
+          </div>
+          <div style="width:40px;height:22px;background:var(--color-primary);border-radius:99px;position:relative;flex-shrink:0;cursor:pointer">
+            <div style="position:absolute;right:3px;top:3px;width:16px;height:16px;background:#fff;border-radius:50%"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--color-border)">
+          <div>
+            <div style="font-size:13px;font-weight:600">Nuevas coincidencias de búsqueda</div>
+            <div style="font-size:11px;color:var(--color-text-muted)">Cuando una propiedad nueva encaja con la búsqueda de un comprador</div>
+          </div>
+          <div style="width:40px;height:22px;background:var(--color-primary);border-radius:99px;position:relative;flex-shrink:0;cursor:pointer">
+            <div style="position:absolute;right:3px;top:3px;width:16px;height:16px;background:#fff;border-radius:50%"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px">
+          <div>
+            <div style="font-size:13px;font-weight:600">Resumen semanal de pipeline</div>
+            <div style="font-size:11px;color:var(--color-text-muted)">Reporte de operaciones activas cada lunes</div>
+          </div>
+          <div style="width:40px;height:22px;background:var(--color-border);border-radius:99px;position:relative;flex-shrink:0;cursor:pointer">
+            <div style="position:absolute;left:3px;top:3px;width:16px;height:16px;background:#fff;border-radius:50%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inmobiliaria -->
+    <div style="margin-bottom:28px">
+      <div class="sec-hd"><h2>Inmobiliaria</h2></div>
+      <div class="card" style="padding:20px 24px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+          <div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:4px">Nombre</div>
+            <div style="font-size:13px;font-weight:500;padding:8px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--r-md)">Inmobiliaria del Sur</div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:4px">CUIT</div>
+            <div style="font-size:13px;font-weight:500;padding:8px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--r-md)">30-71234567-8</div>
+          </div>
+          <div style="grid-column:span 2">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:4px">Dirección</div>
+            <div style="font-size:13px;font-weight:500;padding:8px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--r-md)">Av. Independencia 1840, Mar del Plata</div>
+          </div>
+        </div>
+        <div style="padding:12px 14px;background:var(--color-primary-light);border-radius:var(--r-md);font-size:12px;color:var(--color-primary)">
+          <strong>Rol:</strong> Agente — Solo el dueño puede modificar los datos de la inmobiliaria y gestionar el equipo.
+        </div>
+      </div>
+    </div>
+
+    <!-- Zona de peligro -->
+    <div>
+      <div class="sec-hd"><h2 style="color:var(--color-caliente)">Zona de peligro</h2></div>
+      <div class="card" style="padding:20px 24px;border-color:var(--color-caliente-bg)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+          <div>
+            <div style="font-size:13px;font-weight:600">Cerrar sesión</div>
+            <div style="font-size:11px;color:var(--color-text-muted)">Salir de tu cuenta en este dispositivo</div>
+          </div>
+          <button class="btn btn-secondary" style="flex-shrink:0">Cerrar sesión</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN: DETALLE PROPIEDAD ==================== -->
+  <div class="screen" id="screen-prop-detalle">
+    <button class="back-link" onclick="go('propiedades', null)">← Volver a propiedades</button>
+
+    <div class="detail-hero">
+      <div class="detail-hero-left">
+        <div class="detail-hero-title">
+          🏢 Av. Colón 2340 · Piso 3°A
+          <span class="badge b-pr-disponible">DISPONIBLE</span>
+        </div>
+        <div class="detail-hero-meta">
+          <span>📍 Güemes, Mar del Plata</span>
+          <span>🗓 Publicada 5 jun 2026</span>
+        </div>
+      </div>
+      <div class="detail-hero-actions">
+        <button class="btn btn-secondary">Editar</button>
+        <button class="btn btn-primary">Cambiar estado</button>
+      </div>
+    </div>
+
+    <!-- Fotos -->
+    <div class="fotos-grid">
+      <div class="foto-slot main">🏢</div>
+      <div class="foto-slot">🪟</div>
+      <div class="foto-slot">🛋️</div>
+      <div class="foto-slot">🛁</div>
+      <div class="foto-slot" style="position:relative">
+        <span style="font-size:14px;font-weight:700;color:var(--color-text-muted)">+3 fotos</span>
+      </div>
+    </div>
+
+    <!-- Ficha -->
+    <div class="card ficha-card" style="margin-bottom:14px">
+      <div class="ficha-grid">
+        <div class="ficha-item">
+          <div class="ficha-label">Precio</div>
+          <div class="ficha-val big">$128.000</div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Tipo</div>
+          <div class="ficha-val">Departamento</div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Ambientes</div>
+          <div class="ficha-val">3</div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Superficie total</div>
+          <div class="ficha-val">82 m²</div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Sup. cubierta</div>
+          <div class="ficha-val">72 m²</div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Antigüedad</div>
+          <div class="ficha-val">12 años</div>
+        </div>
+      </div>
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--color-border)">
+        <div class="ficha-label" style="margin-bottom:6px">Observaciones</div>
+        <div style="font-size:13px;color:var(--color-text-muted);line-height:1.6">Depto luminoso con vista despejada al norte. Cocina renovada, baño completo y toilette. Cochera optativa. Excelente estado de conservación. Expensas $85.000/mes.</div>
+      </div>
+    </div>
+
+    <!-- Lead propietario -->
+    <div class="detail-section-title">Lead propietario</div>
+    <div class="lead-chip" style="margin-bottom:14px">
+      <div class="lead-chip-av">RS</div>
+      <div>
+        <div class="lead-chip-name">Rodrigo Sosa</div>
+        <div class="lead-chip-meta">📞 +54 9 223 4xx-xxxx · Playa Grande</div>
+      </div>
+      <span class="badge b-caliente" style="margin-left:8px">CALIENTE</span>
+      <span class="lead-chip-link" onclick="go('lead',null)">Ver lead →</span>
+    </div>
+
+    <!-- Operaciones vinculadas -->
+    <div class="detail-section-title">Operaciones vinculadas</div>
+    <div class="card op-card" style="margin-bottom:14px">
+      <div class="op-ico">📋</div>
+      <div class="op-body">
+        <div class="op-title">Venta Depto en Güemes — Av. Colón 2340 3°A</div>
+        <div class="op-meta"><span>Creada 5 jun 2026</span><span>$128.000</span></div>
+        <div class="op-badges">
+          <span class="badge b-op-publicada">PUBLICADA</span>
+          <span class="badge b-tipo-venta">VENTA</span>
+        </div>
+      </div>
+      <button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="go('op-detalle',null)">Ver →</button>
+    </div>
+
+    <!-- Compradores potenciales -->
+    <div class="detail-section-title">Compradores potenciales</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px">
+      <div class="lead-chip">
+        <div class="lead-chip-av" style="background:var(--color-tibio-bg);color:#A06800">MT</div>
+        <div>
+          <div class="lead-chip-name">Marcela Torres</div>
+          <div class="lead-chip-meta">Busca depto 3 amb hasta $180.000 · Güemes</div>
+        </div>
+        <span class="badge b-tibio" style="margin-left:8px">TIBIO</span>
+        <span class="lead-chip-link">Ver lead →</span>
+      </div>
+      <div class="lead-chip">
+        <div class="lead-chip-av" style="background:var(--color-frio-bg);color:#1A5FAA">CO</div>
+        <div>
+          <div class="lead-chip-name">Carlos Ortega</div>
+          <div class="lead-chip-meta">Busca depto 2-3 amb hasta $150.000 · Centro/Güemes</div>
+        </div>
+        <span class="badge b-frio" style="margin-left:8px">FRÍO</span>
+        <span class="lead-chip-link">Ver lead →</span>
+      </div>
+    </div>
+
+    <div class="danger-zone">
+      <button class="btn btn-ghost-danger">Eliminar propiedad</button>
+    </div>
+  </div>
+
+
+  <!-- ==================== SCREEN: DETALLE OPERACIÓN ==================== -->
+  <div class="screen" id="screen-op-detalle">
+    <button class="back-link" onclick="go('operaciones', null)">← Volver a operaciones</button>
+
+    <div class="detail-hero">
+      <div class="detail-hero-left">
+        <div class="detail-hero-title">
+          Venta Depto en Güemes
+          <span class="badge b-op-publicada">PUBLICADA</span>
+          <span class="badge b-tipo-venta">VENTA</span>
+        </div>
+        <div class="detail-hero-meta">
+          <span>📍 Av. Colón 2340 3°A · Güemes</span>
+          <span>🗓 Creada 5 jun 2026</span>
+          <span>💰 $128.000</span>
+        </div>
+      </div>
+      <div class="detail-hero-actions">
+        <button class="btn btn-secondary">+ Evento</button>
+        <button class="btn btn-primary">Cambiar estado</button>
+      </div>
+    </div>
+
+    <!-- Stepper de estado -->
+    <div class="card" style="padding:20px 24px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted);margin-bottom:14px">Progreso de la operación</div>
+      <div class="estado-stepper">
+        <div class="step">
+          <div class="step-dot done">✓</div>
+          <div class="step-label done">Abierta</div>
+        </div>
+        <div class="step-connector done"></div>
+        <div class="step">
+          <div class="step-dot active">●</div>
+          <div class="step-label active">Publicada</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-dot">3</div>
+          <div class="step-label">Reservada</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-dot">4</div>
+          <div class="step-label">Negociación</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-dot">5</div>
+          <div class="step-label">Cerrada</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datos de la operación -->
+    <div class="card ficha-card" style="margin-bottom:14px">
+      <div class="ficha-grid">
+        <div class="ficha-item">
+          <div class="ficha-label">Monto</div>
+          <div class="ficha-val big">$128.000</div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Tipo</div>
+          <div class="ficha-val">Venta</div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Estado</div>
+          <div class="ficha-val"><span class="badge b-op-publicada">PUBLICADA</span></div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Fecha creación</div>
+          <div class="ficha-val">5 jun 2026</div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Próx. seguimiento</div>
+          <div class="ficha-val">21 jun 2026</div>
+        </div>
+        <div class="ficha-item">
+          <div class="ficha-label">Fecha cierre</div>
+          <div class="ficha-val" style="color:var(--color-text-muted)">Sin fecha</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--color-border);font-size:13px;color:var(--color-text-muted)">
+        Depto luminoso 3 amb en Güemes. Cliente con intención firme de venta. Precio a negociar si hay oferta rápida.
+      </div>
+    </div>
+
+    <!-- Propiedad vinculada -->
+    <div class="detail-section-title">Propiedad vinculada</div>
+    <div class="lead-chip" style="margin-bottom:14px">
+      <span style="font-size:22px">🏢</span>
+      <div>
+        <div class="lead-chip-name">Av. Colón 2340 · Piso 3°A</div>
+        <div class="lead-chip-meta">Güemes · 3 amb · 82 m² · $128.000</div>
+      </div>
+      <span class="badge b-pr-disponible" style="margin-left:8px">DISPONIBLE</span>
+      <span class="lead-chip-link" onclick="go('prop-detalle',null)">Ver propiedad →</span>
+    </div>
+
+    <!-- Lead -->
+    <div class="detail-section-title">Lead</div>
+    <div class="lead-chip" style="margin-bottom:14px">
+      <div class="lead-chip-av">RS</div>
+      <div>
+        <div class="lead-chip-name">Rodrigo Sosa</div>
+        <div class="lead-chip-meta">📞 +54 9 223 4xx-xxxx · Playa Grande</div>
+      </div>
+      <span class="badge b-caliente" style="margin-left:8px">CALIENTE</span>
+      <span class="lead-chip-link" onclick="go('lead',null)">Ver lead →</span>
+    </div>
+
+    <!-- Timeline de eventos -->
+    <div class="detail-section-title">Historial de eventos</div>
+    <div class="card" style="padding:20px 24px;margin-bottom:28px">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-line-wrap"><div class="tl-dot c"></div><div class="tl-connector"></div></div>
+          <div class="tl-body">
+            <div class="tl-header">
+              <span class="tl-tipo">📞 Llamado</span>
+              <span class="badge b-op-publicada" style="font-size:9px">PUBLICADA</span>
+              <span class="tl-fecha">hoy, 10:30</span>
+            </div>
+            <div class="tl-nota">Rodrigo confirmó interés en continuar con la venta. Pide que coordinemos una visita para compradores esta semana.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-line-wrap"><div class="tl-dot t"></div><div class="tl-connector"></div></div>
+          <div class="tl-body">
+            <div class="tl-header">
+              <span class="tl-tipo">🏠 Visita de compradores</span>
+              <span class="tl-fecha">15 jun, 11:00</span>
+            </div>
+            <div class="tl-nota">Dos compradores potenciales visitaron el depto. Interés moderado. Uno preguntó por el precio de las expensas y si la cochera está incluida.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-line-wrap"><div class="tl-dot"></div><div class="tl-connector"></div></div>
+          <div class="tl-body">
+            <div class="tl-header">
+              <span class="tl-tipo">📸 Fotos cargadas</span>
+              <span class="tl-fecha">5 jun, 09:15</span>
+            </div>
+            <div class="tl-nota">Se subieron 5 fotos del depto. Fachada, living, cocina, baño y dormitorio principal.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-line-wrap"><div class="tl-dot g"></div></div>
+          <div class="tl-body">
+            <div class="tl-header">
+              <span class="tl-tipo">✅ Operación creada</span>
+              <span class="tl-fecha">5 jun, 08:50</span>
+            </div>
+            <div class="tl-nota">Operación de venta iniciada para el lead Rodrigo Sosa.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="danger-zone">
+      <button class="btn btn-ghost-danger">Cancelar operación</button>
+    </div>
+  </div>
+
+  <!-- ==================== FORM: NUEVA INTERACCIÓN ==================== -->
+  <div class="screen form-screen" id="screen-form-interaccion">
+    <button class="back-link" onclick="go('lead',null)">← Volver al lead</button>
+    <div class="card form-card">
+      <div class="form-title">Nueva interacción</div>
+      <div class="form-subtitle">Rodrigo Sosa · Registrá la conversación y programá el próximo contacto.</div>
+
+      <div class="field">
+        <label>Tipo de interacción <span class="req">*</span></label>
+        <select>
+          <option value="" disabled selected>Seleccioná una opción…</option>
+          <option value="LLAMADA">📞 Llamada</option>
+          <option value="WHATSAPP">💬 WhatsApp</option>
+          <option value="VISITA">🏠 Visita</option>
+          <option value="EMAIL">✉️ Email</option>
+          <option value="REUNION">🤝 Reunión</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Detalle de lo conversado <span class="req">*</span></label>
+        <textarea placeholder="¿Qué pasó en esta interacción? ¿Cuál fue el resultado? ¿Hubo acuerdos?"></textarea>
+        <div class="field-hint">Mínimo 10 caracteres. Más detalle = mejor seguimiento futuro.</div>
+      </div>
+
+      <div class="form-section-title">Próximo seguimiento</div>
+
+      <div class="date-shortcuts">
+        <button class="ds-btn">Mañana</button>
+        <button class="ds-btn">En 3 días</button>
+        <button class="ds-btn">1 semana</button>
+        <button class="ds-btn">2 semanas</button>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Fecha y hora</label>
+        <input type="datetime-local">
+        <div class="field-hint">Opcional. Si lo definís, aparecerá en tu gestión del día.</div>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn btn-secondary" onclick="go('lead',null)">Cancelar</button>
+        <button class="btn btn-primary">Guardar interacción</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== FORM: NUEVO LEAD ==================== -->
+  <div class="screen form-screen" id="screen-form-lead">
+    <button class="back-link" onclick="go('leads',null)">← Volver a leads</button>
+    <div class="card form-card">
+      <div class="form-title">Nuevo prospecto</div>
+      <div class="form-subtitle">Definí los datos básicos del contacto en el sistema.</div>
+
+      <div class="form-section-title">Datos personales</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Nombre <span class="req">*</span></label>
+          <input type="text" placeholder="Ej: Mateo">
+        </div>
+        <div class="field">
+          <label>Apellido <span class="req">*</span></label>
+          <input type="text" placeholder="Ej: Rodríguez">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Teléfono / WhatsApp <span class="req">*</span></label>
+          <input type="text" placeholder="223 xxx xxxx">
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" placeholder="nombre@ejemplo.com">
+        </div>
+      </div>
+
+      <div class="form-section-title">Clasificación</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Estado inicial <span class="req">*</span></label>
+          <select>
+            <option value="FRIO">Frío — sin contacto previo</option>
+            <option value="TIBIO">Tibio — ya mostró interés</option>
+            <option value="CALIENTE">Caliente — urgencia de compra</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Origen del lead <span class="req">*</span></label>
+          <select>
+            <option value="MANUAL">Carga manual</option>
+            <option value="REFERIDO">Referido</option>
+            <option value="WHATSAPP">WhatsApp</option>
+            <option value="FORMULARIO_WEB">Formulario web</option>
+            <option value="META_ADS">Meta Ads</option>
+            <option value="INSTAGRAM">Instagram</option>
+            <option value="FACEBOOK">Facebook</option>
+            <option value="ZONAPROP">ZonaProp</option>
+            <option value="MERCADOLIBRE">MercadoLibre</option>
+            <option value="OTRO">Otro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title">Contexto (opcional)</div>
+      <div class="field">
+        <label>Primer seguimiento</label>
+        <input type="datetime-local">
+        <div class="field-hint">Programá el primer contacto para que aparezca en tu gestión del día.</div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>¿Qué sabés del lead?</label>
+        <textarea placeholder="Ej: Vino referido por Juan. Busca depto de 2 ambientes en zona céntrica, presupuesto USD 80k." style="min-height:80px"></textarea>
+        <div class="field-hint">Aparecerá en el detalle del lead para orientar el seguimiento.</div>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn btn-secondary" onclick="go('leads',null)">Cancelar</button>
+        <button class="btn btn-primary">Crear y continuar →</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== FORM: NUEVA OPERACIÓN ==================== -->
+  <div class="screen form-screen" id="screen-form-operacion">
+    <button class="back-link" onclick="go('lead',null)">← Volver al lead</button>
+    <div class="card form-card">
+      <div class="form-title">Nueva operación</div>
+      <div class="form-subtitle">Rodrigo Sosa · Creá una operación de venta, compra o alquiler.</div>
+
+      <div class="form-section-title">Datos generales</div>
+      <div class="field">
+        <label>Título <span class="req">*</span></label>
+        <input type="text" placeholder="Ej: Venta depto Colón 1300">
+      </div>
+
+      <div class="field">
+        <label>Tipo de operación <span class="req">*</span></label>
+        <div class="tipo-toggle">
+          <div class="tt-btn active" onclick="selectTipo(this,'venta-block')">VENTA</div>
+          <div class="tt-btn" onclick="selectTipo(this,'compra-block')">COMPRA</div>
+          <div class="tt-btn" onclick="selectTipo(this,null)">ALQUILER</div>
+        </div>
+      </div>
+
+      <!-- Bloque VENTA -->
+      <div id="venta-block">
+        <div class="field">
+          <label>Propiedad asociada <span class="req">*</span></label>
+          <select>
+            <option value="" disabled selected>Seleccioná una propiedad del lead</option>
+            <option>Av. Colón 2340 · Piso 3°A — Depto · $128.000</option>
+          </select>
+          <div class="field-hint">Solo propiedades cargadas para este lead. Si no hay, agregá una primero.</div>
+        </div>
+      </div>
+
+      <!-- Bloque COMPRA (oculto por default) -->
+      <div id="compra-block" style="display:none">
+        <div class="busqueda-block">
+          <div style="font-size:12px;font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px">Parámetros de búsqueda</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Tipo de vivienda <span class="req">*</span></label>
+              <select><option value="" disabled selected>Seleccioná</option><option>Casa</option><option>Depto</option><option>PH</option><option>Dúplex</option><option>Terreno</option><option>Oficina</option></select>
+            </div>
+            <div class="field">
+              <label>Zona <span class="req">*</span></label>
+              <input type="text" placeholder="Ej: Playa Grande">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Precio mín. (USD)</label>
+              <input type="number" placeholder="0">
+            </div>
+            <div class="field">
+              <label>Precio máx. (USD)</label>
+              <input type="number" placeholder="200.000">
+            </div>
+          </div>
+          <div class="field-row" style="margin-bottom:0">
+            <div class="field" style="margin-bottom:0">
+              <label>Ambientes</label>
+              <input type="number" placeholder="2">
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>m² totales</label>
+              <input type="number" placeholder="60">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section-title">Detalles</div>
+      <div class="field" style="margin-bottom:0">
+        <label>Descripción</label>
+        <textarea placeholder="Detalles adicionales sobre la operación…" style="min-height:80px"></textarea>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn btn-secondary" onclick="go('lead',null)">Cancelar</button>
+        <button class="btn btn-primary">Crear operación</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== FORM: NUEVA PROPIEDAD ==================== -->
+  <div class="screen form-screen" id="screen-form-propiedad">
+    <button class="back-link" onclick="go('lead',null)">← Volver al lead</button>
+    <div class="card form-card">
+      <div class="form-title">Agregar propiedad</div>
+      <div class="form-subtitle">Rodrigo Sosa · Registrá una propiedad asociada a este lead.</div>
+
+      <div class="form-section-title">Ubicación y precio</div>
+      <div class="field">
+        <label>Dirección <span class="req">*</span></label>
+        <input type="text" placeholder="Ej: Av. Colón 1234">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Zona</label>
+          <input type="text" placeholder="Ej: Playa Grande">
+        </div>
+        <div class="field">
+          <label>Precio (USD)</label>
+          <input type="number" placeholder="128000">
+        </div>
+      </div>
+
+      <div class="form-section-title">Características</div>
+      <div class="field-row-3">
+        <div class="field">
+          <label>Tipo de vivienda</label>
+          <select>
+            <option value="" disabled selected>Tipo</option>
+            <option>Casa</option><option>Depto</option><option>PH</option>
+            <option>Dúplex</option><option>Terreno</option>
+            <option>Oficina</option><option>Local</option><option>Galpón</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Ambientes</label>
+          <input type="number" placeholder="3">
+        </div>
+        <div class="field">
+          <label>m² totales</label>
+          <input type="number" placeholder="82">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>m² cubiertos</label>
+          <input type="number" placeholder="72">
+        </div>
+        <div class="field">
+          <label>Antigüedad (años)</label>
+          <input type="number" placeholder="12">
+        </div>
+      </div>
+
+      <div class="form-section-title">Fotos</div>
+      <div class="upload-zone">
+        <div class="uz-icon"><i data-lucide="image-plus"></i></div>
+        <div class="uz-title">Arrastrá las fotos acá</div>
+        <div class="uz-sub">o <span>buscá en tu dispositivo</span> · JPG, PNG, HEIC · máx. 10 MB por foto</div>
+      </div>
+      <!-- Preview de fotos cargadas (estado simulado) -->
+      <div class="foto-preview-grid">
+        <div class="foto-thumb ft-portada">
+          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300&q=60" alt="">
+          <button class="ft-remove">✕</button>
+        </div>
+        <div class="foto-thumb">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&q=60" alt="">
+          <button class="ft-remove">✕</button>
+        </div>
+        <div class="foto-thumb">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&q=60" alt="">
+          <button class="ft-remove">✕</button>
+        </div>
+        <div class="foto-thumb" style="background:var(--color-bg);border:2px dashed var(--color-border);display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:22px;cursor:pointer;">+</div>
+      </div>
+      <div class="foto-hint">La primera foto es la portada. Podés reordenarlas arrastrando.</div>
+
+      <div class="form-section-title">Notas</div>
+      <div class="field" style="margin-bottom:0">
+        <label>Observaciones</label>
+        <textarea placeholder="Pileta, cochera, parrilla, estado del inmueble, expensas…" style="min-height:80px"></textarea>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn btn-secondary" onclick="go('lead',null)">Cancelar</button>
+        <button class="btn btn-primary">Guardar propiedad</button>
+      </div>
+    </div>
+  </div>
+
+<nav class="bottom-nav">
+  <button class="bn-item active" data-screen="home"      onclick="go('home',null)"><span class="bn-ico"><i data-lucide="home"></i></span>Inicio</button>
+  <button class="bn-item"        data-screen="gestion"   onclick="go('gestion',null)"><span class="bn-ico"><i data-lucide="clipboard-check"></i></span>Gestión</button>
+  <button class="bn-item"        data-screen="pipeline"  onclick="go('pipeline',null)"><span class="bn-ico"><i data-lucide="kanban"></i></span>Pipeline</button>
+  <button class="bn-item"        data-screen="leads"     onclick="go('leads',null)"><span class="bn-ico"><i data-lucide="users"></i></span>Leads</button>
+  <button class="bn-item"        data-screen="dashboard" onclick="go('dashboard',null)"><span class="bn-ico"><i data-lucide="bar-chart-2"></i></span>Stats</button>
+</nav>
+
+<script>
+  function go(name, btn) {
+    // Pantallas
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const t = document.getElementById('screen-' + name);
+    if (t) t.classList.add('active');
+
+    // Sidebar nav
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (btn) {
+      btn.classList.add('active');
+    } else {
+      document.querySelectorAll('.nav-item').forEach(n => {
+        const oc = n.getAttribute('onclick') || '';
+        if (oc.includes("'" + name + "'")) n.classList.add('active');
+      });
+    }
+
+    // Bottom nav
+    document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
+    const bn = document.querySelector('.bn-item[data-screen="' + name + '"]');
+    if (bn) bn.classList.add('active');
+
+    closeSidebar();
+    window.scrollTo(0, 0);
+  }
+
+  function tab(name, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    const t = document.getElementById('tab-' + name);
+    if (t) t.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  function openSidebar() {
+    document.querySelector('.sidebar').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    document.querySelector('.sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Auto-asigna data-label a cada td según los th de su tabla
+  document.querySelectorAll('table.leads-table').forEach(table => {
+    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+    table.querySelectorAll('tbody tr').forEach(row => {
+      Array.from(row.querySelectorAll('td')).forEach((td, i) => {
+        if (headers[i]) td.setAttribute('data-label', headers[i]);
+      });
+    });
+  });
+
+  // Leads: los botones ya tienen onclick inline — no pisar.
+  // Operaciones: cablear "Ver" al detalle de operación
+  document.querySelectorAll('#screen-operaciones .tbl-btn').forEach(btn => {
+    btn.onclick = () => go('op-detalle', null);
+  });
+  // Propiedades ya tiene go('prop-detalle') hardcodeado — bien así.
+
+  // Kanban: "Ver →" abre detalle de operación
+  document.querySelectorAll('.kc-link').forEach(link => {
+    link.addEventListener('click', e => { e.preventDefault(); go('op-detalle', null); });
+  });
+
+  // Toggle tipo operación (VENTA / COMPRA / ALQUILER)
+  function selectTipo(btn, showBlock) {
+    document.querySelectorAll('.tt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['venta-block','compra-block'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    if (showBlock) {
+      const el = document.getElementById(showBlock);
+      if (el) el.style.display = 'block';
+    }
+  }
+
+  // Renderizar todos los iconos Lucide
+  lucide.createIcons();
+</script>
+</body>
+</html>

@@ -1,133 +1,194 @@
-@if (propiedad()) {
-  <div class="contenedor-detalle">
+@if (propiedad(); as p) {
+  <div class="pd-contenedor">
 
-    <aside class="columna-info">
-      <div class="tarjeta-blanca">
-        <a [routerLink]="['/leads', propiedad()!.leadId]" class="btn-volver">
-          <span class="material-symbols-outlined">arrow_back</span>
-          Volver al lead
-        </a>
-      </div>
+    <!-- BREADCRUMB -->
+    <a routerLink="/propiedades" class="pd-back">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver a propiedades
+    </a>
 
-      <div class="tarjeta-blanca">
-        <div class="prop-header-page">
-          <span class="prop-tipo-grande">{{ propiedad()!.tipoVivienda }}</span>
-          <span class="badge-estado-prop" [ngClass]="propiedad()!.estado?.toLowerCase()">
-            {{ propiedad()!.estado }}
-          </span>
+    <!-- HERO HEADER -->
+    <div class="pd-hero">
+      <div class="pd-hero-left">
+        <div class="pd-hero-title">
+          <span class="pd-tipo-badge">{{ p.tipoVivienda }}</span>
+          {{ p.direccion }}
+          <span class="badge-estado-prop" [ngClass]="p.estado?.toLowerCase()">{{ p.estado }}</span>
         </div>
-        <h2 class="prop-direccion-grande">{{ propiedad()!.direccion }}</h2>
-        <p class="prop-zona">📍 {{ propiedad()!.zona }}</p>
-        <p class="dias-mercado-grande">📅 {{ propiedad()!.diasEnMercado }} días en mercado</p>
-        <button class="btn-editar-prop" type="button" (click)="abrirModalEdicion(modalEditar)">
-          <span class="material-symbols-outlined">edit</span> Editar propiedad
+        <div class="pd-hero-meta">
+          @if (p.zona) {
+            <span>
+              <span class="material-symbols-outlined">location_on</span>
+              {{ p.zona }}
+            </span>
+          }
+          @if (p.fechaPublicacion) {
+            <span>
+              <span class="material-symbols-outlined">calendar_today</span>
+              Publicada {{ p.fechaPublicacion | date: 'd MMM yyyy' }}
+            </span>
+          }
+          @if (p.diasEnMercado !== null && p.diasEnMercado !== undefined) {
+            <span class="pd-dias">{{ p.diasEnMercado }} días en mercado</span>
+          }
+        </div>
+      </div>
+      <div class="pd-hero-actions">
+        <button class="pd-btn-editar" type="button" (click)="abrirModalEdicion(modalEditar)">
+          <span class="material-symbols-outlined">edit</span>
+          Editar
         </button>
-      </div>
-
-      <div class="tarjeta-blanca">
-        <h3>Datos de la propiedad</h3>
-        <div class="prop-datos-grid">
-          <div class="dato-box"><span class="dato-label">Precio</span><strong>USD {{ propiedad()!.precio | number }}</strong></div>
-          <div class="dato-box"><span class="dato-label">Ambientes</span><strong>{{ propiedad()!.cantidadAmbientes }}</strong></div>
-          <div class="dato-box"><span class="dato-label">m² Totales</span><strong>{{ propiedad()!.metrosTotales }}</strong></div>
-          <div class="dato-box"><span class="dato-label">m² Cubiertos</span><strong>{{ propiedad()!.metrosCubiertos }}</strong></div>
-        </div>
-        @if (propiedad()!.observaciones) {
-          <p class="prop-obs">{{ propiedad()!.observaciones }}</p>
-        }
-      </div>
-
-      <div class="tarjeta-blanca">
-        <h3>Estado de la propiedad</h3>
-        <div class="estado-acciones">
+        <div class="pd-estado-group">
           <button class="btn-estado-prop disponible" (click)="cambiarEstado('DISPONIBLE')">Disponible</button>
           <button class="btn-estado-prop reservada" (click)="cambiarEstado('RESERVADA')">Reservada</button>
           <button class="btn-estado-prop vendida" (click)="cambiarEstado('VENDIDA')">Vendida</button>
         </div>
       </div>
+    </div>
 
-      @if (propiedad()!.estado === 'DISPONIBLE') {
-        <div class="tarjeta-blanca panel-compradores">
-          <button type="button" class="btn-matching" (click)="togglePanelCompradores()">
-            <span class="material-symbols-outlined">people</span>
-            {{ panelAbierto() ? 'Ocultar compradores' : 'Ver compradores potenciales' }}
-            <span class="material-symbols-outlined chevron">
-              {{ panelAbierto() ? 'expand_less' : 'expand_more' }}
-            </span>
-          </button>
+    <!-- FOTOS -->
+    <app-fotos-propiedad [propiedadId]="p.id"></app-fotos-propiedad>
 
-          @if (panelAbierto()) {
-            <div class="panel-resultados">
-              @if (cargandoMatch()) {
-                <p class="match-info">Buscando coincidencias...</p>
-              } @else if (errorMatch()) {
-                <p class="match-error">{{ errorMatch() }}</p>
-              } @else if (compradores().length === 0) {
-                <p class="match-info">No hay compradores que coincidan con esta propiedad por ahora.</p>
-              } @else {
-                @for (c of compradores(); track c.operacionId) {
-                  <div class="comprador-card" [class.comprador-ajeno]="!c.esMio">
-                    <div class="comprador-header">
-                      <span class="comprador-nombre">{{ c.nombreLead }} {{ c.apellidoLead }}</span>
-                      <span class="badge-estado-lead" [ngClass]="c.estadoLead.toLowerCase()">
-                        {{ c.estadoLead }}
-                      </span>
-                    </div>
+    <!-- FICHA TÉCNICA -->
+    <div class="pd-card pd-ficha">
+      <div class="pd-ficha-grid">
+        @if (p.precio) {
+          <div class="pd-ficha-item">
+            <span class="pd-label">Precio</span>
+            <strong class="pd-val pd-val-big">USD {{ p.precio | number }}</strong>
+          </div>
+        }
+        <div class="pd-ficha-item">
+          <span class="pd-label">Tipo</span>
+          <strong class="pd-val">{{ p.tipoVivienda }}</strong>
+        </div>
+        @if (p.cantidadAmbientes) {
+          <div class="pd-ficha-item">
+            <span class="pd-label">Ambientes</span>
+            <strong class="pd-val">{{ p.cantidadAmbientes }}</strong>
+          </div>
+        }
+        @if (p.metrosTotales) {
+          <div class="pd-ficha-item">
+            <span class="pd-label">Sup. total</span>
+            <strong class="pd-val">{{ p.metrosTotales }} m²</strong>
+          </div>
+        }
+        @if (p.metrosCubiertos) {
+          <div class="pd-ficha-item">
+            <span class="pd-label">Sup. cubierta</span>
+            <strong class="pd-val">{{ p.metrosCubiertos }} m²</strong>
+          </div>
+        }
+      </div>
+      @if (p.observaciones) {
+        <div class="pd-obs">
+          <span class="pd-label">Observaciones</span>
+          <p>{{ p.observaciones }}</p>
+        </div>
+      }
+    </div>
 
-                    <div class="comprador-busqueda-titulo">
-                      <span class="material-symbols-outlined">search</span>
-                      Busca {{ c.busquedaTipoVivienda }} en {{ c.busquedaZona }}
-                    </div>
+    <!-- LEAD PROPIETARIO -->
+    <div class="pd-section-title">Lead propietario</div>
+    @if (leadPropietario(); as lead) {
+      <div class="pd-card pd-lead-row">
+        <div class="pd-lead-av" [ngClass]="'av-' + (lead.estado?.toLowerCase() ?? 'inactivo')">
+          {{ iniciales(lead) }}
+        </div>
+        <div class="pd-lead-info">
+          <div class="pd-lead-name">{{ lead.nombre }} {{ lead.apellido }}</div>
+          <div class="pd-lead-meta">
+            @if (lead.telefono) { <span>📞 {{ lead.telefono }}</span> }
+            @if (lead.origen) { <span>{{ lead.origen }}</span> }
+          </div>
+        </div>
+        <span class="badge-estado" [ngClass]="lead.estado?.toLowerCase()">{{ lead.estado }}</span>
+        <a class="pd-lead-link" [routerLink]="['/leads', lead.id]">Ver lead →</a>
+      </div>
+    } @else if (p.leadId) {
+      <div class="pd-card">
+        <a class="pd-lead-link" [routerLink]="['/leads', p.leadId]">Ver lead →</a>
+      </div>
+    } @else {
+      <div class="pd-card pd-empty-card">
+        <p class="pd-empty">Sin lead propietario asociado.</p>
+      </div>
+    }
 
-                    <div class="comprador-chips">
-                      @if (c.busquedaPrecioMin && c.busquedaPrecioMax) {
-                        <span class="chip chip-precio">
-                          USD {{ c.busquedaPrecioMin | number:'1.0-0' }} – {{ c.busquedaPrecioMax | number:'1.0-0' }}
-                        </span>
-                      } @else if (c.busquedaPrecioMax) {
-                        <span class="chip chip-precio">hasta USD {{ c.busquedaPrecioMax | number:'1.0-0' }}</span>
-                      } @else if (c.busquedaPrecioMin) {
-                        <span class="chip chip-precio">desde USD {{ c.busquedaPrecioMin | number:'1.0-0' }}</span>
-                      }
-                      @if (c.busquedaAmbientes) {
-                        <span class="chip">{{ c.busquedaAmbientes }}+ amb.</span>
-                      }
-                      @if (c.busquedaMetros) {
-                        <span class="chip">{{ c.busquedaMetros }}+ m²</span>
-                      }
-                    </div>
+    <!-- OPERACIONES VINCULADAS -->
+    <div class="pd-section-title">Operaciones vinculadas</div>
+    @if (operacionesVinculadas().length === 0) {
+      <div class="pd-card pd-empty-card">
+        <p class="pd-empty">Sin operaciones vinculadas.</p>
+      </div>
+    } @else {
+      <div class="pd-lista">
+        @for (op of operacionesVinculadas(); track op.id) {
+          <div class="pd-card pd-op-card">
+            <div class="pd-op-badges">
+              <span class="badge-tipo-operacion" [ngClass]="op.tipoOperacion.toLowerCase()">{{ op.tipoOperacion }}</span>
+              <span class="badge-estado-operacion" [ngClass]="op.estadoOperacion.toLowerCase()">{{ op.estadoOperacion.replace('_', ' ') }}</span>
+            </div>
+            <p class="pd-op-titulo">{{ op.titulo }}</p>
+            <span class="pd-op-fecha">{{ op.fechaCreacion | date: "d 'de' MMMM, HH:mm" }}</span>
+          </div>
+        }
+      </div>
+    }
 
-                    @if (!c.esMio) {
-                      <div class="comprador-footer-ajeno">
-                        <span class="material-symbols-outlined">person</span>
-                        Lead de <strong>{{ c.nombreAgente }} {{ c.apellidoAgente }}</strong> — coordiná con él
-                      </div>
-                    } @else {
-                      <a class="link-ver-lead" [routerLink]="['/leads', c.leadId]">
-                        Ver lead →
-                      </a>
-                    }
-                  </div>
+    <!-- COMPRADORES POTENCIALES (solo si DISPONIBLE) -->
+    @if (p.estado === 'DISPONIBLE') {
+      <div class="pd-section-title">
+        Compradores potenciales
+        @if (compradores().length > 0) {
+          <span class="pd-badge-count">{{ compradores().length }}</span>
+        }
+      </div>
+      @if (cargandoMatch()) {
+        <p class="pd-empty" style="padding: 12px 0">Buscando coincidencias...</p>
+      } @else if (errorMatch()) {
+        <p class="match-error">{{ errorMatch() }}</p>
+      } @else if (compradores().length === 0) {
+        <div class="pd-card pd-empty-card">
+          <p class="pd-empty">No hay compradores que coincidan con esta propiedad por ahora.</p>
+        </div>
+      } @else {
+        <div class="pd-lista">
+          @for (c of compradores(); track c.operacionId) {
+            <div class="comprador-card" [class.comprador-ajeno]="!c.esMio">
+              <div class="comprador-header">
+                <span class="comprador-nombre">{{ c.nombreLead }} {{ c.apellidoLead }}</span>
+                <span class="badge-estado-lead" [ngClass]="c.estadoLead.toLowerCase()">{{ c.estadoLead }}</span>
+              </div>
+              <div class="comprador-busqueda-titulo">
+                <span class="material-symbols-outlined">search</span>
+                Busca {{ c.busquedaTipoVivienda }} en {{ c.busquedaZona }}
+              </div>
+              <div class="comprador-chips">
+                @if (c.busquedaPrecioMin && c.busquedaPrecioMax) {
+                  <span class="chip chip-precio">USD {{ c.busquedaPrecioMin | number:'1.0-0' }} – {{ c.busquedaPrecioMax | number:'1.0-0' }}</span>
+                } @else if (c.busquedaPrecioMax) {
+                  <span class="chip chip-precio">hasta USD {{ c.busquedaPrecioMax | number:'1.0-0' }}</span>
+                } @else if (c.busquedaPrecioMin) {
+                  <span class="chip chip-precio">desde USD {{ c.busquedaPrecioMin | number:'1.0-0' }}</span>
                 }
+                @if (c.busquedaAmbientes) { <span class="chip">{{ c.busquedaAmbientes }}+ amb.</span> }
+                @if (c.busquedaMetros) { <span class="chip">{{ c.busquedaMetros }}+ m²</span> }
+              </div>
+              @if (!c.esMio) {
+                <div class="comprador-footer-ajeno">
+                  <span class="material-symbols-outlined">person</span>
+                  Lead de <strong>{{ c.nombreAgente }} {{ c.apellidoAgente }}</strong> — coordiná con él
+                </div>
+              } @else {
+                <a class="link-ver-lead" [routerLink]="['/leads', c.leadId]">Ver lead →</a>
               }
             </div>
           }
         </div>
       }
-    </aside>
-
-    <main class="columna-historial">
-      <app-fotos-propiedad [propiedadId]="propiedad()!.id"></app-fotos-propiedad>
-
-      <div class="tarjeta-blanca">
-        <div class="header-historial">
-          <h2>Actividad de la propiedad</h2>
-        </div>
-        <p class="sin-datos">
-          Las visitas y consultas se registran desde la operación de venta asociada.
-        </p>
-      </div>
-    </main>
+    }
 
   </div>
 } @else {

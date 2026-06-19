@@ -6,6 +6,9 @@ import { PropiedadService } from '../../core/services/propiedad-service';
 import { Propiedad } from '../../core/models/propiedad';
 import { FotosPropiedadComponent } from '../../components/fotos-propiedad/fotos-propiedad';
 import { MatchingService, CompradorPotencial } from '../../core/services/matching-service';
+import { OperacionService, Operacion } from '../../core/services/operacion-service';
+import { LeadService } from '../../core/services/lead-service';
+import { Lead } from '../../core/models/lead';
 
 @Component({
   selector: 'app-propiedad-detalle',
@@ -18,8 +21,12 @@ export class PropiedadDetalle implements OnInit {
   private route = inject(ActivatedRoute);
   private propiedadService = inject(PropiedadService);
   private matchingService = inject(MatchingService);
+  private operacionService = inject(OperacionService);
+  private leadService = inject(LeadService);
 
   propiedad = signal<Propiedad | null>(null);
+  operacionesVinculadas = signal<Operacion[]>([]);
+  leadPropietario = signal<Lead | null>(null);
 
   // Edición
   edicion: Partial<Propiedad> = {};
@@ -45,28 +52,36 @@ export class PropiedadDetalle implements OnInit {
 
   ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
-
-    if (!idParam) {
-      return;
-    }
-
+    if (!idParam) return;
     const id = Number(idParam);
-
-    if (!id || Number.isNaN(id)) {
-      return;
-    }
+    if (!id || Number.isNaN(id)) return;
 
     this.propiedadService.obtenerPorId(id).subscribe({
-      next: (p) => this.propiedad.set(p)
+      next: (p) => {
+        this.propiedad.set(p);
+
+        this.operacionService.obtenerOperacionesDePropiedad(p.id).subscribe({
+          next: (ops) => this.operacionesVinculadas.set(ops),
+          error: () => {}
+        });
+
+        if (p.leadId) {
+          this.leadService.getLeadById(p.leadId).subscribe({
+            next: (lead) => this.leadPropietario.set(lead),
+            error: () => {}
+          });
+        }
+
+        if (p.estado === 'DISPONIBLE') {
+          this.togglePanelCompradores();
+        }
+      }
     });
   }
 
   cambiarEstado(estado: string) {
     const propiedadActual = this.propiedad();
-
-    if (!propiedadActual) {
-      return;
-    }
+    if (!propiedadActual) return;
 
     this.propiedadService.actualizarEstado(propiedadActual.id, estado).subscribe({
       next: () => {
@@ -95,7 +110,6 @@ export class PropiedadDetalle implements OnInit {
 
   togglePanelCompradores() {
     if (this.panelAbierto()) {
-      // Al cerrar, limpiamos los resultados para no mostrar datos viejos al re-abrir.
       this.panelAbierto.set(false);
       this.compradores.set([]);
       this.errorMatch.set('');
@@ -144,5 +158,10 @@ export class PropiedadDetalle implements OnInit {
         this.guardandoEdicion.set(false);
       },
     });
+  }
+
+  iniciales(lead: Lead | null): string {
+    if (!lead) return '?';
+    return `${lead.nombre?.charAt(0) ?? ''}${lead.apellido?.charAt(0) ?? ''}`.toUpperCase();
   }
 }
