@@ -72,7 +72,7 @@
 /* RELLENO */
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #14b8a6, #10b981);
+  background: linear-gradient(90deg, var(--color-frio), var(--color-tibio), var(--color-caliente));
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -133,9 +133,9 @@
   color: #94a3b8;
 }
 
-.resumen-card.calientes    .resumen-numero { color: #e11d48; }
-.resumen-card.nuevos       .resumen-numero { color: #0d9488; }
-.resumen-card.seguimientos .resumen-numero { color: #7c3aed; }
+.resumen-card.calientes    .resumen-numero { color: var(--color-caliente); }
+.resumen-card.nuevos       .resumen-numero { color: var(--color-text-muted); }
+.resumen-card.seguimientos .resumen-numero { color: var(--color-tibio); }
 
 @media (max-width: 480px) {
   .resumen-cards { gap: 8px; }
