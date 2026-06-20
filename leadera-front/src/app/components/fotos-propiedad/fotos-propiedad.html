@@ -10,9 +10,12 @@
 
     @if (fotos().length > 0) {
       <div class="fotos-grid">
-        @for (foto of fotos(); track foto.id; let i = $index) {
+        @for (foto of (fotos().length > 5 ? fotos().slice(0, 5) : fotos()); track foto.id; let i = $index) {
           <div class="foto-card" (click)="abrirLightbox(i)" role="button" tabindex="0">
             <img [src]="foto.url" alt="Foto propiedad" loading="lazy" />
+            @if ($index === 4 && fotos().length > 5) {
+              <div class="foto-mas-overlay">+{{ fotos().length - 5 }} fotos</div>
+            }
             @if (!readonly) {
               <button
                 type="button"
