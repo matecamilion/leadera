@@ -1,146 +1,221 @@
-@if (operacion()) {
-  <div class="contenedor-operacion">
-    <div class="header-operacion">
-      <div>
-        <button class="btn-volver" [routerLink]="['/leads', leadId]">
-          <span class="material-symbols-outlined">arrow_back</span>
-          Volver al lead
-        </button>
+@if (operacion(); as op) {
+  <div class="do-contenedor">
 
-        <h1>{{ operacion()!.titulo }}</h1>
+    <!-- BREADCRUMB -->
+    <a routerLink="/operaciones" class="do-back">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver a operaciones
+    </a>
 
-        <div class="badges">
-          <span class="badge-tipo" [ngClass]="operacion()!.tipoOperacion.toLowerCase()">
-            {{ operacion()!.tipoOperacion }}
-          </span>
-
-          <span class="badge-estado" [ngClass]="operacion()!.estadoOperacion.toLowerCase()">
-            {{ operacion()!.estadoOperacion.replace('_', ' ') }}
-          </span>
+    <!-- HERO HEADER -->
+    <div class="do-hero">
+      <div class="do-hero-left">
+        <h1 class="do-titulo">{{ op.titulo }}</h1>
+        <div class="do-badges">
+          <span class="badge-tipo-operacion" [ngClass]="op.tipoOperacion.toLowerCase()">{{ op.tipoOperacion }}</span>
+          <span class="badge-estado-operacion" [ngClass]="op.estadoOperacion.toLowerCase()">{{ op.estadoOperacion.replace('_', ' ') }}</span>
         </div>
+        <div class="do-meta">
+          @if (op.tipoOperacion === 'VENTA' && op.propiedad) {
+            <span>
+              <span class="material-symbols-outlined">home</span>
+              {{ op.propiedad.direccion }}@if (op.propiedad.zona) { · {{ op.propiedad.zona }}}
+            </span>
+          }
+          @if (op.tipoOperacion === 'COMPRA' && op.busqueda) {
+            <span>
+              <span class="material-symbols-outlined">search</span>
+              {{ op.busqueda.tipoVivienda }} en {{ op.busqueda.zona }}
+            </span>
+          }
+          <span>
+            <span class="material-symbols-outlined">calendar_today</span>
+            {{ op.fechaCreacion | date: 'd MMM yyyy' }}
+          </span>
+          @if (op.montoOperacion != null) {
+            <span class="do-meta-monto">USD {{ op.montoOperacion | number }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="do-hero-actions">
+        <button class="do-btn-evento" type="button" (click)="toggleFormEvento()">
+          <span class="material-symbols-outlined">add</span>
+          Evento
+        </button>
+        <div class="do-estado-group">
+          @for (estado of estadosOperacion; track estado) {
+            <button
+              class="do-btn-estado"
+              [ngClass]="[estado.toLowerCase(), op.estadoOperacion === estado ? 'activo' : '']"
+              [disabled]="guardandoEstado() || op.estadoOperacion === estado"
+              (click)="cambiarEstadoOperacion(estado)"
+            >{{ formatearEstado(estado) }}</button>
+          }
+        </div>
+        @if (guardandoEstado()) {
+          <span class="do-guardando">Guardando...</span>
+        }
+        @if (errorEstado()) {
+          <p class="do-error">{{ errorEstado() }}</p>
+        }
       </div>
     </div>
 
-    <section class="card precio-card">
-      <label class="precio-label">Precio</label>
-      <strong class="precio-valor">
-        @if (operacion()!.montoOperacion != null) {
-          USD {{ operacion()!.montoOperacion | number }}
-          <span class="precio-tag">(acordado)</span>
-        } @else if (operacion()!.tipoOperacion === 'VENTA' && operacion()!.propiedad?.precio) {
-          USD {{ operacion()!.propiedad!.precio | number }}
-        } @else if (operacion()!.tipoOperacion === 'COMPRA' && operacion()!.busqueda) {
-          @if (operacion()!.busqueda!.precioMin && operacion()!.busqueda!.precioMax) {
-            USD {{ operacion()!.busqueda!.precioMin | number }} -
-            {{ operacion()!.busqueda!.precioMax | number }}
-          } @else if (operacion()!.busqueda!.precioMin) {
-            Desde USD {{ operacion()!.busqueda!.precioMin | number }}
-          } @else if (operacion()!.busqueda!.precioMax) {
-            Hasta USD {{ operacion()!.busqueda!.precioMax | number }}
-          } @else {
-            Sin presupuesto registrado
-          }
-        } @else {
-          Sin precio registrado
-        }
-      </strong>
-    </section>
-
-    <section class="card">
-      <div class="header-cambio-estado">
-        <div>
-          <h2>Estado de la operación</h2>
-          <p>Cambiá el avance comercial de esta operación.</p>
-        </div>
-
-        @if (guardandoEstado()) {
-          <span class="guardando">Guardando...</span>
-        }
+    <!-- STEPPER o BANNER CANCELADA -->
+    @if (op.estadoOperacion === 'CANCELADA') {
+      <div class="do-cancelada-banner">
+        <span class="material-symbols-outlined">cancel</span>
+        Operación cancelada
       </div>
+    } @else {
+      <div class="do-card do-stepper-card">
+        <div class="do-stepper-title">Progreso de la operación</div>
+        <div class="do-stepper">
 
-      <div class="estado-acciones">
-        @for (estado of estadosOperacion; track estado) {
-          <button
-            class="btn-estado-operacion"
-            [ngClass]="[
-              estado.toLowerCase(),
-              operacion()!.estadoOperacion === estado ? 'activo' : '',
-            ]"
-            [disabled]="guardandoEstado() || operacion()!.estadoOperacion === estado"
-            (click)="cambiarEstadoOperacion(estado)"
-          >
-            {{ formatearEstado(estado) }}
-          </button>
-        }
+          <div class="do-step">
+            <div class="do-step-dot" [ngClass]="stepClass('PUBLICADA', op.estadoOperacion)">
+              @if (isPastStep('PUBLICADA', op.estadoOperacion)) { ✓ }
+              @else if (op.estadoOperacion === 'PUBLICADA') { ● }
+              @else { 1 }
+            </div>
+            <div class="do-step-label" [ngClass]="stepClass('PUBLICADA', op.estadoOperacion)">Publicada</div>
+          </div>
+
+          <div class="do-step-connector" [ngClass]="{ done: isPastStep('RESERVADA', op.estadoOperacion) || op.estadoOperacion === 'RESERVADA' }"></div>
+
+          <div class="do-step">
+            <div class="do-step-dot" [ngClass]="stepClass('RESERVADA', op.estadoOperacion)">
+              @if (isPastStep('RESERVADA', op.estadoOperacion)) { ✓ }
+              @else if (op.estadoOperacion === 'RESERVADA') { ● }
+              @else { 2 }
+            </div>
+            <div class="do-step-label" [ngClass]="stepClass('RESERVADA', op.estadoOperacion)">Reservada</div>
+          </div>
+
+          <div class="do-step-connector" [ngClass]="{ done: isPastStep('EN_NEGOCIACION', op.estadoOperacion) || op.estadoOperacion === 'EN_NEGOCIACION' }"></div>
+
+          <div class="do-step">
+            <div class="do-step-dot" [ngClass]="stepClass('EN_NEGOCIACION', op.estadoOperacion)">
+              @if (isPastStep('EN_NEGOCIACION', op.estadoOperacion)) { ✓ }
+              @else if (op.estadoOperacion === 'EN_NEGOCIACION') { ● }
+              @else { 3 }
+            </div>
+            <div class="do-step-label" [ngClass]="stepClass('EN_NEGOCIACION', op.estadoOperacion)">Negociación</div>
+          </div>
+
+          <div class="do-step-connector" [ngClass]="{ done: op.estadoOperacion === 'CERRADA_GANADA' }"></div>
+
+          <div class="do-step">
+            <div class="do-step-dot" [ngClass]="stepClass('CERRADA_GANADA', op.estadoOperacion)">
+              @if (op.estadoOperacion === 'CERRADA_GANADA') { ✓ }
+              @else { 4 }
+            </div>
+            <div class="do-step-label" [ngClass]="stepClass('CERRADA_GANADA', op.estadoOperacion)">Cerrada</div>
+          </div>
+
+        </div>
       </div>
-
-      @if (errorEstado()) {
-        <p class="error-estado">{{ errorEstado() }}</p>
-      }
-    </section>
-
-    @if (operacion()!.tipoOperacion === 'VENTA' && operacion()!.propiedad) {
-      <section class="card">
-        <h2>Propiedad asociada</h2>
-
-        <div class="detalle-principal">
-          <h3>{{ operacion()!.propiedad!.direccion }}</h3>
-          <span>{{ operacion()!.propiedad!.tipoVivienda }}</span>
-        </div>
-
-        <div class="grid-info">
-          <div>
-            <label>Precio</label>
-            <strong>USD {{ operacion()!.propiedad!.precio | number }}</strong>
-          </div>
-
-          <div>
-            <label>Ambientes</label>
-            <strong>{{ operacion()!.propiedad!.cantidadAmbientes }}</strong>
-          </div>
-
-          <div>
-            <label>Zona</label>
-            <strong>{{ operacion()!.propiedad!.zona || 'Sin zona' }}</strong>
-          </div>
-
-          <div>
-            <label>Estado</label>
-            <strong>{{ operacion()!.propiedad!.estado }}</strong>
-          </div>
-        </div>
-
-        <app-fotos-propiedad
-          [propiedadId]="operacion()!.propiedad!.id"
-          [readonly]="true">
-        </app-fotos-propiedad>
-      </section>
     }
 
-    <section class="card seccion-eventos">
-      <div class="header-eventos">
-        <div>
-          <h2>Actividad</h2>
-          <p class="subtitulo-eventos">Visitas y consultas registradas para esta operación.</p>
+    <!-- FICHA DE DATOS -->
+    <div class="do-card">
+      <div class="do-ficha-grid">
+        <div class="do-ficha-item">
+          <span class="do-label">Monto</span>
+          @if (op.montoOperacion != null) {
+            <strong class="do-val do-val-big">USD {{ op.montoOperacion | number }}</strong>
+          } @else {
+            <strong class="do-val do-val-muted">—</strong>
+          }
         </div>
-        <button
-          type="button"
-          class="btn-nuevo-evento"
-          (click)="toggleFormEvento()"
-        >
-          {{ mostrarFormEvento() ? 'Cancelar' : '+ Registrar evento' }}
-        </button>
+        <div class="do-ficha-item">
+          <span class="do-label">Tipo</span>
+          <strong class="do-val">{{ op.tipoOperacion }}</strong>
+        </div>
+        <div class="do-ficha-item">
+          <span class="do-label">Estado</span>
+          <span class="badge-estado-operacion" [ngClass]="op.estadoOperacion.toLowerCase()">{{ op.estadoOperacion.replace('_', ' ') }}</span>
+        </div>
+        <div class="do-ficha-item">
+          <span class="do-label">Fecha creación</span>
+          <strong class="do-val">{{ op.fechaCreacion | date: 'd MMM yyyy' }}</strong>
+        </div>
+        <div class="do-ficha-item">
+          <span class="do-label">Próx. seguimiento</span>
+          @if (op.fechaProximoSeguimiento) {
+            <strong class="do-val">{{ op.fechaProximoSeguimiento | date: 'd MMM yyyy' }}</strong>
+          } @else {
+            <strong class="do-val do-val-muted">Sin fecha</strong>
+          }
+        </div>
+        <div class="do-ficha-item">
+          <span class="do-label">Fecha cierre</span>
+          @if (op.fechaCierre) {
+            <strong class="do-val">{{ op.fechaCierre | date: 'd MMM yyyy' }}</strong>
+          } @else {
+            <strong class="do-val do-val-muted">Sin fecha</strong>
+          }
+        </div>
       </div>
+      @if (op.descripcion) {
+        <div class="do-descripcion">{{ op.descripcion }}</div>
+      }
+    </div>
 
+    <!-- PROPIEDAD VINCULADA -->
+    @if (op.tipoOperacion === 'VENTA' && op.propiedad) {
+      <div class="do-section-title">Propiedad vinculada</div>
+      <div class="do-card do-chip-row">
+        <span class="do-chip-icon material-symbols-outlined">home</span>
+        <div class="do-chip-info">
+          <div class="do-chip-name">{{ op.propiedad.direccion }}</div>
+          <div class="do-chip-meta">
+            @if (op.propiedad.zona) { <span>{{ op.propiedad.zona }}</span> }
+            @if (op.propiedad.cantidadAmbientes) { <span>{{ op.propiedad.cantidadAmbientes }} amb.</span> }
+            @if (op.propiedad.metrosTotales) { <span>{{ op.propiedad.metrosTotales }} m²</span> }
+            @if (op.propiedad.precio) { <span>USD {{ op.propiedad.precio | number }}</span> }
+          </div>
+        </div>
+        <span class="badge-estado" [ngClass]="op.propiedad.estado?.toLowerCase()">{{ op.propiedad.estado }}</span>
+        <a class="do-chip-link" [routerLink]="['/propiedades', op.propiedad.id]">Ver propiedad →</a>
+      </div>
+    }
+
+    <!-- LEAD -->
+    <div class="do-section-title">Lead</div>
+    @if (leadAsociado(); as lead) {
+      <div class="do-card do-chip-row">
+        <div class="do-lead-av" [ngClass]="'av-' + (lead.estado?.toLowerCase() ?? 'inactivo')">
+          {{ iniciales(lead) }}
+        </div>
+        <div class="do-chip-info">
+          <div class="do-chip-name">{{ lead.nombre }} {{ lead.apellido }}</div>
+          <div class="do-chip-meta">
+            @if (lead.telefono) { <span>📞 {{ lead.telefono }}</span> }
+          </div>
+        </div>
+        <span class="badge-estado" [ngClass]="lead.estado?.toLowerCase()">{{ lead.estado }}</span>
+        <a class="do-chip-link" [routerLink]="['/leads', lead.id]">Ver lead →</a>
+      </div>
+    } @else {
+      <div class="do-card">
+        <a class="do-chip-link" [routerLink]="['/leads', leadId]">Ver lead →</a>
+      </div>
+    }
+
+    <!-- HISTORIAL DE EVENTOS -->
+    <div class="do-section-title">
+      Historial de eventos
+    </div>
+    <div class="do-card do-eventos-card">
       @if (mostrarFormEvento()) {
         <div class="form-evento">
-          <div class="form-evento-fila">
-            <select [(ngModel)]="nuevoEvento.tipo">
-              <option [ngValue]="undefined">Tipo…</option>
-              <option value="VISITA">Visita</option>
-              <option value="CONSULTA">Consulta</option>
-            </select>
-          </div>
+          <select [(ngModel)]="nuevoEvento.tipo">
+            <option [ngValue]="undefined">Tipo…</option>
+            <option value="VISITA">Visita</option>
+            <option value="CONSULTA">Consulta</option>
+          </select>
           <textarea
             [(ngModel)]="nuevoEvento.detalle"
             rows="3"
@@ -166,12 +241,8 @@
             <div class="evento-punto"></div>
             <div class="evento-card">
               <div class="evento-header">
-                <span class="badge-evento" [ngClass]="evento.tipo?.toLowerCase()">
-                  {{ evento.tipo }}
-                </span>
-                <span class="evento-fecha">
-                  {{ evento.fecha | date: "d 'de' MMMM, HH:mm" }}
-                </span>
+                <span class="badge-evento" [ngClass]="evento.tipo?.toLowerCase()">{{ evento.tipo }}</span>
+                <span class="evento-fecha">{{ evento.fecha | date: "d 'de' MMMM, HH:mm" }}</span>
               </div>
               <p class="evento-detalle">{{ evento.detalle }}</p>
             </div>
@@ -180,45 +251,41 @@
           <p class="sin-eventos">Sin actividad registrada aún.</p>
         }
       </div>
-    </section>
+    </div>
 
-    @if (operacion()!.tipoOperacion === 'COMPRA' && operacion()!.busqueda) {
-      <section class="card">
-        <h2>Búsqueda asociada</h2>
-
+    <!-- BÚSQUEDA ASOCIADA (COMPRA) — sin reestructurar -->
+    @if (op.tipoOperacion === 'COMPRA' && op.busqueda) {
+      <div class="do-section-title">Búsqueda asociada</div>
+      <div class="do-card">
         <div class="detalle-principal">
-          <h3>{{ operacion()!.busqueda!.tipoVivienda }} en {{ operacion()!.busqueda!.zona }}</h3>
-          <span>{{ operacion()!.busqueda!.cantidadAmbientes }} ambientes</span>
+          <h3>{{ op.busqueda.tipoVivienda }} en {{ op.busqueda.zona }}</h3>
+          <span>{{ op.busqueda.cantidadAmbientes }} ambientes</span>
         </div>
-
         <div class="grid-info">
           <div>
             <label>Presupuesto mínimo</label>
-            <strong>USD {{ operacion()!.busqueda!.precioMin | number }}</strong>
+            <strong>USD {{ op.busqueda.precioMin | number }}</strong>
           </div>
-
           <div>
             <label>Presupuesto máximo</label>
-            <strong>USD {{ operacion()!.busqueda!.precioMax | number }}</strong>
+            <strong>USD {{ op.busqueda.precioMax | number }}</strong>
           </div>
-
           <div>
             <label>Metros totales</label>
-            <strong>{{ operacion()!.busqueda!.metrosTotales || 0 }} m²</strong>
+            <strong>{{ op.busqueda.metrosTotales || 0 }} m²</strong>
           </div>
-
           <div>
             <label>Metros cubiertos</label>
-            <strong>{{ operacion()!.busqueda!.metrosCubiertos || 0 }} m²</strong>
+            <strong>{{ op.busqueda.metrosCubiertos || 0 }} m²</strong>
           </div>
         </div>
-
         <div class="observaciones">
           <label>Observaciones</label>
-          <p>{{ operacion()!.busqueda!.observaciones || 'Sin observaciones cargadas.' }}</p>
+          <p>{{ op.busqueda.observaciones || 'Sin observaciones cargadas.' }}</p>
         </div>
-      </section>
+      </div>
     }
+
   </div>
 } @else {
   <div class="loading">Cargando operación...</div>
