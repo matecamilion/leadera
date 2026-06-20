@@ -102,6 +102,18 @@
 .badge-estado-prop.reservada  { background: #fef3c7; color: #d97706; }
 .badge-estado-prop.vendida    { background: #f3f4f6; color: #4b5563; }
 
+/* Pill base — se aplican localmente porque styles.css solo define los colores */
+.badge-estado,
+.badge-tipo-operacion,
+.badge-estado-operacion {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
 .btn-estado-prop { padding: 8px 12px; border-radius: 8px; border: none; font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: opacity 0.15s; }
 .btn-estado-prop:hover { opacity: 0.8; }
 .btn-estado-prop.disponible { background: #dcfce7; color: #16a34a; }
