@@ -15,7 +15,7 @@ export class OperacionesPorEstado {
   private route = inject(ActivatedRoute);
   private operacionService = inject(OperacionService);
 
-  estado = signal<EstadoOperacion>('ABIERTA');
+  estado = signal<EstadoOperacion>('PUBLICADA');
   operaciones = signal<OperacionPipeline[]>([]);
   cargando = signal<boolean>(true);
   error = signal<string>('');
@@ -24,7 +24,7 @@ export class OperacionesPorEstado {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      const raw = (params.get('estado') || 'ABIERTA').toUpperCase() as EstadoOperacion;
+      const raw = (params.get('estado') || 'PUBLICADA').toUpperCase() as EstadoOperacion;
       this.estado.set(raw);
       this.cargar();
     });

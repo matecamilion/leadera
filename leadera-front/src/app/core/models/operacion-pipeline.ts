@@ -15,7 +15,6 @@ export interface OperacionPipeline {
 }
 
 export const ESTADOS_PIPELINE: EstadoOperacion[] = [
-  'ABIERTA',
   'PUBLICADA',
   'RESERVADA',
   'EN_NEGOCIACION',
@@ -24,8 +23,7 @@ export const ESTADOS_PIPELINE: EstadoOperacion[] = [
 ];
 
 export const TRANSICIONES_PERMITIDAS: Record<EstadoOperacion, EstadoOperacion[]> = {
-  ABIERTA: ['PUBLICADA', 'CANCELADA'],
-  PUBLICADA: ['ABIERTA', 'RESERVADA', 'CANCELADA'],
+  PUBLICADA: ['RESERVADA', 'CANCELADA'],
   RESERVADA: ['PUBLICADA', 'EN_NEGOCIACION', 'CANCELADA'],
   EN_NEGOCIACION: ['RESERVADA', 'CERRADA_GANADA', 'CANCELADA'],
   CERRADA_GANADA: [],

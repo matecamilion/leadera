@@ -8,7 +8,7 @@ import { EventoOperacion } from '../models/evento-operacion';
 import { environment } from '../../../environments/environment';
 
 export type TipoOperacion = 'VENTA' | 'COMPRA' | 'ALQUILER';
-export type EstadoOperacion = 'ABIERTA' | 'PUBLICADA' | 'RESERVADA' | 'EN_NEGOCIACION' | 'CERRADA_GANADA' | 'CANCELADA';
+export type EstadoOperacion = 'PUBLICADA' | 'RESERVADA' | 'EN_NEGOCIACION' | 'CERRADA_GANADA' | 'CANCELADA';
 
 export interface Operacion {
   id: number;

@@ -31,7 +31,6 @@ export class OperacionesLead implements OnInit {
   filtroTipo = signal<string>('');
 
   readonly estados: EstadoOperacion[] = [
-    'ABIERTA',
     'PUBLICADA',
     'RESERVADA',
     'EN_NEGOCIACION',

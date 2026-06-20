@@ -3,41 +3,44 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { OperacionService, Operacion } from '../../core/services/operacion-service';
+import { LeadService } from '../../core/services/lead-service';
+import { Lead } from '../../core/models/lead';
 import { EventoOperacion } from '../../core/models/evento-operacion';
-import { FotosPropiedadComponent } from '../../components/fotos-propiedad/fotos-propiedad';
-
 
 @Component({
   selector: 'app-detalle-operacion',
-  imports: [CommonModule, RouterModule, FormsModule, FotosPropiedadComponent],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './detalle-operacion.html',
   styleUrl: './detalle-operacion.css',
 })
 export class DetalleOperacion implements OnInit {
-   private route = inject(ActivatedRoute);
+  private route = inject(ActivatedRoute);
   private operacionService = inject(OperacionService);
+  private leadService = inject(LeadService);
 
   operacion = signal<Operacion | null>(null);
+  leadAsociado = signal<Lead | null>(null);
 
   leadId!: number;
   operacionId!: number;
   guardandoEstado = signal<boolean>(false);
-errorEstado = signal<string>('');
+  errorEstado = signal<string>('');
 
-eventos = signal<EventoOperacion[]>([]);
-nuevoEvento: Partial<EventoOperacion> = {};
-mostrarFormEvento = signal<boolean>(false);
-guardandoEvento = signal<boolean>(false);
-errorEvento = signal<string>('');
+  eventos = signal<EventoOperacion[]>([]);
+  nuevoEvento: Partial<EventoOperacion> = {};
+  mostrarFormEvento = signal<boolean>(false);
+  guardandoEvento = signal<boolean>(false);
+  errorEvento = signal<string>('');
 
-estadosOperacion = [
-  'ABIERTA',
-  'PUBLICADA',
-  'RESERVADA',
-  'EN_NEGOCIACION',
-  'CERRADA_GANADA',
-  'CANCELADA'
-];
+  estadosOperacion = [
+    'PUBLICADA',
+    'RESERVADA',
+    'EN_NEGOCIACION',
+    'CERRADA_GANADA',
+    'CANCELADA'
+  ];
+
+  readonly STEP_ORDER = ['PUBLICADA', 'RESERVADA', 'EN_NEGOCIACION', 'CERRADA_GANADA'];
 
   ngOnInit(): void {
     const leadIdParam = this.route.snapshot.paramMap.get('leadId');
@@ -46,14 +49,19 @@ estadosOperacion = [
     if (leadIdParam && operacionIdParam) {
       this.leadId = Number(leadIdParam);
       this.operacionId = Number(operacionIdParam);
-
       this.cargarOperacion();
     }
   }
 
   cargarOperacion() {
     this.operacionService.obtenerOperacionPorId(this.leadId, this.operacionId).subscribe({
-      next: (data) => this.operacion.set(data),
+      next: (data) => {
+        this.operacion.set(data);
+        this.leadService.getLeadById(this.leadId).subscribe({
+          next: (lead) => this.leadAsociado.set(lead),
+          error: () => {}
+        });
+      },
       error: (err) => console.error('Error al cargar operación', err)
     });
     this.cargarEventos();
@@ -98,33 +106,48 @@ estadosOperacion = [
   }
 
   cambiarEstadoOperacion(nuevoEstado: string) {
-  const operacionActual = this.operacion();
+    const operacionActual = this.operacion();
+    if (!operacionActual) return;
+    if (operacionActual.estadoOperacion === nuevoEstado) return;
 
-  if (!operacionActual) return;
+    this.guardandoEstado.set(true);
+    this.errorEstado.set('');
 
-  if (operacionActual.estadoOperacion === nuevoEstado) return;
+    this.operacionService.cambiarEstadoOperacion(
+      this.leadId,
+      this.operacionId,
+      nuevoEstado
+    ).subscribe({
+      next: (operacionActualizada) => {
+        this.operacion.set(operacionActualizada);
+        this.guardandoEstado.set(false);
+      },
+      error: (err) => {
+        console.error('Error al cambiar estado de operación', err);
+        this.errorEstado.set('No se pudo cambiar el estado de la operación.');
+        this.guardandoEstado.set(false);
+      }
+    });
+  }
 
-  this.guardandoEstado.set(true);
-  this.errorEstado.set('');
+  formatearEstado(estado: string): string {
+    return estado.replace('_', ' ');
+  }
 
-  this.operacionService.cambiarEstadoOperacion(
-    this.leadId,
-    this.operacionId,
-    nuevoEstado
-  ).subscribe({
-    next: (operacionActualizada) => {
-      this.operacion.set(operacionActualizada);
-      this.guardandoEstado.set(false);
-    },
-    error: (err) => {
-      console.error('Error al cambiar estado de operación', err);
-      this.errorEstado.set('No se pudo cambiar el estado de la operación.');
-      this.guardandoEstado.set(false);
-    }
-  });
-}
+  isPastStep(paso: string, actual: string): boolean {
+    const iActual = this.STEP_ORDER.indexOf(actual);
+    const iPaso = this.STEP_ORDER.indexOf(paso);
+    return iPaso >= 0 && iActual > iPaso;
+  }
 
-formatearEstado(estado: string): string {
-  return estado.replace('_', ' ');
-}
+  stepClass(paso: string, actual: string): string {
+    if (actual === paso) return 'active';
+    if (this.isPastStep(paso, actual)) return 'done';
+    return '';
+  }
+
+  iniciales(lead: Lead | null): string {
+    if (!lead) return '?';
+    return `${lead.nombre?.charAt(0) ?? ''}${lead.apellido?.charAt(0) ?? ''}`.toUpperCase();
+  }
 }
