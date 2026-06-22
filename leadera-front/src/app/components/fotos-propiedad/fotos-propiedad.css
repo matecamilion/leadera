@@ -7,6 +7,14 @@
   font-family: 'Inter', sans-serif;
 }
 
+.fotos-block.sin-box {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  margin-bottom: 1.25rem;
+}
+
 .fotos-header {
   display: flex;
   justify-content: space-between;

@@ -1,6 +1,6 @@
 <!-- Si está en modo readonly y no hay fotos, no renderizamos nada (sin empty state). -->
 @if (!readonly || fotos().length > 0) {
-  <section class="fotos-block">
+  <section class="fotos-block" [class.sin-box]="embebido">
     <header class="fotos-header">
       <h3>Fotos de la propiedad</h3>
       @if (!readonly) {

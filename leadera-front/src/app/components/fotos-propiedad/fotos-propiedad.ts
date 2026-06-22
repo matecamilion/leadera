@@ -18,6 +18,7 @@ export class FotosPropiedadComponent implements OnInit {
 
   @Input({ required: true }) propiedadId!: number;
   @Input() readonly = false;
+  @Input() embebido = false;
 
   fotos = signal<FotoPropiedad[]>([]);
   subiendo = signal(false);

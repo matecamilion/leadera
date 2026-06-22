@@ -17,6 +17,7 @@ import { MiAsistente } from './pages/mi-asistente/mi-asistente';
 import { MiEquipoAgente } from './pages/mi-equipo-agente/mi-equipo-agente';
 import { MisTareas } from './pages/mis-tareas/mis-tareas';
 import { PropiedadDetalle } from './pages/propiedad-detalle/propiedad-detalle';
+import { PropiedadEditar } from './pages/propiedad-editar/propiedad-editar';
 import { DetalleOperacion } from './pages/detalle-operacion/detalle-operacion';
 import { PropiedadesLead } from './pages/propiedades-lead/propiedades-lead';
 import { KanbanBoardComponent } from './pages/kanban-board/kanban-board';
@@ -49,6 +50,7 @@ export const routes: Routes = [
   { path: 'perfil', component: Perfil, canActivate: [authGuard] },
   { path: 'mi-perfil', component: MiPerfil, canActivate: [authGuard], title: 'LeadEra - Mi Perfil' },
   { path: 'propiedades/:id', component: PropiedadDetalle, canActivate: [authGuard] },
+  { path: 'propiedades/:id/editar', component: PropiedadEditar, canActivate: [authGuard], title: 'LeadEra - Editar Propiedad' },
   { path: 'leads/:leadId/operaciones/:operacionId', component: DetalleOperacion, canActivate: [authGuard], title: 'LeadEra - Detalle Operación' },
   { path: 'leads/:id/propiedades', component: PropiedadesLead, canActivate: [authGuard], title: 'LeadEra - Propiedades del Lead' },
   { path: 'leads/:id/operaciones', component: OperacionesLead, canActivate: [authGuard], title: 'LeadEra - Operaciones del Lead' },

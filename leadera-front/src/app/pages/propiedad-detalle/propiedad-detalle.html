@@ -7,50 +7,56 @@
       Volver a propiedades
     </a>
 
-    <!-- HERO HEADER -->
-    <div class="pd-hero">
-      <div class="pd-hero-left">
-        <div class="pd-hero-title">
-          <span class="pd-tipo-badge">{{ p.tipoVivienda }}</span>
-          {{ p.direccion }}
-          <span class="badge-estado-prop" [ngClass]="p.estado?.toLowerCase()">{{ p.estado }}</span>
+    <!-- TARJETA UNIFICADA: header + fotos + ficha -->
+    <article class="prop-card-unificada">
+
+      <!-- a) HEADER -->
+      <div class="pcu-header">
+        <div class="pcu-header-left">
+          <div class="pcu-tipo-row">
+            <span class="pd-tipo-badge">{{ p.tipoVivienda }}</span>
+            <span class="badge-estado-prop" [ngClass]="p.estado?.toLowerCase()">{{ p.estado }}</span>
+          </div>
+          <h1 class="pcu-direccion">{{ p.direccion }}</h1>
+          <div class="pd-hero-meta">
+            @if (p.zona) {
+              <span>
+                <span class="material-symbols-outlined">location_on</span>
+                {{ p.zona }}
+              </span>
+            }
+            @if (p.fechaPublicacion) {
+              <span>
+                <span class="material-symbols-outlined">calendar_today</span>
+                Publicada {{ p.fechaPublicacion | date: 'd MMM yyyy' }}
+              </span>
+            }
+            @if (p.diasEnMercado !== null && p.diasEnMercado !== undefined) {
+              <span class="pd-dias">{{ p.diasEnMercado }} días en mercado</span>
+            }
+          </div>
         </div>
-        <div class="pd-hero-meta">
-          @if (p.zona) {
-            <span>
-              <span class="material-symbols-outlined">location_on</span>
-              {{ p.zona }}
-            </span>
-          }
-          @if (p.fechaPublicacion) {
-            <span>
-              <span class="material-symbols-outlined">calendar_today</span>
-              Publicada {{ p.fechaPublicacion | date: 'd MMM yyyy' }}
-            </span>
-          }
-          @if (p.diasEnMercado !== null && p.diasEnMercado !== undefined) {
-            <span class="pd-dias">{{ p.diasEnMercado }} días en mercado</span>
-          }
+        <div class="pcu-header-right">
+          <a class="pd-btn-editar" [routerLink]="['/propiedades', p.id, 'editar']">
+            <span class="material-symbols-outlined">edit</span>
+            Editar
+          </a>
+          <div class="pd-estado-group">
+            <button class="btn-estado-prop disponible" (click)="cambiarEstado('DISPONIBLE')">Disponible</button>
+            <button class="btn-estado-prop reservada" (click)="cambiarEstado('RESERVADA')">Reservada</button>
+            <button class="btn-estado-prop vendida" (click)="cambiarEstado('VENDIDA')">Vendida</button>
+          </div>
         </div>
       </div>
-      <div class="pd-hero-actions">
-        <button class="pd-btn-editar" type="button" (click)="abrirModalEdicion(modalEditar)">
-          <span class="material-symbols-outlined">edit</span>
-          Editar
-        </button>
-        <div class="pd-estado-group">
-          <button class="btn-estado-prop disponible" (click)="cambiarEstado('DISPONIBLE')">Disponible</button>
-          <button class="btn-estado-prop reservada" (click)="cambiarEstado('RESERVADA')">Reservada</button>
-          <button class="btn-estado-prop vendida" (click)="cambiarEstado('VENDIDA')">Vendida</button>
-        </div>
-      </div>
-    </div>
 
-    <!-- FOTOS -->
-    <app-fotos-propiedad [propiedadId]="p.id"></app-fotos-propiedad>
+      <!-- b) FOTOS (sin recuadro propio) -->
+      <app-fotos-propiedad
+        [propiedadId]="p.id"
+        [readonly]="true"
+        [embebido]="true">
+      </app-fotos-propiedad>
 
-    <!-- FICHA TÉCNICA -->
-    <div class="pd-card pd-ficha">
+      <!-- c) FICHA DE DATOS -->
       <div class="pd-ficha-grid">
         @if (p.precio) {
           <div class="pd-ficha-item">
@@ -87,7 +93,8 @@
           <p>{{ p.observaciones }}</p>
         </div>
       }
-    </div>
+
+    </article>
 
     <!-- LEAD PROPIETARIO -->
     <div class="pd-section-title">Lead propietario</div>
@@ -194,66 +201,3 @@
 } @else {
   <div class="loading">Cargando propiedad...</div>
 }
-
-<dialog #modalEditar class="modal-edit-prop">
-  <div class="modal-content-edit">
-    <h3>Editar propiedad</h3>
-
-    <div class="campo">
-      <label>Dirección</label>
-      <input type="text" [(ngModel)]="edicion.direccion" />
-    </div>
-
-    <div class="campo-grid">
-      <div class="campo">
-        <label>Precio (USD)</label>
-        <input type="number" [(ngModel)]="edicion.precio" />
-      </div>
-      <div class="campo">
-        <label>Ambientes</label>
-        <input type="number" [(ngModel)]="edicion.cantidadAmbientes" />
-      </div>
-      <div class="campo">
-        <label>m² Totales</label>
-        <input type="number" [(ngModel)]="edicion.metrosTotales" />
-      </div>
-      <div class="campo">
-        <label>m² Cubiertos</label>
-        <input type="number" [(ngModel)]="edicion.metrosCubiertos" />
-      </div>
-    </div>
-
-    <div class="campo-grid">
-      <div class="campo">
-        <label>Tipo</label>
-        <select [(ngModel)]="edicion.tipoVivienda">
-          @for (t of tiposVivienda; track t) {
-            <option [value]="t">{{ t }}</option>
-          }
-        </select>
-      </div>
-      <div class="campo">
-        <label>Zona</label>
-        <input type="text" [(ngModel)]="edicion.zona" />
-      </div>
-    </div>
-
-    <div class="campo">
-      <label>Observaciones</label>
-      <textarea [(ngModel)]="edicion.observaciones" rows="3"></textarea>
-    </div>
-
-    @if (errorEdicion()) {
-      <p class="error-edit">{{ errorEdicion() }}</p>
-    }
-
-    <div class="acciones-edit">
-      <button type="button" class="btn-cancelar-edit" (click)="modalEditar.close()" [disabled]="guardandoEdicion()">
-        Cancelar
-      </button>
-      <button type="button" class="btn-guardar-edit" (click)="guardarEdicion(modalEditar)" [disabled]="guardandoEdicion()">
-        {{ guardandoEdicion() ? 'Guardando…' : 'Guardar cambios' }}
-      </button>
-    </div>
-  </div>
-</dialog>

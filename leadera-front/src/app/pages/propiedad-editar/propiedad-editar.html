@@ -1,0 +1,85 @@
+@if (propiedad(); as p) {
+  <div class="pe-contenedor">
+
+    <a [routerLink]="['/propiedades', p.id]" class="pe-back">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver al detalle
+    </a>
+
+    <h1 class="pe-titulo">Editar propiedad</h1>
+    <p class="pe-subtitulo">{{ p.direccion }}</p>
+
+    <div class="pe-card">
+      <h2 class="pe-section">Datos generales</h2>
+
+      <div class="pe-campo">
+        <label>Dirección</label>
+        <input type="text" [(ngModel)]="edicion.direccion" />
+      </div>
+
+      <div class="pe-grid-2">
+        <div class="pe-campo">
+          <label>Tipo de vivienda</label>
+          <select [(ngModel)]="edicion.tipoVivienda">
+            @for (t of tiposVivienda; track t) {
+              <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+        <div class="pe-campo">
+          <label>Zona</label>
+          <input type="text" [(ngModel)]="edicion.zona" />
+        </div>
+      </div>
+
+      <div class="pe-grid-2">
+        <div class="pe-campo">
+          <label>Precio (USD)</label>
+          <input type="number" [(ngModel)]="edicion.precio" />
+        </div>
+        <div class="pe-campo">
+          <label>Ambientes</label>
+          <input type="number" [(ngModel)]="edicion.cantidadAmbientes" />
+        </div>
+        <div class="pe-campo">
+          <label>Sup. total (m²)</label>
+          <input type="number" [(ngModel)]="edicion.metrosTotales" />
+        </div>
+        <div class="pe-campo">
+          <label>Sup. cubierta (m²)</label>
+          <input type="number" [(ngModel)]="edicion.metrosCubiertos" />
+        </div>
+      </div>
+
+      <div class="pe-campo">
+        <label>Observaciones</label>
+        <textarea [(ngModel)]="edicion.observaciones" rows="4"></textarea>
+      </div>
+
+      @if (error()) {
+        <p class="pe-error">{{ error() }}</p>
+      }
+
+      <div class="pe-acciones">
+        <button type="button" class="pe-btn-cancelar" (click)="cancelar()" [disabled]="guardando()">
+          Cancelar
+        </button>
+        <button type="button" class="pe-btn-guardar" (click)="guardar()" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando…' : 'Guardar cambios' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="pe-card">
+      <h2 class="pe-section">Fotos</h2>
+      <app-fotos-propiedad [propiedadId]="p.id" [readonly]="false"></app-fotos-propiedad>
+    </div>
+
+  </div>
+} @else if (error()) {
+  <div class="pe-contenedor">
+    <p class="pe-error">{{ error() }}</p>
+  </div>
+} @else {
+  <div class="loading">Cargando...</div>
+}

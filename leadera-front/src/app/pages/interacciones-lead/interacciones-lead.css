@@ -175,6 +175,8 @@
   color: #475569;
   font-size: 0.95rem;
   line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 @media (max-width: 600px) {
