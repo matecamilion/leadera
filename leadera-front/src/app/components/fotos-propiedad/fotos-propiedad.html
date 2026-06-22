@@ -1,12 +1,11 @@
 <!-- Si está en modo readonly y no hay fotos, no renderizamos nada (sin empty state). -->
 @if (!readonly || fotos().length > 0) {
   <section class="fotos-block" [class.sin-box]="embebido">
-    <header class="fotos-header">
-      <h3>Fotos de la propiedad</h3>
-      @if (!readonly) {
+    @if (!embebido && !readonly) {
+      <header class="fotos-header">
         <span class="fotos-contador">{{ fotos().length }} / 10</span>
-      }
-    </header>
+      </header>
+    }
 
     @if (fotos().length > 0) {
       <div class="fotos-grid">

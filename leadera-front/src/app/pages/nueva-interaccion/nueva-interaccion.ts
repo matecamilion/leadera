@@ -1,7 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Agregalo para pipes/directivas
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InteraccionService, CrearInteraccionRequest } from '../../core/services/interaccion-service';
+import { LeadService } from '../../core/services/lead-service';
+import { Lead } from '../../core/models/lead';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -16,8 +18,10 @@ export class NuevaInteraccion implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private interaccionService = inject(InteraccionService);
+  private leadService = inject(LeadService);
 
   private leadId!: number;
+  lead = signal<Lead | null>(null);
 
   public miFormulario: FormGroup = this.fb.group({
     tipo: ['', [Validators.required]],
@@ -41,10 +45,13 @@ export class NuevaInteraccion implements OnInit {
 }
 
   ngOnInit(): void {
-    // 1. Obtenemos el ID del lead desde la URL (ej: /leads/5/nueva-interaccion)
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.leadId = Number(id);
+      this.leadService.getLeadById(this.leadId).subscribe({
+        next: (l) => this.lead.set(l),
+        error: () => {}
+      });
     }
   }
 

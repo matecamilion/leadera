@@ -1,11 +1,9 @@
-/* Heredamos la tipografía Inter y la base del listado */
-
 .contenedor-interaccion {
   font-family: 'Inter', sans-serif;
-  background-color: #f8fafc; /* Gris azulado muy suave */
+  background-color: var(--color-bg);
   min-height: 100vh;
   padding: 3rem 2rem;
-  max-width: 600px; /* Centramos el formulario */
+  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -18,7 +16,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
   font-weight: 500;
   text-decoration: none;
@@ -28,33 +26,33 @@
 }
 
 .btn-volver:hover {
-  color: #1e293b;
+  color: var(--color-text);
 }
 
 .titulo-contexto h1 {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
   margin: 0;
 }
 
 .nombre-contexto {
   font-size: 1rem;
-  color: #64748b;
+  color: var(--color-text-muted);
   margin: 4px 0 0 0;
 }
 
 .destacado {
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-text);
 }
 
 /* Tarjeta y Formulario */
 .tarjeta-formulario {
-  background: white;
+  background: var(--color-card);
   padding: 2rem;
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
 }
 
@@ -66,7 +64,7 @@ label {
   display: block;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-text);
   margin-bottom: 8px;
 }
 
@@ -75,23 +73,23 @@ input, select, textarea {
   width: 100%;
   padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  background-color: white;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-card);
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
-  color: #1e293b;
+  color: var(--color-text);
   transition: all 0.2s;
-  box-sizing: border-box; /* Crucial para que el padding no rompa el ancho */
+  box-sizing: border-box;
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: #34d399; /* Verde más suave para el foco */
-  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(15, 110, 92, 0.1);
 }
 
 input::placeholder, textarea::placeholder {
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 /* Select con flecha custom */
@@ -100,9 +98,9 @@ input::placeholder, textarea::placeholder {
 }
 
 select {
-  appearance: none; /* Quitamos la flecha nativa */
+  appearance: none;
   -webkit-appearance: none;
-  padding-right: 40px; /* Espacio para la flecha */
+  padding-right: 40px;
 }
 
 .icono-select {
@@ -110,13 +108,13 @@ select {
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
-  pointer-events: none; /* Para que el click pase al select */
+  color: var(--color-text-muted);
+  pointer-events: none;
 }
 
 /* Textarea */
 textarea {
-  resize: vertical; /* Solo permitimos redimensionar hacia abajo */
+  resize: vertical;
   min-height: 120px;
   line-height: 1.5;
 }
@@ -128,7 +126,7 @@ textarea {
   justify-content: center;
   gap: 8px;
   width: 100%;
-  background-color: #10b981; /* Tu Verde LeadEra */
+  background-color: var(--color-primary);
   color: white;
   border: none;
   padding: 14px;
@@ -142,7 +140,7 @@ textarea {
 }
 
 .btn-guardar:hover {
-  background-color: #059669; /* Verde más oscuro al hover */
+  background-color: var(--color-primary-dark);
 }
 
 .btn-guardar .material-symbols-outlined {
@@ -152,14 +150,14 @@ textarea {
 .seccion-agenda {
   margin-top: 24px;
   padding: 20px;
-  background: #f8fafc; /* Un gris muy suave para diferenciarlo */
+  background: var(--color-bg);
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
 }
 
 .instruccion-agenda {
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--color-text-muted);
   margin-bottom: 12px;
 }
 
@@ -171,21 +169,21 @@ textarea {
 
 .btn-atajo {
   flex: 1;
-  background: white;
-  border: 1px solid #cbd5e1;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
   padding: 8px;
   border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .btn-atajo:hover {
-  background: #0f172a;
+  background: var(--color-primary);
   color: white;
-  border-color: #0f172a;
+  border-color: var(--color-primary);
 }
 
 .input-fecha-wrapper {
@@ -198,16 +196,28 @@ textarea {
   width: 100%;
   padding: 12px;
   border-radius: 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--color-border);
   font-family: inherit;
-  color: #1e293b;
-  background: white;
+  color: var(--color-text);
+  background: var(--color-card);
 }
 
 .icono-fecha {
   position: absolute;
   right: 12px;
-  color: #64748b;
+  color: var(--color-text-muted);
   pointer-events: none;
   font-size: 20px;
+}
+
+/* Validación */
+.input-error {
+  border-color: var(--color-caliente) !important;
+}
+
+.msj-error {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-caliente);
+  margin-top: 4px;
 }

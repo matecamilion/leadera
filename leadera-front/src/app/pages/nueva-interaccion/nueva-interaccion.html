@@ -2,7 +2,11 @@
   <header class="header-interaccion">
     <div class="titulo-contexto">
       <h1>Nueva interacción</h1>
-      <p class="nombre-contexto">Registrá la conversación y programá el próximo contacto.</p>
+      @if (lead(); as l) {
+        <p class="nombre-contexto">Registrá una interacción para <span class="destacado">{{ l.nombre }} {{ l.apellido }}</span></p>
+      } @else {
+        <p class="nombre-contexto">Registrá la conversación y programá el próximo contacto.</p>
+      }
     </div>
   </header>
 
