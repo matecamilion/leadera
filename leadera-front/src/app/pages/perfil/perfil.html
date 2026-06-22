@@ -121,6 +121,33 @@
         </svg>
       </div>
 
+      <!-- Cartera activa -->
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Cartera activa</span>
+        </div>
+        <div class="kpi-value">{{ carteraValorFormateado() }}</div>
+        <div class="kpi-context">{{ carteraActiva()?.propiedadesDisponibles ?? 0 }} propiedades disponibles</div>
+      </div>
+
+      <!-- Vencidos hoy -->
+      <div class="kpi-card" [class.kpi-card--alert]="vencidosHoy() > 0">
+        <div class="kpi-head">
+          <span class="kpi-label">Vencidos hoy</span>
+        </div>
+        <div class="kpi-value">{{ vencidosHoy() }}</div>
+        <div class="kpi-context">Seguimientos sin realizar</div>
+      </div>
+
+      <!-- Tiempo prom. cierre -->
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Tiempo prom. cierre</span>
+        </div>
+        <div class="kpi-value">{{ tiempoPromedioCierreFormateado() }}</div>
+        <div class="kpi-context">días desde primer contacto</div>
+      </div>
+
       @if (cumplimiento() && cumplimiento()!.total > 0) {
         <div class="kpi-card tareas-kpi">
           <div class="kpi-head">
@@ -321,6 +348,32 @@
                 <div class="origen-bar">
                   <span class="origen-fill" [style.width.%]="o.porcentaje" [style.background]="o.color"></span>
                 </div>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+      <!-- Pipeline por estado -->
+      <div class="card pipeline-card">
+        <header class="card-head">
+          <div>
+            <h2 class="card-title">Pipeline</h2>
+            <p class="card-sub">Operaciones por estado</p>
+          </div>
+        </header>
+        @if (pipelineOrdenado().length === 0) {
+          <p class="empty">Sin operaciones registradas.</p>
+        } @else {
+          <ul class="funnel">
+            @for (item of pipelineOrdenado(); track item.estado) {
+              <li class="funnel-row pipe-row">
+                <span class="funnel-name">{{ estadoPipelineLabel(item.estado) }}</span>
+                <div class="funnel-bar">
+                  <span class="funnel-fill" [style.width.%]="(item.cantidad / pipelineMax()) * 100"></span>
+                </div>
+                <span class="funnel-val">{{ item.cantidad }}</span>
+                <span class="funnel-porc pipe-monto">{{ formatMonto(item.montoTotal) }}</span>
               </li>
             }
           </ul>

@@ -1,5 +1,8 @@
 package com.leadera.leadera.dto;
 
+import com.leadera.leadera.enums.EstadoOperacion;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public record DashboardDTO(
@@ -18,8 +21,16 @@ public record DashboardDTO(
             long ganadosMes,
             int metaMensual,
             int diasRestantesMes,
-            FunnelDTO funnel
+            FunnelDTO funnel,
+            CarteraActivaDTO carteraActiva,
+            long vencidosHoy,
+            Double tiempoPromedioCierreDias,
+            List<PipelineEstadoDTO> pipeline
     ) {}
+
+    public record CarteraActivaDTO(long propiedadesDisponibles, BigDecimal valorTotal) {}
+
+    public record PipelineEstadoDTO(EstadoOperacion estado, long cantidad, BigDecimal montoTotal) {}
 
     public record FunnelDTO(
             long contactados,

@@ -53,7 +53,8 @@
       "Bash(./mvnw test *)",
       "Bash(mvn clean *)",
       "Bash(mvn test *)",
-      "Bash(mvn compile *)"
+      "Bash(mvn compile *)",
+      "Bash(./mvnw compile *)"
     ]
   }
 }

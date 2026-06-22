@@ -1,11 +1,13 @@
 package com.leadera.leadera.service;
 
 import com.leadera.leadera.dto.DashboardDTO;
+import com.leadera.leadera.dto.DashboardDTO.CarteraActivaDTO;
 import com.leadera.leadera.dto.DashboardDTO.EvolucionDTO;
 import com.leadera.leadera.dto.DashboardDTO.FunnelDTO;
 import com.leadera.leadera.dto.DashboardDTO.KpiDTO;
 import com.leadera.leadera.dto.DashboardDTO.KpisDTO;
 import com.leadera.leadera.dto.DashboardDTO.OrigenDTO;
+import com.leadera.leadera.dto.DashboardDTO.PipelineEstadoDTO;
 import com.leadera.leadera.dto.DashboardDTO.SnapshotDTO;
 import com.leadera.leadera.entity.Agente;
 import com.leadera.leadera.entity.Lead;
@@ -16,8 +18,10 @@ import com.leadera.leadera.repository.AgenteRepository;
 import com.leadera.leadera.repository.InteraccionRepository;
 import com.leadera.leadera.repository.LeadRepository;
 import com.leadera.leadera.repository.OperacionRepository;
+import com.leadera.leadera.repository.PropiedadRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,15 +40,18 @@ public class DashboardService {
     private final OperacionRepository operacionRepository;
     private final InteraccionRepository interaccionRepository;
     private final AgenteRepository agenteRepository;
+    private final PropiedadRepository propiedadRepository;
 
     public DashboardService(LeadRepository leadRepository,
                             OperacionRepository operacionRepository,
                             InteraccionRepository interaccionRepository,
-                            AgenteRepository agenteRepository) {
+                            AgenteRepository agenteRepository,
+                            PropiedadRepository propiedadRepository) {
         this.leadRepository = leadRepository;
         this.operacionRepository = operacionRepository;
         this.interaccionRepository = interaccionRepository;
         this.agenteRepository = agenteRepository;
+        this.propiedadRepository = propiedadRepository;
     }
 
     public DashboardDTO obtenerDashboard(Long agenteId, String periodo) {
@@ -58,7 +65,7 @@ public class DashboardService {
         LocalDateTime inicioAnterior = inicioPeriodo.minusDays(dias);
         LocalDateTime finAnterior = inicioPeriodo;
 
-        SnapshotDTO snapshot = construirSnapshot(agenteId, agente, hoy);
+        SnapshotDTO snapshot = construirSnapshot(agenteId, agente, hoy, inicioPeriodo, finPeriodo);
         EvolucionDTO evolucion = construirEvolucion(agenteId, hoy, dias, inicioPeriodo, finPeriodo);
         KpisDTO kpis = construirKpis(agenteId, snapshot.activos(), evolucion,
                 inicioPeriodo, finPeriodo, inicioAnterior, finAnterior);
@@ -77,7 +84,8 @@ public class DashboardService {
         };
     }
 
-    private SnapshotDTO construirSnapshot(Long agenteId, Agente agente, LocalDate hoy) {
+    private SnapshotDTO construirSnapshot(Long agenteId, Agente agente, LocalDate hoy,
+                                          LocalDateTime inicioPeriodo, LocalDateTime finPeriodo) {
         long activos = leadRepository.countByAgenteIdAndEstadoNot(agenteId, EstadoLead.INACTIVO);
         long calientes = leadRepository.countByAgenteIdAndEstado(agenteId, EstadoLead.CALIENTE);
         long tibios = leadRepository.countByAgenteIdAndEstado(agenteId, EstadoLead.TIBIO);
@@ -89,8 +97,43 @@ public class DashboardService {
 
         FunnelDTO funnel = construirFunnel(agenteId, ganadosMes);
 
+        // Cartera activa: propiedades disponibles del agente + valor total
+        long propDisponibles = propiedadRepository.countDisponiblesPorAgente(agenteId);
+        BigDecimal valorCartera = propiedadRepository.sumarValorDisponiblesPorAgente(agenteId);
+        CarteraActivaDTO carteraActiva = new CarteraActivaDTO(propDisponibles, valorCartera);
+
+        // Vencidos: seguimientos con fecha pasada y lead no inactivo
+        long vencidosHoy = leadRepository.countSeguimientosVencidos(agenteId, hoy.atStartOfDay());
+
+        // Tiempo promedio de cierre en el período (null si no hay cierres)
+        List<Object[]> paresCierre = operacionRepository
+                .findFechasCreacionYCierreGanadasEnRango(agenteId, inicioPeriodo, finPeriodo);
+        Double tiempoPromedioCierreDias = calcularTiempoCierre(paresCierre);
+
+        // Pipeline agrupado por estado
+        List<PipelineEstadoDTO> pipeline = new ArrayList<>();
+        for (Object[] row : operacionRepository.obtenerPipelineAgrupado(agenteId)) {
+            EstadoOperacion estado = (EstadoOperacion) row[0];
+            long cantidad = ((Number) row[1]).longValue();
+            BigDecimal montoTotal = (BigDecimal) row[2];
+            pipeline.add(new PipelineEstadoDTO(estado, cantidad, montoTotal));
+        }
+
         return new SnapshotDTO(activos, calientes, tibios, frios, ganadosMes,
-                meta, diasRestantes, funnel);
+                meta, diasRestantes, funnel,
+                carteraActiva, vencidosHoy, tiempoPromedioCierreDias, pipeline);
+    }
+
+    private Double calcularTiempoCierre(List<Object[]> pares) {
+        if (pares.isEmpty()) return null;
+        long suma = 0;
+        long count = 0;
+        for (Object[] p : pares) {
+            if (p[0] == null || p[1] == null) continue;
+            long dias = ChronoUnit.DAYS.between((LocalDateTime) p[0], (LocalDateTime) p[1]);
+            if (dias >= 0) { suma += dias; count++; }
+        }
+        return count == 0 ? null : round1((double) suma / count);
     }
 
     private FunnelDTO construirFunnel(Long agenteId, long ganadosMes) {

@@ -309,6 +309,39 @@ export class Perfil {
   kpiTiempo = computed(() => this.dashboard()?.kpis.tiempoRespuesta);
   kpiGanados = computed(() => this.dashboard()?.kpis.ganados);
 
+  // ── Nuevas métricas de snapshot ──────────────────────────────────────────
+  carteraActiva = computed(() => this.dashboard()?.snapshot.carteraActiva);
+  carteraValorFormateado = computed(() => {
+    const v = this.carteraActiva()?.valorTotal;
+    if (v == null) return '—';
+    return new Intl.NumberFormat('es-AR', {
+      style: 'currency', currency: 'USD', maximumFractionDigits: 0,
+    }).format(v);
+  });
+
+  vencidosHoy = computed(() => this.dashboard()?.snapshot.vencidosHoy ?? 0);
+
+  tiempoPromedioCierreFormateado = computed(() => {
+    const v = this.dashboard()?.snapshot.tiempoPromedioCierreDias;
+    if (v == null) return '—';
+    return v.toFixed(1);
+  });
+
+  private readonly PIPELINE_ORDEN = [
+    'PUBLICADA', 'RESERVADA', 'EN_NEGOCIACION', 'CERRADA_GANADA', 'ABIERTA', 'CANCELADA',
+  ];
+  pipelineOrdenado = computed(() => {
+    const pl = this.dashboard()?.snapshot.pipeline ?? [];
+    return [...pl].sort((a, b) => {
+      const ai = this.PIPELINE_ORDEN.indexOf(a.estado);
+      const bi = this.PIPELINE_ORDEN.indexOf(b.estado);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+  });
+  pipelineMax = computed(() =>
+    Math.max(1, ...this.pipelineOrdenado().map(p => p.cantidad))
+  );
+
   // Próximas acciones
   proximasAcciones = computed(() => {
     const leads = this.leadsHoy();
@@ -554,5 +587,24 @@ export class Perfil {
     if (!iso) return '';
     const d = new Date(iso);
     return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+  }
+
+  estadoPipelineLabel(estado: string): string {
+    const map: Record<string, string> = {
+      ABIERTA:        'Abierta',
+      PUBLICADA:      'Publicada',
+      RESERVADA:      'Reservada',
+      EN_NEGOCIACION: 'En negociación',
+      CERRADA_GANADA: 'Ganada',
+      CANCELADA:      'Cancelada',
+    };
+    return map[estado] ?? estado;
+  }
+
+  formatMonto(monto: number): string {
+    if (!monto) return '—';
+    return new Intl.NumberFormat('es-AR', {
+      style: 'currency', currency: 'USD', maximumFractionDigits: 0,
+    }).format(monto);
   }
 }

@@ -156,4 +156,12 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
             "AND l.estado <> com.leadera.leadera.enums.EstadoLead.FRIO " +
             "AND l.estado <> com.leadera.leadera.enums.EstadoLead.INACTIVO")
     long countCalificados(@Param("agenteId") Long agenteId);
+
+    // Dashboard: seguimientos cuya fecha ya pasó (vencidos) y lead no inactivo
+    @Query("SELECT COUNT(l) FROM Lead l WHERE l.agente.id = :agenteId " +
+            "AND l.fechaProximoSeguimiento IS NOT NULL " +
+            "AND l.fechaProximoSeguimiento < :inicioHoy " +
+            "AND l.estado <> com.leadera.leadera.enums.EstadoLead.INACTIVO")
+    long countSeguimientosVencidos(@Param("agenteId") Long agenteId,
+                                   @Param("inicioHoy") LocalDateTime inicioHoy);
 }

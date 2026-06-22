@@ -24,6 +24,10 @@ export interface DashboardSnapshot {
   metaMensual: number;
   diasRestantesMes: number;
   funnel: DashboardFunnel;
+  carteraActiva: { propiedadesDisponibles: number; valorTotal: number };
+  vencidosHoy: number;
+  tiempoPromedioCierreDias: number | null;
+  pipeline: { estado: string; cantidad: number; montoTotal: number }[];
 }
 
 export interface DashboardFunnel {

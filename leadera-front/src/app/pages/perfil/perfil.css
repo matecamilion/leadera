@@ -256,6 +256,25 @@
   height: 32px;
 }
 
+/* KPI card variante alert (vencidos) */
+.kpi-card.kpi-card--alert {
+  border-left-color: var(--hot);
+}
+.kpi-card.kpi-card--alert .kpi-value {
+  color: var(--hot);
+}
+
+/* Pipe-row: versión compacta del funnel-row para la card Pipeline */
+.funnel-row.pipe-row {
+  grid-template-columns: 90px 1fr 36px 72px;
+}
+.pipe-monto {
+  text-align: right;
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--ink-3);
+}
+
 .delta {
   display: inline-flex;
   align-items: center;
@@ -476,7 +495,7 @@
 /* BOTTOM GRID */
 .bottom-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr;
   gap: 18px;
   margin-bottom: 18px;
 }

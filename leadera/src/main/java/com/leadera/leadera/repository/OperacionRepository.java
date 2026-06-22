@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,6 +105,21 @@ public interface OperacionRepository extends JpaRepository<Operacion, Long> {
             "WHERE o.agente.id = :agenteId " +
             "AND e.tipo = com.leadera.leadera.enums.TipoEvento.VISITA")
     long countLeadsConVisita(@Param("agenteId") Long agenteId);
+
+    // Dashboard: pipeline agrupado por estado con cantidad y monto total
+    @Query("SELECT o.estadoOperacion, COUNT(o), COALESCE(SUM(o.montoOperacion), 0) " +
+            "FROM Operacion o WHERE o.agente.id = :agenteId GROUP BY o.estadoOperacion")
+    List<Object[]> obtenerPipelineAgrupado(@Param("agenteId") Long agenteId);
+
+    // Dashboard: pares (fechaCreacion, fechaCierre) de operaciones ganadas en el rango,
+    // para calcular tiempo promedio de cierre en Java con ChronoUnit (DB-agnóstico).
+    @Query("SELECT o.fechaCreacion, o.fechaCierre FROM Operacion o " +
+            "WHERE o.agente.id = :agenteId AND o.estadoOperacion = 'CERRADA_GANADA' " +
+            "AND o.fechaCierre >= :desde AND o.fechaCierre < :hasta")
+    List<Object[]> findFechasCreacionYCierreGanadasEnRango(
+            @Param("agenteId") Long agenteId,
+            @Param("desde") LocalDateTime desde,
+            @Param("hasta") LocalDateTime hasta);
 
     // Candidatos a matching: operaciones COMPRA de TODA la inmobiliaria (matching
     // compartido entre agentes del mismo equipo) con búsqueda definida, lead activo
