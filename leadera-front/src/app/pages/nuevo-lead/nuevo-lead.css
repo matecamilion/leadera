@@ -4,12 +4,12 @@
 
 .contenedor-modal {
   background: white;
-  border-radius: 24px;
+  border-radius: var(--r-lg);
   padding: 24px; /* Bajamos un poco el padding para ganar aire en celu */
   max-width: 800px;
   width: 95%; /* Clave: En celu ocupa el 95% del ancho */
   margin: 20px auto; /* Menos margen arriba para que no se pierda abajo */
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-md);
   font-family: 'Inter', sans-serif;
   box-sizing: border-box;
 }
@@ -24,8 +24,8 @@
 }
 
 .icono-container {
-  background: #f0f7ff;
-  color: #2563eb;
+  background: var(--brand-softer);
+  color: var(--color-primary);
   padding: 12px;
   border-radius: 12px;
   display: flex;
@@ -110,9 +110,9 @@
 .campo textarea:focus,
 .select-custom select:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: var(--color-primary);
   background: white;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.05);
+  box-shadow: var(--focus-ring);
 }
 
 .campo.full-width {
@@ -159,7 +159,7 @@
   padding: 12px 32px;
   border-radius: 10px;
   border: none;
-  background: #2563eb;
+  background: var(--color-primary);
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -167,7 +167,7 @@
 }
 
 .btn-primario:hover {
-  background: #1d4ed8;
+  background: var(--color-primary-dark);
 }
 
 .btn-primario:disabled {
@@ -176,12 +176,12 @@
 }
 
 .input-error {
-  border-color: #e53e3e;
+  border-color: #b91c1c;
 }
 
 .error-mensaje {
   font-size: 12px;
-  color: #e53e3e;
+  color: #b91c1c;
   margin-top: 4px;
   display: block;
 }
