@@ -55,8 +55,8 @@
 
 .selector-asistente select:focus {
   outline: none;
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
 }
 
 /* Tarjetas y estados */
@@ -175,7 +175,7 @@
   transition: width 0.3s ease;
 }
 
-.barra-relleno.completada { background: #10b981; }
+.barra-relleno.completada { background: var(--color-primary); }
 .barra-relleno.pendiente { background: #cbd5e1; }
 
 /* Badges de estado */
@@ -188,7 +188,7 @@
   white-space: nowrap;
 }
 
-.badge-estado.completada { background: #ecfdf5; color: #047857; }
+.badge-estado.completada { background: var(--brand-softer); color: var(--color-primary-dark); }
 .badge-estado.en-progreso { background: #fffbeb; color: #d97706; }
 .badge-estado.pendiente { background: #f1f5f9; color: #64748b; }
 
@@ -218,7 +218,7 @@
   font-size: 1.3rem;
 }
 
-.check-icon.activo { color: #10b981; }
+.check-icon.activo { color: var(--color-primary); }
 
 .item-titulo { font-weight: 500; }
 
@@ -232,7 +232,7 @@
   width: 18px;
   height: 18px;
   border: 2px solid #cbd5e1;
-  border-top-color: #10b981;
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: girar 0.7s linear infinite;
 }

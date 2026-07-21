@@ -67,6 +67,44 @@ main {
 }
 
 /* =====================================================
+   SISTEMA DE BOTONES — global
+   Uso: class="btn btn-primary" — la base .btn es requerida.
+   Los .btn-primary sueltos de componentes legacy no se ven
+   afectados (el selector compuesto .btn.btn-primary no los matchea).
+   ===================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn.btn-primary { background: var(--color-primary); color: white; }
+.btn.btn-primary:hover:not(:disabled) { background: var(--color-primary-dark); }
+
+.btn.btn-secondary { background: var(--color-card); color: var(--ink-2); border-color: var(--color-border); }
+.btn.btn-secondary:hover:not(:disabled) { background: var(--color-bg); color: var(--color-text); }
+
+.btn.btn-ghost { background: transparent; color: var(--ink-2); }
+.btn.btn-ghost:hover:not(:disabled) { background: var(--brand-softer); color: var(--color-text); }
+
+.btn.btn-danger { background: var(--color-caliente); color: white; }
+.btn.btn-danger:hover:not(:disabled) { background: #B04230; }
+
+/* =====================================================
    SISTEMA DE BADGES — Phase 1
    Solo colores. Shape/sizing sigue en cada component.
    Dos prefijos por razón histórica de naming:
