@@ -1,7 +1,7 @@
 @if (errorGeneral()) {
   <div class="banner-error">
     {{ errorGeneral() }}
-    <button (click)="errorGeneral.set('')">✕</button>
+    <button (click)="errorGeneral.set('')"><span class="material-symbols-outlined">close</span></button>
   </div>
 }
 @if (lead(); as l) {

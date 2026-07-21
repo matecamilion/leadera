@@ -1,25 +1,17 @@
 :host {
-  /* ── Tokens oficiales Leadera — Arena / Teal / Ember / Amber ── */
+  /* Aliases cortos sobre los tokens globales de styles.css.
+     Los tokens compartidos (ink-2/3/4, softs, sombras, radios, focus)
+     viven en :root — acá solo quedan los shorthands propios de esta página. */
   --bg:           var(--color-bg);           /* arena  #FBF8F4 */
   --surface:      var(--color-card);         /* blanco #FFFFFF */
   --line:         var(--color-border);       /* arena oscuro #EAE3D8 */
   --ink:          var(--color-text);         /* navy  #16213B */
-  --ink-2:        #2D3A35;
-  --ink-3:        var(--color-text-muted);   /* warm gray #7C7568 */
-  --ink-4:        #AAA49C;
   --brand:        var(--color-primary);      /* teal  #0F6E5C */
   --brand-deep:   var(--color-primary-dark); /* teal oscuro #0B5246 */
   --brand-ink:    #05372A;
-  --brand-soft:   #E6F0EE;
-  --brand-softer: #EDF6F3;
   --hot:          var(--color-caliente);     /* ember #D85A30 */
-  --hot-soft:     #FDEEE8;
   --warm:         var(--color-tibio);        /* amber #EF9F27 */
-  --warm-soft:    #FEF5E0;
   --cool:         var(--color-frio);         /* azul  #378ADD */
-  --cool-soft:    #E8F1FC;
-  --shadow-sm: 0 1px 0 rgba(22,33,59,.04), 0 1px 2px rgba(22,33,59,.04);
-  --shadow-md: 0 1px 0 rgba(22,33,59,.04), 0 6px 24px -8px rgba(22,33,59,.08);
 
   display: block;
   color: var(--ink);
@@ -167,7 +159,6 @@
   line-height: 1.15;
 }
 .greeting-name { color: var(--brand-deep); }
-.wave { display: inline-block; transform: translateY(-1px); }
 .greeting-sub {
   margin: 6px 0 14px;
   color: var(--ink-3);

@@ -7,9 +7,9 @@
       <div class="section-title-row">
 
         <div class="section-icon" [class]="variant()">
-          @if (variant() === 'prioritarios') { ⚠ }
-          @if (variant() === 'seguimientos') { ◷ }
-          @if (variant() === 'nuevos') { • }
+          @if (variant() === 'prioritarios') { <span class="material-symbols-outlined">warning</span> }
+          @if (variant() === 'seguimientos') { <span class="material-symbols-outlined">schedule</span> }
+          @if (variant() === 'nuevos') { <span class="material-symbols-outlined">person_add</span> }
         </div>
 
         <h2 class="section-title">{{ title() }}</h2>

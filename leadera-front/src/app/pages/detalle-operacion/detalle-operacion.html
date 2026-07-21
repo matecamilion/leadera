@@ -75,8 +75,8 @@
 
           <div class="do-step">
             <div class="do-step-dot" [ngClass]="stepClass('PUBLICADA', op.estadoOperacion)">
-              @if (isPastStep('PUBLICADA', op.estadoOperacion)) { ✓ }
-              @else if (op.estadoOperacion === 'PUBLICADA') { ● }
+              @if (isPastStep('PUBLICADA', op.estadoOperacion)) { <span class="material-symbols-outlined">check</span> }
+              @else if (op.estadoOperacion === 'PUBLICADA') { <span class="material-symbols-outlined do-dot-fill">circle</span> }
               @else { 1 }
             </div>
             <div class="do-step-label" [ngClass]="stepClass('PUBLICADA', op.estadoOperacion)">Publicada</div>
@@ -86,8 +86,8 @@
 
           <div class="do-step">
             <div class="do-step-dot" [ngClass]="stepClass('RESERVADA', op.estadoOperacion)">
-              @if (isPastStep('RESERVADA', op.estadoOperacion)) { ✓ }
-              @else if (op.estadoOperacion === 'RESERVADA') { ● }
+              @if (isPastStep('RESERVADA', op.estadoOperacion)) { <span class="material-symbols-outlined">check</span> }
+              @else if (op.estadoOperacion === 'RESERVADA') { <span class="material-symbols-outlined do-dot-fill">circle</span> }
               @else { 2 }
             </div>
             <div class="do-step-label" [ngClass]="stepClass('RESERVADA', op.estadoOperacion)">Reservada</div>
@@ -97,8 +97,8 @@
 
           <div class="do-step">
             <div class="do-step-dot" [ngClass]="stepClass('EN_NEGOCIACION', op.estadoOperacion)">
-              @if (isPastStep('EN_NEGOCIACION', op.estadoOperacion)) { ✓ }
-              @else if (op.estadoOperacion === 'EN_NEGOCIACION') { ● }
+              @if (isPastStep('EN_NEGOCIACION', op.estadoOperacion)) { <span class="material-symbols-outlined">check</span> }
+              @else if (op.estadoOperacion === 'EN_NEGOCIACION') { <span class="material-symbols-outlined do-dot-fill">circle</span> }
               @else { 3 }
             </div>
             <div class="do-step-label" [ngClass]="stepClass('EN_NEGOCIACION', op.estadoOperacion)">Negociación</div>
@@ -108,7 +108,7 @@
 
           <div class="do-step">
             <div class="do-step-dot" [ngClass]="stepClass('CERRADA_GANADA', op.estadoOperacion)">
-              @if (op.estadoOperacion === 'CERRADA_GANADA') { ✓ }
+              @if (op.estadoOperacion === 'CERRADA_GANADA') { <span class="material-symbols-outlined">check</span> }
               @else { 4 }
             </div>
             <div class="do-step-label" [ngClass]="stepClass('CERRADA_GANADA', op.estadoOperacion)">Cerrada</div>
@@ -192,7 +192,7 @@
         <div class="do-chip-info">
           <div class="do-chip-name">{{ lead.nombre }} {{ lead.apellido }}</div>
           <div class="do-chip-meta">
-            @if (lead.telefono) { <span>📞 {{ lead.telefono }}</span> }
+            @if (lead.telefono) { <span><span class="material-symbols-outlined">call</span> {{ lead.telefono }}</span> }
           </div>
         </div>
         <span class="badge-estado" [ngClass]="lead.estado?.toLowerCase()">{{ lead.estado }}</span>

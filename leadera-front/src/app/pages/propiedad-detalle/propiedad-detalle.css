@@ -383,3 +383,6 @@
   .pd-ficha-grid { grid-template-columns: 1fr 1fr; }
   .pd-lead-row { flex-wrap: wrap; }
 }
+
+/* Icono Material en meta del lead (reemplazo de 📞) */
+.pd-lead-meta .material-symbols-outlined { font-size: 14px; vertical-align: -2px; }

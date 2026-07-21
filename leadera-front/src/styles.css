@@ -14,6 +14,33 @@
   --color-frio:         #378ADD;
   --color-inactivo:     #888780;
   --font-display:       'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-ui:            'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* ── Tinta secundaria (promovido desde perfil.css) ── */
+  --ink-2:        #2D3A35;                    /* texto secundario fuerte */
+  --ink-3:        var(--color-text-muted);
+  --ink-4:        #AAA49C;                    /* solo decorativo, nunca texto chico */
+
+  /* ── Superficies soft ── */
+  --brand-soft:   #E6F0EE;
+  --brand-softer: #EDF6F3;
+  --hot-soft:     #FDEEE8;
+  --warm-soft:    #FEF5E0;
+  --cool-soft:    #E8F1FC;
+
+  /* ── Sombras ── */
+  --shadow-sm:    0 1px 0 rgba(22,33,59,.04), 0 1px 2px rgba(22,33,59,.04);
+  --shadow-md:    0 1px 0 rgba(22,33,59,.04), 0 6px 24px -8px rgba(22,33,59,.08);
+  --shadow-modal: 0 8px 40px -8px rgba(22,33,59,.18);
+
+  /* ── Radios ── */
+  --r-sm:   6px;    /* chips, badges */
+  --r-md:   10px;   /* inputs, botones */
+  --r-lg:   14px;   /* cards */
+  --r-pill: 999px;
+
+  /* ── Focus ring único ── */
+  --focus-ring: 0 0 0 3px rgba(15, 110, 92, .12);
 }
 
 * {

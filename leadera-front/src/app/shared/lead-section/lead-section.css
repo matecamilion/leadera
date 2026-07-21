@@ -341,3 +341,6 @@
   .leads-list { display: flex; }
   .cards-carousel { display: none; }
 }
+
+/* Iconos Material en el icono de sección (reemplazo de ⚠ ◷ •) */
+.section-icon .material-symbols-outlined { font-size: 18px; }

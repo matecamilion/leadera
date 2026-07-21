@@ -503,3 +503,8 @@
   .do-ficha-grid { grid-template-columns: 1fr 1fr; }
   .do-chip-row { flex-wrap: wrap; }
 }
+
+/* Iconos Material en stepper y meta del lead (reemplazo de ✓ ● 📞) */
+.do-step-dot .material-symbols-outlined { font-size: 16px; }
+.do-step-dot .do-dot-fill { font-size: 10px; font-variation-settings: 'FILL' 1; }
+.do-chip-meta .material-symbols-outlined { font-size: 14px; vertical-align: -2px; }

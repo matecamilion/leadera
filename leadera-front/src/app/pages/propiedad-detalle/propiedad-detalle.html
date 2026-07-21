@@ -106,7 +106,7 @@
         <div class="pd-lead-info">
           <div class="pd-lead-name">{{ lead.nombre }} {{ lead.apellido }}</div>
           <div class="pd-lead-meta">
-            @if (lead.telefono) { <span>📞 {{ lead.telefono }}</span> }
+            @if (lead.telefono) { <span><span class="material-symbols-outlined">call</span> {{ lead.telefono }}</span> }
             @if (lead.origen) { <span>{{ lead.origen }}</span> }
           </div>
         </div>
