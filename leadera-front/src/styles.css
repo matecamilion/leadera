@@ -79,6 +79,7 @@ main {
 .badge-estado.tibio    { background: #fef3c7; color: #92400e; }
 .badge-estado.frio     { background: #dbeafe; color: var(--color-frio); }
 .badge-estado.inactivo { background: #f1f5f9; color: var(--color-inactivo); }
+.badge-estado.ganado   { background: #d1fae5; color: var(--color-primary-dark); }
 
 /* Operación — tipo */
 .badge-tipo-operacion.venta,    .badge-tipo.venta    { background: #d1fae5; color: var(--color-primary); }

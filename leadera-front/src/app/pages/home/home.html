@@ -62,7 +62,7 @@
                     <a [routerLink]="['/leads', comprador.leadId]" class="match-chip">
                       <div class="match-chip-header">
                         <span class="chip-nombre">{{ comprador.nombreLead }} {{ comprador.apellidoLead }}</span>
-                        <span class="chip-estado chip-{{ comprador.estadoLead.toLowerCase() }}">
+                        <span class="chip-estado badge-estado {{ comprador.estadoLead.toLowerCase() }}">
                           {{ comprador.estadoLead }}
                         </span>
                         @if (!comprador.esMio) {

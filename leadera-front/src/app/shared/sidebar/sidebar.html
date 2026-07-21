@@ -16,6 +16,8 @@
   </div>
 
   <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+
     <a routerLink="/home" routerLinkActive="active" class="nav-item nav-item-primary">
       <span class="material-symbols-outlined">home</span>
       <span class="nav-label">Home</span>
@@ -36,7 +38,7 @@
       <span class="nav-label">Dashboard</span>
     </a>
 
-    <div class="nav-divider"></div>
+    <div class="nav-section-label">Gestión</div>
 
     <a routerLink="/operaciones" routerLinkActive="active" class="nav-item">
       <span class="material-symbols-outlined">handshake</span>
@@ -64,7 +66,7 @@
     </a>
 
     @if (esDueno) {
-      <div class="nav-divider"></div>
+      <div class="nav-section-label">Equipo</div>
 
       <a routerLink="/equipo" routerLinkActive="active" class="nav-item">
         <span class="material-symbols-outlined">groups_2</span>
@@ -73,6 +75,8 @@
     }
 
     @if (esAgente) {
+      <div class="nav-section-label">Equipo</div>
+
       <a routerLink="/mi-equipo-agente" routerLinkActive="active" class="nav-item">
         <span class="material-symbols-outlined">support_agent</span>
         <span class="nav-label">Mi Equipo</span>

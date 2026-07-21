@@ -47,8 +47,8 @@ button {
   border: none;
 }
 
-.btn-todos { background: #32b389; color: white; }
-.btn-gestion { background: #f1f5f9; color: #15803d; border: 1px solid #dcfce7; }
+.btn-todos { background: var(--color-primary); color: white; }
+.btn-gestion { background: var(--brand-softer); color: var(--color-primary); border: 1px solid var(--brand-soft); }
 .btn-nuevo-prospecto { background: white; color: #1e293b; border: 1px solid #e2e8f0; }
 
 .user-dropdown {
@@ -98,7 +98,7 @@ button {
 
 .user-btns button{
   margin: 5px;
-  background: #f1f5f9; color: #15803d; border: 1px solid #dcfce7;
+  background: var(--brand-softer); color: var(--color-primary); border: 1px solid var(--brand-soft);
 }
 /* --- SECCIÓN RESPONSIVE CORREGIDA --- */
 

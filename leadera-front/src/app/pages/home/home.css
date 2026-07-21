@@ -16,21 +16,20 @@
 }
 
 .home-header h1 {
-  /* Usamos clamp para que el título se achique solo en el celu */
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-size: 2rem;
   font-family: var(--font-display);
   font-weight: 600;
   margin-bottom: 8px;
-  color: #0f172a;
+  color: var(--color-text);
   line-height: 1.1;
 }
 
 .highlight {
-  color: #14b8a6;
+  color: var(--color-primary);
 }
 
 .subtitle {
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: clamp(0.95rem, 2vw, 1.1rem);
   margin-bottom: 0;
 }
@@ -40,12 +39,12 @@
 /* ========================= */
 
 .progress-card {
-  background: #ffffff;
+  background: var(--color-card);
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
   margin: 24px 0 40px;
-  border: 1px solid #f1f5f9; /* Un borde sutil para que no flote tanto */
+  border: 1px solid var(--color-border);
 }
 
 /* HEADER PROGRESS: Acá es donde fallaba el celu */
@@ -57,7 +56,7 @@
   gap: 8px;
   margin-bottom: 12px;
   font-weight: 600;
-  color: #334155;
+  color: var(--ink-2);
   font-size: 0.95rem;
 }
 
@@ -65,7 +64,7 @@
 .progress-bar {
   width: 100%;
   height: 8px; /* Un poco más delgada queda más elegante */
-  background: #f1f5f9;
+  background: var(--color-border);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -106,7 +105,7 @@
 
 .resumen-card {
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 14px;
   padding: 18px 20px 14px;
   display: flex;
@@ -118,7 +117,7 @@
 
 .resumen-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .resumen-numero {
@@ -132,7 +131,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #94a3b8;
+  color: var(--ink-3);
 }
 
 .resumen-card.calientes    .resumen-numero { color: var(--color-caliente); }
@@ -157,7 +156,7 @@
   border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(22, 33, 59, 0.05), 0 1px 2px rgba(22, 33, 59, 0.03);
+  box-shadow: var(--shadow-sm);
 }
 
 .matches-card-header {
@@ -179,7 +178,7 @@
 .matches-card-label {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .badge-matches-count {
@@ -193,7 +192,7 @@
 
 .matches-card-sub {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--color-text-muted);
   margin: 0;
   padding-left: 2px;
 }
@@ -205,8 +204,8 @@
 }
 
 .match-item {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 14px 16px;
   display: flex;
@@ -235,12 +234,12 @@
 .match-item-direccion {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .match-item-meta {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--ink-3);
 }
 
 .match-chips {
@@ -254,8 +253,8 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 10px 12px;
   text-decoration: none;
@@ -265,7 +264,7 @@
 
 .match-chip:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(15, 110, 92, 0.08);
+  box-shadow: var(--focus-ring);
 }
 
 .match-chip-header {
@@ -278,7 +277,7 @@
 .chip-nombre {
   font-size: 0.8rem;
   font-weight: 500;
-  color: #1e293b;
+  color: var(--color-text);
 }
 
 .chip-estado {
@@ -290,15 +289,9 @@
   letter-spacing: 0.03em;
 }
 
-.chip-caliente { background: #fee2e2; color: #b91c1c; }
-.chip-tibio    { background: #fef3c7; color: #92400e; }
-.chip-frio     { background: #dbeafe; color: #1e40af; }
-.chip-ganado   { background: #dcfce7; color: #166534; }
-.chip-inactivo { background: #f1f5f9; color: #64748b; }
-
 .chip-via {
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: var(--ink-3);
   font-style: italic;
 }
 
@@ -308,12 +301,12 @@
   gap: 6px;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #334155;
+  color: var(--ink-2);
 }
 
 .comprador-busqueda-titulo .material-symbols-outlined {
   font-size: 0.95rem;
-  color: #14b8a6;
+  color: var(--color-primary);
 }
 
 .comprador-chips {
@@ -329,15 +322,15 @@
   border-radius: 99px;
   font-size: 0.72rem;
   font-weight: 500;
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  background: var(--color-card);
+  color: var(--ink-2);
+  border: 1px solid var(--color-border);
 }
 
 .chip-precio {
-  background: #f0fdf4;
-  color: #166534;
-  border-color: #bbf7d0;
+  background: var(--brand-soft);
+  color: var(--color-primary-dark);
+  border-color: var(--brand-soft);
   font-weight: 600;
 }
 
