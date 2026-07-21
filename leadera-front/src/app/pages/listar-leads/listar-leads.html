@@ -33,7 +33,7 @@
   </header>
 
   <div class="tabla-card">
-    <nav class="pestañas-filtro">
+    <nav class="pestanas-filtro">
       <button [class.activa]="estadoSeleccionado() === 'TODOS'" (click)="estadoSeleccionado.set('TODOS')">
         <span class="dot dot-todos"></span>Todos ({{ leads().length }})
       </button>

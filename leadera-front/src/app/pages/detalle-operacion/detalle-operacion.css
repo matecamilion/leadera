@@ -106,7 +106,7 @@
   transition: opacity 0.15s;
   white-space: nowrap;
 }
-.do-btn-estado:hover:not(:disabled) { background: #f8fafc; }
+.do-btn-estado:hover:not(:disabled) { background: var(--color-bg); }
 .do-btn-estado.activo {
   background: var(--color-text);
   color: white;
@@ -118,7 +118,7 @@
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--color-text-muted);
-  background: #f1f5f9;
+  background: var(--color-bg);
   padding: 4px 10px;
   border-radius: 999px;
 }
@@ -238,7 +238,7 @@
 }
 
 .do-ficha-item {
-  background: #f8fafc;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 12px 14px;
@@ -325,16 +325,16 @@
   font-weight: 700;
   flex-shrink: 0;
 }
-.av-caliente { background: #fee2e2; color: #dc2626; }
-.av-tibio    { background: #fef3c7; color: #d97706; }
+.av-caliente { background: #fde8e0; color: var(--color-caliente); }
+.av-tibio    { background: #fef3c7; color: #92400e; }
 .av-frio     { background: #dbeafe; color: var(--color-frio); }
-.av-inactivo { background: #f1f5f9; color: var(--color-text-muted); }
+.av-inactivo { background: var(--color-bg); color: var(--color-inactivo); }
 
 /* ===== EVENTOS ===== */
 .do-eventos-card { padding-bottom: 8px; }
 
 .form-evento {
-  background: #f8fafc;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 16px;
@@ -404,7 +404,7 @@
 }
 
 .evento-card {
-  background: #f8fafc;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 12px 16px;
@@ -427,8 +427,8 @@
   font-weight: 700;
   text-transform: uppercase;
 }
-.badge-evento.visita   { background: #dbeafe; color: #1e40af; }
-.badge-evento.consulta { background: #fef3c7; color: #b45309; }
+.badge-evento.visita   { background: #dbeafe; color: var(--color-frio); }
+.badge-evento.consulta { background: #fef3c7; color: #92400e; }
 
 .evento-fecha  { color: var(--color-text-muted); font-size: 0.82rem; }
 .evento-detalle { margin: 0; color: var(--color-text-muted); font-size: 0.92rem; line-height: 1.45; }
@@ -436,7 +436,7 @@
 .sin-eventos {
   margin: 0;
   padding: 18px;
-  background: #f8fafc;
+  background: var(--color-bg);
   border: 1px dashed var(--color-border);
   border-radius: 12px;
   color: var(--color-text-muted);
@@ -446,7 +446,7 @@
 
 /* ===== BÚSQUEDA ASOCIADA (tokens aplicados) ===== */
 .detalle-principal {
-  background: #f8fafc;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   padding: 16px;
   border-radius: 12px;
@@ -473,7 +473,7 @@
 .grid-info strong { color: var(--color-text); }
 .observaciones { margin-top: 20px; }
 .observaciones p {
-  background: #f8fafc;
+  background: var(--color-bg);
   border-radius: 12px;
   padding: 14px;
   color: var(--color-text-muted);

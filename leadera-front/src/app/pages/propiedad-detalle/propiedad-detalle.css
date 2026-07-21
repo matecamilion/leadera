@@ -23,7 +23,7 @@
 
 /* ===== TARJETA UNIFICADA ===== */
 .prop-card-unificada {
-  background: var(--color-bg);
+  background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 24px;
@@ -103,16 +103,16 @@
   text-decoration: none;
   transition: background 0.15s;
 }
-.pd-btn-editar:hover { background: #f8fafc; }
+.pd-btn-editar:hover { background: var(--color-bg); }
 .pd-btn-editar .material-symbols-outlined { font-size: 15px; }
 
 .pd-estado-group { display: flex; gap: 6px; flex-wrap: wrap; }
 
 /* ===== ESTADO BADGES & BUTTONS ===== */
 .badge-estado-prop { padding: 2px 10px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
-.badge-estado-prop.disponible { background: #dcfce7; color: #16a34a; }
-.badge-estado-prop.reservada  { background: #fef3c7; color: #d97706; }
-.badge-estado-prop.vendida    { background: #f3f4f6; color: #4b5563; }
+.badge-estado-prop.disponible { background: #d1fae5; color: var(--color-primary); }
+.badge-estado-prop.reservada  { background: #fef3c7; color: #92400e; }
+.badge-estado-prop.vendida    { background: #f1f5f9; color: var(--color-inactivo); }
 
 /* Pill base — se aplican localmente porque styles.css solo define los colores */
 .badge-estado,
@@ -128,9 +128,9 @@
 
 .btn-estado-prop { padding: 8px 12px; border-radius: 8px; border: none; font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: opacity 0.15s; }
 .btn-estado-prop:hover { opacity: 0.8; }
-.btn-estado-prop.disponible { background: #dcfce7; color: #16a34a; }
-.btn-estado-prop.reservada  { background: #fef3c7; color: #d97706; }
-.btn-estado-prop.vendida    { background: #f3f4f6; color: #4b5563; }
+.btn-estado-prop.disponible { background: #d1fae5; color: var(--color-primary); }
+.btn-estado-prop.reservada  { background: #fef3c7; color: #92400e; }
+.btn-estado-prop.vendida    { background: #f1f5f9; color: var(--color-inactivo); }
 
 /* ===== CARD BASE ===== */
 .pd-card {
@@ -149,7 +149,7 @@
 }
 
 .pd-ficha-item {
-  background: #f8fafc;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 12px 14px;
@@ -217,10 +217,10 @@
 }
 
 /* Avatar colors — mirrors detalle-lead */
-.av-caliente { background: #fee2e2; color: #dc2626; }
-.av-tibio    { background: #fef3c7; color: #d97706; }
-.av-frio     { background: #dbeafe; color: #2563eb; }
-.av-inactivo { background: #f1f5f9; color: #64748b; }
+.av-caliente { background: #fde8e0; color: var(--color-caliente); }
+.av-tibio    { background: #fef3c7; color: #92400e; }
+.av-frio     { background: #dbeafe; color: var(--color-frio); }
+.av-inactivo { background: #f1f5f9; color: var(--color-inactivo); }
 
 .pd-lead-info { flex: 1; min-width: 0; }
 .pd-lead-name { font-size: 0.95rem; font-weight: 700; color: var(--color-text); }
@@ -271,7 +271,7 @@
 }
 
 .comprador-card {
-  background: #f8fafc;
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 12px 14px;
@@ -302,10 +302,10 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
-.badge-estado-lead.caliente { background: #fee2e2; color: #dc2626; }
-.badge-estado-lead.tibio    { background: #fef3c7; color: #d97706; }
-.badge-estado-lead.frio     { background: #dbeafe; color: var(--color-primary); }
-.badge-estado-lead.inactivo { background: #f1f5f9; color: var(--color-text-muted); }
+.badge-estado-lead.caliente { background: #fde8e0; color: var(--color-caliente); }
+.badge-estado-lead.tibio    { background: #fef3c7; color: #92400e; }
+.badge-estado-lead.frio     { background: #dbeafe; color: var(--color-frio); }
+.badge-estado-lead.inactivo { background: #f1f5f9; color: var(--color-inactivo); }
 
 .comprador-busqueda-titulo {
   display: flex;

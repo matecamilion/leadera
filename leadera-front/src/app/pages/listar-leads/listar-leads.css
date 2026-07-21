@@ -1,11 +1,10 @@
 /* 1. CONFIGURACIÓN GLOBAL Y FUENTES */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 .contenedor-listado {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   padding: 1.5rem 1rem; /* Reducido para móviles */
-  color: #1e293b;
+  color: var(--color-text);
   box-sizing: border-box;
 }
 
@@ -14,10 +13,10 @@
   font-variation-settings: 'FILL' 0, 'wght' 300, 'grad' 0, 'opsz' 24;
   vertical-align: middle;
   line-height: 1;
-  color: #94a3b8;
+  color: var(--ink-3);
 }
 .icono-v { font-size: 18px; margin-right: 8px; }
-.icono-s { font-size: 16px; margin-right: 4px; color: #cbd5e1; }
+.icono-s { font-size: 16px; margin-right: 4px; color: var(--color-border); }
 
 /* 3. HEADER Y BUSCADOR (RESPONSIVE) */
 .header-principal {
@@ -38,8 +37,8 @@
   min-width: 86px;
   padding: 10px 12px;
   border-radius: 10px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -48,12 +47,12 @@
 .operacion-label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .operacion-mini-card strong {
   font-size: 1.2rem;
-  color: #0f172a;
+  color: var(--color-text);
   line-height: 1;
 }
 
@@ -98,9 +97,9 @@
   gap: 8px;
   padding: 10px 18px;
   border-radius: 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--color-border);
   background: white;
-  color: #1e293b;
+  color: var(--color-text);
   font-family: inherit;
   font-size: 0.9rem;
   font-weight: 600;
@@ -115,8 +114,8 @@
 }
 
 .btn-exportar-excel:hover:not(:disabled) {
-  background: #f8fafc;
-  border-color: #94a3b8;
+  background: var(--color-bg);
+  border-color: var(--ink-3);
 }
 
 .btn-exportar-excel:disabled {
@@ -134,7 +133,7 @@
   width: 100%;
   padding: 12px 12px 12px 42px;
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   background: white;
   font-size: 0.9rem;
   transition: all 0.2s ease;
@@ -142,7 +141,7 @@
 }
 
 /* 4. FILTROS COMO CHIPS */
-.pestañas-filtro {
+.pestanas-filtro {
   display: flex;
   gap: 8px;
   margin-bottom: 20px;
@@ -152,9 +151,9 @@
   padding: 2px 0;
 }
 
-.pestañas-filtro::-webkit-scrollbar { display: none; }
+.pestanas-filtro::-webkit-scrollbar { display: none; }
 
-.pestañas-filtro button {
+.pestanas-filtro button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -185,14 +184,14 @@
 .dot-inactivo { background: var(--color-inactivo); }
 
 /* Estado activo: fondo sólido, punto blanco */
-.pestañas-filtro button.activa      { color: white; }
-.pestañas-filtro button.activa .dot { background: rgba(255,255,255,0.7); }
+.pestanas-filtro button.activa      { color: white; }
+.pestanas-filtro button.activa .dot { background: rgba(255,255,255,0.7); }
 
-.pestañas-filtro button:has(.dot-todos).activa    { background: var(--color-primary);  border-color: var(--color-primary); }
-.pestañas-filtro button:has(.dot-caliente).activa { background: var(--color-caliente); border-color: var(--color-caliente); }
-.pestañas-filtro button:has(.dot-tibio).activa    { background: var(--color-tibio);    border-color: var(--color-tibio); }
-.pestañas-filtro button:has(.dot-frio).activa     { background: var(--color-frio);     border-color: var(--color-frio); }
-.pestañas-filtro button:has(.dot-inactivo).activa { background: var(--color-inactivo); border-color: var(--color-inactivo); }
+.pestanas-filtro button:has(.dot-todos).activa    { background: var(--color-primary);  border-color: var(--color-primary); }
+.pestanas-filtro button:has(.dot-caliente).activa { background: var(--color-caliente); border-color: var(--color-caliente); }
+.pestanas-filtro button:has(.dot-tibio).activa    { background: var(--color-tibio);    border-color: var(--color-tibio); }
+.pestanas-filtro button:has(.dot-frio).activa     { background: var(--color-frio);     border-color: var(--color-frio); }
+.pestanas-filtro button:has(.dot-inactivo).activa { background: var(--color-inactivo); border-color: var(--color-inactivo); }
 
 /* 5. TARJETAS DE LEAD (EL CAMBIO CLAVE) */
 .tarjeta-lead {
@@ -245,7 +244,7 @@
 .badge-estado.caliente { background: #fde8e0; color: var(--color-caliente); }
 .badge-estado.tibio    { background: #fef3c7; color: #92400e; }
 .badge-estado.frio     { background: #dbeafe; color: var(--color-frio); }
-.badge-estado.inactivo { background: #f1f5f9; color: var(--color-inactivo); }
+.badge-estado.inactivo { background: var(--color-bg); color: var(--color-inactivo); }
 
 .fila-contacto {
   display: flex;
@@ -265,7 +264,7 @@
   display: flex;
   align-items: center;
   font-size: 0.85rem;
-  color: #334155;
+  color: var(--ink-2);
   word-break: break-all; /* Evita que emails largos rompan el diseño */
 }
 
@@ -274,15 +273,15 @@
   flex-wrap: wrap;
   gap: 12px;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .nota-ultima-accion {
   margin-top: 1rem;
   padding: 12px;
   background-color: var(--color-bg);
-  border-left: 3px solid var(--color-border);
-  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-sm);
   font-size: 0.85rem;
 }
 
@@ -292,7 +291,7 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px dashed #e2e8f0; /* Separador en móvil */
+  border-top: 1px dashed var(--color-border); /* Separador en móvil */
   padding-top: 15px;
 }
 
@@ -306,7 +305,7 @@
 }
 
 .info-propiedad {
-  background: #fcfcfd;
+  background: var(--color-bg);
   padding: 10px;
   border-radius: 8px;
 }
@@ -315,7 +314,7 @@
   display: flex;
   align-items: center;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 @media (min-width: 768px) {
@@ -325,7 +324,7 @@
 .precio-rango {
   font-size: 1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
 }
 
 .btn-detalle {
@@ -393,7 +392,7 @@
 }
 
 .leads-tabla tbody tr:hover {
-  background: #f8f6f2;
+  background: var(--color-bg);
 }
 
 .leads-tabla tbody td {
@@ -437,17 +436,17 @@
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   background: white;
-  color: #334155;
+  color: var(--ink-2);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
   white-space: nowrap;
 }
 
 .tbl-btn:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  background: var(--color-bg);
+  border-color: var(--color-border);
 }
 
 .tbl-btn-ver {
@@ -456,7 +455,7 @@
 }
 
 .tbl-btn-ver:hover {
-  background: #E6F0EE;
+  background: var(--brand-soft);
   border-color: var(--color-primary-dark);
 }
 
