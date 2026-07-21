@@ -5,7 +5,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: var(--color-bg);
 }
 
 .auth-card {
@@ -15,7 +15,7 @@
   padding: 48px 40px;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
   box-sizing: border-box;
 }
 
@@ -74,8 +74,8 @@
 
 .input-group input:focus {
   outline: none;
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
 }
 
 /* Marca de campo obligatorio y error inline */
@@ -94,7 +94,7 @@
 .btn-primary {
   width: 100%;
   height: 46px;
-  background-color: #10b981;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -106,7 +106,7 @@
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #059669;
+  background-color: var(--color-primary-dark);
 }
 
 .btn-primary:disabled {
@@ -124,7 +124,7 @@
 }
 
 .auth-footer a {
-  color: #10b981;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 600;
 }
