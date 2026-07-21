@@ -1,6 +1,6 @@
 :host {
   display: block;
-  background: #f8fafc;
+  background: var(--color-bg);
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
 }
@@ -19,7 +19,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #14b8a6;
+  color: var(--color-primary);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -81,9 +81,9 @@
 }
 
 .tarjeta:hover {
-  border-color: #14b8a6;
+  border-color: var(--color-primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px -4px rgba(20, 184, 166, 0.18);
+  box-shadow: var(--shadow-md);
 }
 
 .tarjeta-head {
@@ -111,19 +111,21 @@
   white-space: nowrap;
 }
 
+/* Mismos valores que el sistema global de badges (las clases tipo-*
+   vienen de tipoClass() en el .ts; unificar el nombre requiere tocarlo) */
 .tipo-venta {
-  background: #dcfce7;
-  color: #16a34a;
+  background: #d1fae5;
+  color: var(--color-primary);
 }
 
 .tipo-compra {
   background: #dbeafe;
-  color: #2563eb;
+  color: var(--color-frio);
 }
 
 .tipo-alquiler {
   background: #fef3c7;
-  color: #d97706;
+  color: #92400e;
 }
 
 .tarjeta-desc {
@@ -154,14 +156,14 @@
 
 .tarjeta-precio {
   font-weight: 600;
-  color: #15803d;
+  color: var(--color-primary-dark);
 }
 
 .tarjeta-link {
   display: inline-block;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #14b8a6;
+  color: var(--color-primary);
   text-decoration: none;
 }
 

@@ -13,7 +13,7 @@
   gap: 6px;
   background: transparent;
   border: none;
-  color: #2563eb;
+  color: var(--color-primary);
   font-weight: 700;
   cursor: pointer;
   padding: 0;
@@ -65,7 +65,7 @@
 }
 
 .select-filtro:focus {
-  border-color: #2563eb;
+  border-color: var(--color-primary);
 }
 
 .alert-error {
@@ -112,7 +112,7 @@
 }
 
 .tarjeta-operacion:hover {
-  border-color: #14b8a6;
+  border-color: var(--color-primary);
   transform: translateY(-1px);
 }
 
@@ -141,16 +141,7 @@
   text-transform: uppercase;
 }
 
-.badge-tipo.venta { background: #dcfce7; color: #15803d; }
-.badge-tipo.compra { background: #dbeafe; color: #1d4ed8; }
-.badge-tipo.alquiler { background: #fef3c7; color: #b45309; }
-
-.badge-estado.abierta { background: #f1f5f9; color: #334155; }
-.badge-estado.publicada { background: #e0f2fe; color: #0369a1; }
-.badge-estado.reservada { background: #fef3c7; color: #b45309; }
-.badge-estado.en_negociacion { background: #ffedd5; color: #c2410c; }
-.badge-estado.cerrada_ganada { background: #dcfce7; color: #15803d; }
-.badge-estado.cancelada { background: #fee2e2; color: #b91c1c; }
+/* Colores de badge: sistema global en styles.css */
 
 .fecha {
   color: #94a3b8;
@@ -183,7 +174,7 @@
 
 .detalle-icon {
   font-size: 22px;
-  color: #14b8a6;
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -216,7 +207,7 @@
 }
 
 .btn-ver-detalle {
-  color: #0f766e;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 700;
   font-size: 0.88rem;
