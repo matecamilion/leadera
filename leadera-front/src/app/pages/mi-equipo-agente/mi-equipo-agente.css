@@ -34,7 +34,7 @@
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  background: #10b981;
+  background: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -45,7 +45,7 @@
   white-space: nowrap;
 }
 
-.btn-agregar:hover { background: #059669; }
+.btn-agregar:hover { background: var(--color-primary-dark); }
 
 /* Tabs */
 .tabs-equipo {
@@ -67,8 +67,8 @@
 }
 
 .tabs-equipo button.activa {
-  color: #10b981;
-  border-bottom-color: #10b981;
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
 }
 
 /* Tarjetas y estados */
@@ -174,8 +174,8 @@
 }
 
 .badge-rol.asistente {
-  background: #eff6ff;
-  color: #1d4ed8;
+  background: var(--cool-soft);
+  color: var(--color-frio);
 }
 
 .badge-activo {
@@ -183,8 +183,8 @@
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 700;
-  background: #ecfdf5;
-  color: #047857;
+  background: var(--brand-softer);
+  color: var(--color-primary-dark);
 }
 
 .badge-activo.inactivo {
@@ -211,10 +211,10 @@
 
 .btn-toggle.btn-reactivar {
   border-color: #6ee7b7;
-  color: #047857;
+  color: var(--color-primary-dark);
 }
 
-.btn-toggle.btn-reactivar:hover:not(:disabled) { background: #ecfdf5; }
+.btn-toggle.btn-reactivar:hover:not(:disabled) { background: var(--brand-softer); }
 
 .btn-toggle:disabled { opacity: 0.6; cursor: wait; }
 
@@ -261,8 +261,8 @@
 
 .selector-asistente select:focus {
   outline: none;
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
 }
 
 /* Cuotas */
@@ -311,7 +311,7 @@
   transition: width 0.3s ease;
 }
 
-.barra-relleno.completada { background: #10b981; }
+.barra-relleno.completada { background: var(--color-primary); }
 .barra-relleno.pendiente { background: #cbd5e1; }
 
 .badge-estado {
@@ -323,7 +323,7 @@
   white-space: nowrap;
 }
 
-.badge-estado.completada { background: #ecfdf5; color: #047857; }
+.badge-estado.completada { background: var(--brand-softer); color: var(--color-primary-dark); }
 .badge-estado.en-progreso { background: #fffbeb; color: #d97706; }
 .badge-estado.pendiente { background: #f1f5f9; color: #64748b; }
 
@@ -353,7 +353,7 @@
   font-size: 1.3rem;
 }
 
-.check-icon.activo { color: #10b981; }
+.check-icon.activo { color: var(--color-primary); }
 
 .item-titulo { font-weight: 500; }
 
@@ -392,8 +392,8 @@
 
 .campo input:focus {
   outline: none;
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
 }
 
 .toggle-tipo {
@@ -414,7 +414,7 @@
 }
 
 .toggle-tipo button.activa {
-  background: #10b981;
+  background: var(--color-primary);
   color: #fff;
 }
 
@@ -455,7 +455,7 @@
   padding: 0;
   max-width: 480px;
   width: calc(100% - 32px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-modal);
 }
 
 .modal-asistente::backdrop { background: rgba(15, 23, 42, 0.5); }
@@ -521,13 +521,13 @@
   padding: 9px 16px;
   border: none;
   border-radius: 8px;
-  background: #10b981;
+  background: var(--color-primary);
   color: #fff;
   font-weight: 600;
   cursor: pointer;
 }
 
-.btn-guardar:hover:not(:disabled) { background: #059669; }
+.btn-guardar:hover:not(:disabled) { background: var(--color-primary-dark); }
 .btn-guardar:disabled, .btn-cancelar:disabled { opacity: 0.6; cursor: not-allowed; }
 
 @media (max-width: 720px) {

@@ -42,8 +42,8 @@
 }
 
 .banner-exito {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--brand-softer);
+  color: var(--color-primary-dark);
   padding: 12px 16px;
   border-radius: 10px;
   font-weight: 600;
@@ -82,7 +82,7 @@
 
 .fila-info .valor.email {
   color: #475569;
-  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ===== Modo edición ===== */
@@ -114,8 +114,8 @@
 
 .form-edicion input:focus {
   outline: none;
-  border-color: #34d399;
-  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
 }
 
 .form-edicion input.input-error {
@@ -161,7 +161,7 @@
 }
 
 .btn-editar {
-  background-color: #10b981;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   padding: 12px 22px;
@@ -174,11 +174,11 @@
 }
 
 .btn-editar:hover {
-  background-color: #059669;
+  background-color: var(--color-primary-dark);
 }
 
 .btn-guardar {
-  background-color: #10b981;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   padding: 12px 22px;
@@ -191,7 +191,7 @@
 }
 
 .btn-guardar:hover:not(:disabled) {
-  background-color: #059669;
+  background-color: var(--color-primary-dark);
 }
 
 .btn-guardar:disabled,
