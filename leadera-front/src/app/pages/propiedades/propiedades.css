@@ -28,7 +28,7 @@
 
 .btn-refresh {
   padding: 9px 16px;
-  background: #2563eb;
+  background: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -38,7 +38,8 @@
 }
 
 .btn-refresh:disabled {
-  background: #93c5fd;
+  background: var(--color-primary);
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -67,7 +68,7 @@
 
 .input-buscar:focus,
 .select-estado:focus {
-  border-color: #2563eb;
+  border-color: var(--color-primary);
 }
 
 .alert-error {
@@ -159,7 +160,7 @@
 /* colores migrados a styles.css — Phase 1 */
 
 .link-lead {
-  color: #2563eb;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 600;
 }
@@ -169,7 +170,7 @@
 }
 
 .link-detalle {
-  color: #0f766e;
+  color: var(--color-primary-dark);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.88rem;
