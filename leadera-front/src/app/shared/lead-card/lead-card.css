@@ -1,8 +1,8 @@
 .lead-card {
   cursor: pointer;
   position: relative;
-  background: #ffffff;
-  border: 1px solid #e9edf3;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
   border-radius: 22px;
   padding: 20px;
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
@@ -66,10 +66,11 @@
   white-space: nowrap;
 }
 
-.estado-caliente { background: #ffe5e5; color: red; border: 1px solid #f74d4d; }
-.estado-tibio    { background: #fff3bf; color: #a16207; border: 1px solid #f4df7b; }
-.estado-frio     { background: #dbeafe; color: #2563eb; border: 1px solid #bfdbfe; }
-.estado-inactivo { background-color: #f3f4f6; color: #4b5563; border: 1px solid #8b8d91; }
+/* Mismos valores que el sistema global de badges (styles.css) */
+.estado-caliente { background: #fde8e0; color: var(--color-caliente); }
+.estado-tibio    { background: #fef3c7; color: #92400e; }
+.estado-frio     { background: #dbeafe; color: var(--color-frio); }
+.estado-inactivo { background: #f1f5f9; color: var(--color-inactivo); }
 
 .tiempo-contacto {
   display: inline-flex;
@@ -81,9 +82,10 @@
 }
 
 .tiempo-contacto::before {
-  content: "◷";
-  font-size: 0.88rem;
-  color: #94a3b8;
+  content: "schedule";
+  font-family: 'Material Symbols Outlined';
+  font-size: 0.95rem;
+  color: var(--ink-4);
 }
 
 /* ========================= */
@@ -133,9 +135,9 @@
   filter: brightness(0.97);
 }
 
-.btn-principal.completado-rojo  { background: #ef7d84; color: #ffffff; }
-.btn-principal.completado-gris  { background: #9aa5b1; color: #ffffff; }
-.btn-principal.completado-verde { background: #95e1c3; color: #ffffff; }
+.btn-principal.completado-rojo  { background: var(--color-caliente); color: #ffffff; }
+.btn-principal.completado-gris  { background: var(--color-inactivo); color: #ffffff; }
+.btn-principal.completado-verde { background: var(--color-primary); color: #ffffff; }
 
 /* ========================= */
 /* RESPONSIVE */

@@ -19,7 +19,7 @@
   align-items: center;
   gap: 4px;
   font-size: 0.85rem;
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--color-text-muted);
   text-decoration: none;
   padding: 6px 10px;
   border-radius: 6px;
@@ -29,7 +29,7 @@
 }
 
 .btn-volver:hover {
-  background: var(--color-bg-hover, #f3f4f6);
+  background: var(--brand-softer);
 }
 
 .seccion-titulo-bloque {
@@ -40,20 +40,20 @@
   font-size: 1.4rem;
   font-weight: 700;
   margin: 0 0 4px;
-  color: var(--color-text, #111827);
+  color: var(--color-text);
 }
 
 .seccion-subtitulo {
   font-size: 0.85rem;
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--color-text-muted);
   margin: 0;
 }
 
 .seccion-total-badge {
   font-size: 0.8rem;
   font-weight: 600;
-  background: var(--color-bg-secondary, #f3f4f6);
-  color: var(--color-text-secondary, #6b7280);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
   padding: 4px 10px;
   border-radius: 12px;
   white-space: nowrap;
@@ -72,8 +72,8 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--color-bg-card, #fff);
-  border: 1px solid var(--color-border, #e5e7eb);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 6px 10px;
   flex: 1;
@@ -82,7 +82,7 @@
 
 .filtro-busqueda .material-symbols-outlined {
   font-size: 1.1rem;
-  color: var(--color-text-secondary, #9ca3af);
+  color: var(--ink-3);
 }
 
 .input-busqueda {
@@ -91,22 +91,22 @@
   background: transparent;
   font-size: 0.9rem;
   width: 100%;
-  color: var(--color-text, #111827);
+  color: var(--color-text);
 }
 
 .select-filtro {
-  border: 1px solid var(--color-border, #e5e7eb);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 0.85rem;
-  color: var(--color-text, #111827);
-  background: var(--color-bg-card, #fff);
+  color: var(--color-text);
+  background: var(--color-card);
   cursor: pointer;
 }
 
 .btn-buscar {
   padding: 8px 16px;
-  background: var(--color-primary, #4f46e5);
+  background: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -124,15 +124,15 @@
   gap: 4px;
   padding: 8px 12px;
   background: transparent;
-  border: 1px solid var(--color-border, #e5e7eb);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.85rem;
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: background 0.15s;
 }
 
-.btn-limpiar:hover { background: var(--color-bg-hover, #f3f4f6); }
+.btn-limpiar:hover { background: var(--brand-softer); }
 
 .seccion-lista {
   display: flex;
@@ -145,7 +145,7 @@
 .seccion-vacia {
   text-align: center;
   padding: 48px 16px;
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--color-text-muted);
   font-size: 0.95rem;
 }
 
@@ -167,8 +167,8 @@
 .btn-pag {
   min-width: 36px;
   height: 36px;
-  border: 1px solid var(--color-border, #e5e7eb);
-  background: var(--color-bg-card, #fff);
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
   border-radius: 6px;
   font-size: 0.85rem;
   cursor: pointer;
@@ -176,14 +176,14 @@
   align-items: center;
   justify-content: center;
   transition: background 0.15s;
-  color: var(--color-text, #111827);
+  color: var(--color-text);
 }
 
-.btn-pag:hover:not([disabled]) { background: var(--color-bg-hover, #f3f4f6); }
+.btn-pag:hover:not([disabled]) { background: var(--brand-softer); }
 .btn-pag[disabled] { opacity: 0.4; cursor: not-allowed; }
 .btn-pag.activa {
-  background: var(--color-primary, #4f46e5);
+  background: var(--color-primary);
   color: #fff;
-  border-color: var(--color-primary, #4f46e5);
+  border-color: var(--color-primary);
   font-weight: 600;
 }

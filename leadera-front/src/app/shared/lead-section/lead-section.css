@@ -46,8 +46,8 @@
 
 .section-icon.prioritarios { background: #fde8e0; color: var(--color-caliente); }
 .section-icon.seguimientos { background: #fef3c7; color: var(--color-tibio); }
-.section-icon.nuevos       { background: #dbeafe; color: #2563eb; }
-.section-icon.completados  { background: #dcfce7; color: #15803d; }
+.section-icon.nuevos       { background: #dbeafe; color: var(--color-frio); }
+.section-icon.completados  { background: #d1fae5; color: var(--color-primary-dark); }
 
 .section-title {
   font-size: 1.4rem;    /* Antes era 1.6rem */
@@ -76,8 +76,8 @@
 
 .count-badge.prioritarios { background: #fde8e0; color: var(--color-caliente); }
 .count-badge.seguimientos { background: #fef3c7; color: var(--color-tibio); }
-.count-badge.nuevos       { background: #dbeafe; color: #2563eb; }
-.count-badge.completados  { background: #dcfce7; color: #15803d; }
+.count-badge.nuevos       { background: #dbeafe; color: var(--color-frio); }
+.count-badge.completados  { background: #d1fae5; color: var(--color-primary-dark); }
 
 /* ========================= */
 /* CARRUSEL DE CARDS */
@@ -237,10 +237,10 @@
   font-weight: 700;
   flex-shrink: 0;
 }
-.av-caliente { background: #ffe4e6; color: #be123c; }
-.av-tibio    { background: #fef9c3; color: #a16207; }
-.av-frio     { background: #dbeafe; color: #1d4ed8; }
-.av-inactivo { background: #f3f4f6; color: #4b5563; }
+.av-caliente { background: #fde8e0; color: var(--color-caliente); }
+.av-tibio    { background: #fef3c7; color: #92400e; }
+.av-frio     { background: #dbeafe; color: var(--color-frio); }
+.av-inactivo { background: #f1f5f9; color: var(--color-inactivo); }
 
 .lead-row-info {
   flex: 1;
@@ -275,10 +275,11 @@
   flex-shrink: 0;
   white-space: nowrap;
 }
-.pill-caliente { background: #fde8e0; color: var(--color-caliente);  border: 1px solid #f5c2ad; }
-.pill-tibio    { background: #fef3c7; color: var(--color-tibio);    border: 1px solid #fde68a; }
-.pill-frio     { background: #dbeafe; color: var(--color-frio);     border: 1px solid #bfdbfe; }
-.pill-inactivo { background: #f1f5f9; color: var(--color-inactivo); border: 1px solid #e2e8f0; }
+/* Mismos valores que el sistema global de badges (styles.css) */
+.pill-caliente { background: #fde8e0; color: var(--color-caliente); }
+.pill-tibio    { background: #fef3c7; color: #92400e; }
+.pill-frio     { background: #dbeafe; color: var(--color-frio); }
+.pill-inactivo { background: #f1f5f9; color: var(--color-inactivo); }
 
 .lead-row-tiempo {
   font-size: 0.78rem;
@@ -315,7 +316,7 @@
   gap: 4px;
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--color-primary, #4f46e5);
+  color: var(--color-primary);
   text-decoration: none;
   margin-left: auto;
   padding: 4px 8px;
