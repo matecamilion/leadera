@@ -188,8 +188,14 @@
                   <span class="material-symbols-outlined">person</span>
                   Lead de <strong>{{ c.nombreAgente }} {{ c.apellidoAgente }}</strong> — coordiná con él
                 </div>
+                <div class="comprador-links">
+                  <a class="link-ver-lead" [routerLink]="['/coincidencias', p.id, c.operacionId]">Ver coincidencia →</a>
+                </div>
               } @else {
-                <a class="link-ver-lead" [routerLink]="['/leads', c.leadId]">Ver lead →</a>
+                <div class="comprador-links">
+                  <a class="link-ver-lead" [routerLink]="['/coincidencias', p.id, c.operacionId]">Ver coincidencia →</a>
+                  <a class="link-ver-lead" [routerLink]="['/leads', c.leadId]">Ver lead →</a>
+                </div>
               }
             </div>
           }

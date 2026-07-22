@@ -1,0 +1,141 @@
+<div class="coincidencia-page">
+  <header class="co-header">
+    <button class="btn-volver" type="button" (click)="volver()">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver
+    </button>
+    <h1>Coincidencia encontrada</h1>
+  </header>
+
+  @if (cargando()) {
+    <p class="co-cargando">Cargando coincidencia…</p>
+  } @else if (error()) {
+    <div class="alert-error">{{ error() }}</div>
+  } @else if (noVigente()) {
+    <div class="co-card co-no-vigente">
+      <span class="material-symbols-outlined">link_off</span>
+      <h3>Esta coincidencia ya no está vigente</h3>
+      <p>La búsqueda del comprador cambió, la operación se cerró o la propiedad dejó de estar disponible.</p>
+      <a class="btn btn-secondary" routerLink="/home">Volver al inicio</a>
+    </div>
+  } @else {
+    @if (propiedad(); as p) {
+      @if (comprador(); as c) {
+
+        <!-- COMPARACIÓN LADO A LADO -->
+        <section class="co-card">
+          <div class="co-comparacion-header">
+            <div class="co-bloque">
+              <span class="co-icon material-symbols-outlined">home_work</span>
+              <div class="co-bloque-texto">
+                <span class="co-bloque-titulo">{{ p.direccion }}</span>
+                <span class="co-bloque-sub">Tu propiedad</span>
+              </div>
+            </div>
+            <span class="co-connector material-symbols-outlined">sync_alt</span>
+            <div class="co-bloque">
+              <span class="co-icon co-icon-busqueda material-symbols-outlined">search</span>
+              <div class="co-bloque-texto">
+                <span class="co-bloque-titulo">Búsqueda de {{ c.nombreLead }}</span>
+                <span class="co-bloque-sub">Comprador potencial</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="co-criterios">
+            @for (cr of criterios(); track cr.label) {
+              <div class="co-criterio-row">
+                <div class="co-valor">
+                  <span class="co-label">{{ cr.label }}</span>
+                  <span class="co-dato">{{ cr.valorPropiedad }}</span>
+                </div>
+                @switch (cr.estado) {
+                  @case ('cumple') {
+                    <span class="co-check cumple material-symbols-outlined" title="Cumple">check_circle</span>
+                  }
+                  @case ('no-cumple') {
+                    <span class="co-check no-cumple material-symbols-outlined" title="No cumple">cancel</span>
+                  }
+                  @default {
+                    <span class="co-check sin-pref material-symbols-outlined" title="Sin preferencia">remove</span>
+                  }
+                }
+                <div class="co-valor co-valor-busqueda">
+                  <span class="co-label">{{ cr.label }} buscado</span>
+                  <span class="co-dato" [class.co-dato-sin-pref]="cr.estado === 'sin-preferencia'">
+                    {{ cr.valorBusqueda }}
+                  </span>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- FICHA DEL COMPRADOR -->
+        <section class="co-card">
+          <div class="co-comprador-header">
+            <div class="co-nombre-linea">
+              <span class="co-nombre">{{ c.nombreLead }} {{ c.apellidoLead }}</span>
+              <span class="co-badge badge-estado {{ c.estadoLead.toLowerCase() }}">{{ c.estadoLead }}</span>
+            </div>
+            <span class="co-owner">
+              @if (c.esMio) {
+                Lead tuyo
+              } @else {
+                Lead de {{ c.nombreAgente }} {{ c.apellidoAgente }}
+              }
+            </span>
+          </div>
+
+          @if (c.esMio) {
+            @if (lead(); as l) {
+              <div class="co-contacto">
+                <div class="co-contacto-datos">
+                  @if (l.telefono) {
+                    <span class="co-dato-contacto">
+                      <span class="material-symbols-outlined">call</span>{{ l.telefono }}
+                    </span>
+                  }
+                  @if (l.email) {
+                    <span class="co-dato-contacto">
+                      <span class="material-symbols-outlined">mail</span>{{ l.email }}
+                    </span>
+                  }
+                </div>
+                @if (l.telefono) {
+                  <div class="co-contacto-acciones">
+                    <a class="btn btn-secondary" [href]="'tel:' + l.telefono">
+                      <span class="material-symbols-outlined">call</span> Llamar
+                    </a>
+                    <a class="btn btn-primary" [href]="linkWhatsApp()" target="_blank" rel="noopener">
+                      <span class="material-symbols-outlined">chat</span> WhatsApp
+                    </a>
+                  </div>
+                }
+              </div>
+            }
+          } @else {
+            <div class="co-ajeno">
+              <span class="material-symbols-outlined">person</span>
+              <span>
+                Lead de <strong>{{ c.nombreAgente }} {{ c.apellidoAgente }}</strong> —
+                coordiná con él/ella para avanzar. Los datos de contacto de leads de
+                otros agentes no se comparten.
+              </span>
+            </div>
+          }
+        </section>
+
+        <!-- ACCIONES -->
+        <div class="co-acciones">
+          <a class="btn btn-secondary" [routerLink]="['/propiedades', p.id]">Ver propiedad completa</a>
+          @if (c.esMio) {
+            <a class="btn btn-secondary" [routerLink]="['/leads', c.leadId]">Ver lead</a>
+            <a class="btn btn-primary" [routerLink]="['/leads', c.leadId, 'interaccion']">Registrar interacción</a>
+          }
+        </div>
+
+      }
+    }
+  }
+</div>

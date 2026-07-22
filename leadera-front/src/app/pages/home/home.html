@@ -52,7 +52,7 @@
           <div class="matches-list">
             @for (match of matches(); track match.propiedadId) {
               @for (comprador of match.compradores; track comprador.leadId) {
-                <a [routerLink]="['/leads', comprador.leadId]" class="match-row">
+                <a [routerLink]="['/coincidencias', match.propiedadId, comprador.operacionId]" class="match-row">
                   <div class="match-row-prop">
                     <span class="match-prop-icon material-symbols-outlined">home_work</span>
                     <div class="match-prop-texto">

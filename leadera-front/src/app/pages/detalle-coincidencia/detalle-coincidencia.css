@@ -1,0 +1,368 @@
+.coincidencia-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.co-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.co-header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-family: var(--font-display);
+  color: var(--color-text);
+}
+
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-md);
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-volver:hover {
+  background: var(--surface-2);
+}
+
+.btn-volver .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.co-cargando {
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 2rem;
+}
+
+.alert-error {
+  padding: 0.75rem 1rem;
+  background: var(--hot-soft);
+  color: var(--color-caliente);
+  border-radius: var(--r-md);
+  border: 1px solid var(--color-caliente);
+}
+
+.co-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Estado no vigente ── */
+.co-no-vigente {
+  text-align: center;
+  padding: 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.co-no-vigente .material-symbols-outlined {
+  font-size: 40px;
+  color: var(--ink-4);
+}
+
+.co-no-vigente h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.co-no-vigente p {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  max-width: 380px;
+}
+
+/* ── Comparación: bloques + conector (patrón de la card de home, expandido) ── */
+.co-comparacion-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.co-bloque {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.co-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: var(--brand-softer);
+  color: var(--color-primary);
+  border-radius: 10px;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.co-icon-busqueda {
+  background: var(--warm-soft);
+  color: var(--color-tibio);
+}
+
+.co-bloque-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.co-bloque-titulo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.co-bloque-sub {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.co-connector {
+  font-size: 22px;
+  color: var(--ink-4);
+  flex-shrink: 0;
+}
+
+/* ── Filas de criterios ── */
+.co-criterios {
+  display: flex;
+  flex-direction: column;
+}
+
+.co-criterio-row {
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.co-criterio-row + .co-criterio-row {
+  border-top: 1px solid var(--color-border);
+}
+
+.co-valor {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.co-valor-busqueda {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.co-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.co-dato {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.co-dato-sin-pref {
+  color: var(--ink-4);
+  font-weight: 500;
+  font-style: italic;
+}
+
+.co-check {
+  justify-self: center;
+  font-size: 22px;
+}
+
+.co-check.cumple {
+  color: var(--color-primary);
+  font-variation-settings: 'FILL' 1;
+}
+
+.co-check.no-cumple {
+  color: var(--color-caliente);
+  font-variation-settings: 'FILL' 1;
+}
+
+.co-check.sin-pref {
+  color: var(--ink-4);
+}
+
+/* ── Ficha del comprador ── */
+.co-comprador-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.co-nombre-linea {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.co-nombre {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.co-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  letter-spacing: 0.03em;
+}
+
+.co-owner {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+
+.co-contacto {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.co-contacto-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.co-dato-contacto {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--ink-2);
+}
+
+.co-dato-contacto .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--color-primary);
+}
+
+.co-contacto-acciones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.co-contacto-acciones .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.co-ajeno {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+
+.co-ajeno .material-symbols-outlined {
+  font-size: 20px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+/* ── Acciones al pie ── */
+.co-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .coincidencia-page {
+    padding: 16px 16px 40px;
+  }
+
+  .co-comparacion-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .co-connector {
+    transform: rotate(90deg);
+    align-self: center;
+  }
+
+  .co-criterio-row {
+    grid-template-columns: 1fr 32px 1fr;
+    gap: 8px;
+  }
+
+  .co-contacto {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .co-contacto-acciones .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .co-acciones {
+    flex-direction: column;
+  }
+
+  .co-acciones .btn {
+    justify-content: center;
+  }
+}

@@ -27,6 +27,7 @@ import { InteraccionesLead } from './pages/interacciones-lead/interacciones-lead
 import { OperacionesCerradasComponent } from './pages/operaciones-cerradas/operaciones-cerradas';
 import { OperacionesPorEstado } from './pages/operaciones-por-estado/operaciones-por-estado';
 import { LeadsSeccion } from './pages/leads-seccion/leads-seccion';
+import { DetalleCoincidencia } from './pages/detalle-coincidencia/detalle-coincidencia';
 
 export const routes: Routes = [
     // 1. Rutas de Autenticación (Públicas)
@@ -60,6 +61,7 @@ export const routes: Routes = [
   { path: 'operaciones/cerradas', component: OperacionesCerradasComponent, canActivate: [authGuard], title: 'LeadEra - Operaciones cerradas' },
   { path: 'operaciones/estado/:estado', component: OperacionesPorEstado, canActivate: [authGuard], title: 'LeadEra - Operaciones por estado' },
   { path: 'propiedades', component: PropiedadesComponent, canActivate: [authGuard], title: 'LeadEra - Propiedades' },
+  { path: 'coincidencias/:propiedadId/:operacionId', component: DetalleCoincidencia, canActivate: [authGuard], title: 'LeadEra - Coincidencia' },
 
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }

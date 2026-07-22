@@ -360,6 +360,14 @@
 }
 .link-ver-lead:hover { text-decoration: underline; }
 
+.comprador-links {
+  align-self: flex-end;
+  display: flex;
+  gap: 16px;
+}
+
+.comprador-links .link-ver-lead { align-self: auto; }
+
 /* ===== LOADING ===== */
 .loading {
   display: flex;
