@@ -56,7 +56,7 @@ export const routes: Routes = [
   { path: 'leads/:id/propiedades', component: PropiedadesLead, canActivate: [authGuard], title: 'LeadEra - Propiedades del Lead' },
   { path: 'leads/:id/operaciones', component: OperacionesLead, canActivate: [authGuard], title: 'LeadEra - Operaciones del Lead' },
   { path: 'leads/:id/interacciones', component: InteraccionesLead, canActivate: [authGuard], title: 'LeadEra - Interacciones del Lead' },
-  { path: 'pipeline', component: KanbanBoardComponent, canActivate: [authGuard], title: 'LeadEra - Pipeline' },
+  { path: 'pipeline', component: KanbanBoardComponent, canActivate: [authGuard], title: 'LeadEra - Operaciones' },
   { path: 'operaciones', component: KanbanBoardComponent, canActivate: [authGuard], title: 'LeadEra - Operaciones' },
   { path: 'operaciones/cerradas', component: OperacionesCerradasComponent, canActivate: [authGuard], title: 'LeadEra - Operaciones cerradas' },
   { path: 'operaciones/estado/:estado', component: OperacionesPorEstado, canActivate: [authGuard], title: 'LeadEra - Operaciones por estado' },

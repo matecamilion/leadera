@@ -1,6 +1,9 @@
 <div class="kanban-page">
   <header class="kanban-header">
-    <h1>Pipeline de operaciones</h1>
+    <div class="kanban-titulo">
+      <p class="eyebrow">Operaciones</p>
+      <h1>Estado de mis operaciones</h1>
+    </div>
   </header>
 
   @if (error()) {
@@ -8,7 +11,7 @@
   }
 
   @if (cargando()) {
-    <p class="estado-vacio">Cargando pipeline…</p>
+    <p class="estado-vacio">Cargando operaciones…</p>
   } @else {
     <div class="pipeline-columnas">
       @for (columna of columnas(); track trackByEstado($index, columna)) {

@@ -53,7 +53,7 @@ export class KanbanBoardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar pipeline', err);
-        this.error.set('No se pudo cargar el pipeline.');
+        this.error.set('No se pudieron cargar las operaciones.');
         this.cargando.set(false);
       },
     });
