@@ -224,10 +224,11 @@
   flex-direction: column;
 }
 
+/* Fila: [propiedad ⇄ comprador] agrupados a la izquierda, aire flexible, Ver */
 .match-row {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 20px;
   padding: 14px 12px;
   margin: 0 -12px;
   border-radius: 10px;
@@ -244,18 +245,12 @@
   background: var(--surface-2);
 }
 
-/* Línea principal: propiedad | conector | comprador | Ver */
-.match-row-main {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
+/* Bloque propiedad: ancho natural del contenido */
 .match-row-prop {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1 1 0;
+  flex: 0 1 auto;
   min-width: 0;
 }
 
@@ -292,23 +287,35 @@
   color: var(--ink-3);
 }
 
+/* Conector: centrado respecto a la banda de primeras líneas (36px del icono) */
 .match-row-connector {
+  height: 36px;
+  display: grid;
+  place-items: center;
   font-size: 20px;
   color: var(--ink-4);
   flex-shrink: 0;
 }
 
+/* Bloque comprador: nombre+badge arriba, sus pills debajo */
 .match-row-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.match-lead-header {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  flex: 1 1 0;
-  min-width: 0;
+  min-height: 36px; /* alinea el nombre con el centro del bloque propiedad */
 }
 
 .match-lead-nombre {
-  font-size: 0.85rem;
+  font-size: 0.88rem; /* mismo peso visual que la dirección */
   font-weight: 600;
   color: var(--color-text);
 }
@@ -333,6 +340,7 @@
   align-items: center;
   gap: 2px;
   margin-left: auto;
+  min-height: 36px; /* centrado con la banda de primeras líneas */
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--color-primary);
@@ -343,12 +351,10 @@
   font-size: 16px;
 }
 
-/* Segunda línea: criterios del match como pills, alineadas con el texto */
-.match-row-pills {
+.match-lead-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  padding-left: 46px; /* 36px icono + 10px gap */
 }
 
 .chip {
@@ -376,7 +382,7 @@
   }
 
   /* La fila quiebra: propiedad arriba, comprador + Ver abajo */
-  .match-row-main {
+  .match-row {
     flex-wrap: wrap;
     gap: 8px 12px;
   }
@@ -386,7 +392,11 @@
   .match-row-connector {
     display: none;
   }
-  .match-row-pills {
-    padding-left: 0;
+  .match-row-lead {
+    flex: 1 1 auto;
+  }
+  .match-lead-header,
+  .match-row-ver {
+    min-height: 0;
   }
 }
