@@ -296,7 +296,7 @@
         } @else {
           <div class="resumen-lista">
             @for (operacion of operaciones(); track operacion.id) {
-              <div class="resumen-item-operacion">
+              <a class="resumen-item-operacion" [routerLink]="['/leads', id, 'operaciones', operacion.id]">
                 <div class="resumen-item-badges">
                   <span class="badge-tipo-operacion" [ngClass]="operacion.tipoOperacion.toLowerCase()">
                     {{ operacion.tipoOperacion }}
@@ -309,7 +309,7 @@
                 <span class="resumen-item-fecha">
                   {{ operacion.fechaCreacion | date: "d 'de' MMMM, HH:mm" }}
                 </span>
-              </div>
+              </a>
             }
           </div>
         }

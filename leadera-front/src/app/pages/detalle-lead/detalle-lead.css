@@ -230,6 +230,15 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.resumen-item-operacion:hover {
+  background: var(--surface-2);
+  border-color: var(--color-primary);
 }
 
 .resumen-item-badges { display: flex; flex-wrap: wrap; gap: 6px; }
