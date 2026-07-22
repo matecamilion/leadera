@@ -217,90 +217,103 @@
   padding-left: 2px;
 }
 
-.matches-items {
+/* Patrón lista: una fila plana por coincidencia propiedad↔comprador,
+   separadas por borde sutil (mismo patrón que listar-leads) */
+.matches-list {
   display: flex;
   flex-direction: column;
+}
+
+.match-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 12px;
+  margin: 0 -12px;
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.match-row + .match-row {
+  border-top: 1px solid var(--color-border);
+}
+
+.match-row:hover {
+  background: var(--surface-2);
+}
+
+/* Línea principal: propiedad | conector | comprador | Ver */
+.match-row-main {
+  display: flex;
+  align-items: center;
   gap: 12px;
 }
 
-.match-item {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.match-item-propiedad {
+.match-row-prop {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
-.match-home-icon {
-  font-size: 1.1rem;
+.match-prop-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: var(--brand-softer);
   color: var(--color-primary);
+  border-radius: 10px;
+  font-size: 20px;
   flex-shrink: 0;
 }
 
-.match-item-texto {
+.match-prop-texto {
   display: flex;
   flex-direction: column;
   gap: 1px;
+  min-width: 0;
 }
 
-.match-item-direccion {
+.match-prop-direccion {
   font-size: 0.88rem;
   font-weight: 600;
   color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.match-item-meta {
+.match-prop-meta {
   font-size: 0.75rem;
   color: var(--ink-3);
 }
 
-.match-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.match-row-connector {
+  font-size: 20px;
+  color: var(--ink-4);
+  flex-shrink: 0;
 }
 
-.match-chip {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 10px 12px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.match-chip:hover {
-  border-color: var(--color-primary);
-  box-shadow: var(--focus-ring);
-}
-
-.match-chip-header {
+.match-row-lead {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
-.chip-nombre {
-  font-size: 0.8rem;
-  font-weight: 500;
+.match-lead-nombre {
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--color-text);
 }
 
-.chip-estado {
+.match-lead-estado {
   font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -309,30 +322,33 @@
   letter-spacing: 0.03em;
 }
 
-.chip-via {
+.match-lead-via {
   font-size: 0.7rem;
   color: var(--ink-3);
   font-style: italic;
 }
 
-.comprador-busqueda-titulo {
-  display: flex;
+.match-row-ver {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
+  margin-left: auto;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--ink-2);
-}
-
-.comprador-busqueda-titulo .material-symbols-outlined {
-  font-size: 0.95rem;
   color: var(--color-primary);
+  flex-shrink: 0;
 }
 
-.comprador-chips {
+.match-row-ver .material-symbols-outlined {
+  font-size: 16px;
+}
+
+/* Segunda línea: criterios del match como pills, alineadas con el texto */
+.match-row-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 6px;
+  padding-left: 46px; /* 36px icono + 10px gap */
 }
 
 .chip {
@@ -358,7 +374,19 @@
   .matches-card {
     padding: 16px;
   }
-  .match-item {
-    padding: 12px;
+
+  /* La fila quiebra: propiedad arriba, comprador + Ver abajo */
+  .match-row-main {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+  .match-row-prop {
+    flex: 1 1 100%;
+  }
+  .match-row-connector {
+    display: none;
+  }
+  .match-row-pills {
+    padding-left: 0;
   }
 }

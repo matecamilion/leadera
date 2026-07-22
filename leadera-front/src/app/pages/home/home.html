@@ -49,53 +49,52 @@
             </p>
           </div>
 
-          <div class="matches-items">
+          <div class="matches-list">
             @for (match of matches(); track match.propiedadId) {
-              <div class="match-item">
-                <div class="match-item-propiedad">
-                  <span class="material-symbols-outlined match-home-icon">home_work</span>
-                  <div class="match-item-texto">
-                    <span class="match-item-direccion">{{ match.direccion }}</span>
-                    <span class="match-item-meta">{{ match.zona }} · {{ match.tipoVivienda }}</span>
+              @for (comprador of match.compradores; track comprador.leadId) {
+                <a [routerLink]="['/leads', comprador.leadId]" class="match-row">
+                  <div class="match-row-main">
+                    <div class="match-row-prop">
+                      <span class="match-prop-icon material-symbols-outlined">home_work</span>
+                      <div class="match-prop-texto">
+                        <span class="match-prop-direccion">{{ match.direccion }}</span>
+                        <span class="match-prop-meta">{{ match.zona }} · {{ match.tipoVivienda }}</span>
+                      </div>
+                    </div>
+                    <span class="match-row-connector material-symbols-outlined">sync_alt</span>
+                    <div class="match-row-lead">
+                      <span class="match-lead-nombre">{{ comprador.nombreLead }} {{ comprador.apellidoLead }}</span>
+                      <span class="match-lead-estado badge-estado {{ comprador.estadoLead.toLowerCase() }}">
+                        {{ comprador.estadoLead }}
+                      </span>
+                      @if (!comprador.esMio) {
+                        <span class="match-lead-via">via {{ comprador.nombreAgente }}</span>
+                      }
+                    </div>
+                    <span class="match-row-ver">
+                      Ver <span class="material-symbols-outlined">chevron_right</span>
+                    </span>
                   </div>
-                </div>
-                <div class="match-chips">
-                  @for (comprador of match.compradores; track comprador.leadId) {
-                    <a [routerLink]="['/leads', comprador.leadId]" class="match-chip">
-                      <div class="match-chip-header">
-                        <span class="chip-nombre">{{ comprador.nombreLead }} {{ comprador.apellidoLead }}</span>
-                        <span class="chip-estado badge-estado {{ comprador.estadoLead.toLowerCase() }}">
-                          {{ comprador.estadoLead }}
-                        </span>
-                        @if (!comprador.esMio) {
-                          <span class="chip-via">via {{ comprador.nombreAgente }}</span>
-                        }
-                      </div>
-                      <div class="comprador-busqueda-titulo">
-                        <span class="material-symbols-outlined">search</span>
-                        Busca {{ comprador.busquedaTipoVivienda }} en {{ comprador.busquedaZona }}
-                      </div>
-                      <div class="comprador-chips">
-                        @if (comprador.busquedaPrecioMin && comprador.busquedaPrecioMax) {
-                          <span class="chip chip-precio">
-                            USD {{ comprador.busquedaPrecioMin | number:'1.0-0' }} – {{ comprador.busquedaPrecioMax | number:'1.0-0' }}
-                          </span>
-                        } @else if (comprador.busquedaPrecioMax) {
-                          <span class="chip chip-precio">hasta USD {{ comprador.busquedaPrecioMax | number:'1.0-0' }}</span>
-                        } @else if (comprador.busquedaPrecioMin) {
-                          <span class="chip chip-precio">desde USD {{ comprador.busquedaPrecioMin | number:'1.0-0' }}</span>
-                        }
-                        @if (comprador.busquedaAmbientes) {
-                          <span class="chip">{{ comprador.busquedaAmbientes }}+ amb.</span>
-                        }
-                        @if (comprador.busquedaMetros) {
-                          <span class="chip">{{ comprador.busquedaMetros }}+ m²</span>
-                        }
-                      </div>
-                    </a>
-                  }
-                </div>
-              </div>
+                  <div class="match-row-pills">
+                    <span class="chip">Busca {{ comprador.busquedaTipoVivienda }} en {{ comprador.busquedaZona }}</span>
+                    @if (comprador.busquedaPrecioMin && comprador.busquedaPrecioMax) {
+                      <span class="chip chip-precio">
+                        USD {{ comprador.busquedaPrecioMin | number:'1.0-0' }} – {{ comprador.busquedaPrecioMax | number:'1.0-0' }}
+                      </span>
+                    } @else if (comprador.busquedaPrecioMax) {
+                      <span class="chip chip-precio">hasta USD {{ comprador.busquedaPrecioMax | number:'1.0-0' }}</span>
+                    } @else if (comprador.busquedaPrecioMin) {
+                      <span class="chip chip-precio">desde USD {{ comprador.busquedaPrecioMin | number:'1.0-0' }}</span>
+                    }
+                    @if (comprador.busquedaAmbientes) {
+                      <span class="chip">{{ comprador.busquedaAmbientes }}+ amb.</span>
+                    }
+                    @if (comprador.busquedaMetros) {
+                      <span class="chip">{{ comprador.busquedaMetros }}+ m²</span>
+                    }
+                  </div>
+                </a>
+              }
             }
           </div>
         </div>
