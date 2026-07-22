@@ -18,7 +18,7 @@ main.with-sidebar > router-outlet + * {
 
 .app-footer {
   background: white;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--color-border);
   padding: 14px 32px;
   text-align: center;
   font-family: 'Inter', sans-serif;

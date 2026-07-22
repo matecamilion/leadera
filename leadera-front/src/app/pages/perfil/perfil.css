@@ -2,9 +2,9 @@
   /* Aliases cortos sobre los tokens globales de styles.css.
      Los tokens compartidos (ink-2/3/4, softs, sombras, radios, focus)
      viven en :root — acá solo quedan los shorthands propios de esta página. */
-  --bg:           var(--color-bg);           /* arena  #FBF8F4 */
+  --bg:           var(--color-bg);           /* gris frío near-white #F7F8FA */
   --surface:      var(--color-card);         /* blanco #FFFFFF */
-  --line:         var(--color-border);       /* arena oscuro #EAE3D8 */
+  --line:         var(--color-border);       /* gris frío #E5E7EB */
   --ink:          var(--color-text);         /* navy  #16213B */
   --brand:        var(--color-primary);      /* teal  #0F6E5C */
   --brand-deep:   var(--color-primary-dark); /* teal oscuro #0B5246 */

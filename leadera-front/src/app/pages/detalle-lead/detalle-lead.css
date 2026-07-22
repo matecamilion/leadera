@@ -40,7 +40,7 @@
 .av-caliente { background: #fde8e0; color: var(--color-caliente); }
 .av-tibio    { background: #fef3c7; color: #92400e; }
 .av-frio     { background: #dbeafe; color: var(--color-frio); }
-.av-inactivo { background: #f1f5f9; color: var(--color-inactivo); }
+.av-inactivo { background: var(--surface-2); color: var(--color-inactivo); }
 
 .ld-info { flex: 1; min-width: 0; }
 
@@ -319,7 +319,7 @@
 .badge-estado-prop { padding: 2px 10px; border-radius: 99px; font-size: 0.7rem; font-weight: 700; }
 .badge-estado-prop.disponible { background: #d1fae5; color: var(--color-primary); }
 .badge-estado-prop.reservada  { background: #fef3c7; color: #92400e; }
-.badge-estado-prop.vendida    { background: #f1f5f9; color: var(--color-inactivo); }
+.badge-estado-prop.vendida    { background: var(--surface-2); color: var(--color-inactivo); }
 
 /* ========================= */
 /* ESTADO VACÍO              */
@@ -391,7 +391,7 @@
 .btn-opcion.caliente { background: #fee2e2; color: #b91c1c; }
 .btn-opcion.tibio    { background: #fef3c7; color: #92400e; }
 .btn-opcion.frio     { background: #dbeafe; color: var(--color-frio); }
-.btn-opcion.inactivo { background: #f1f5f9; color: var(--ink-2); }
+.btn-opcion.inactivo { background: var(--surface-2); color: var(--ink-2); }
 
 .campo-edicion {
   display: flex;

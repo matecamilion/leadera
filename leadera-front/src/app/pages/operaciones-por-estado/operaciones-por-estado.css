@@ -45,7 +45,7 @@
 .page-count {
   margin: 0;
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .alert-error {
@@ -74,7 +74,7 @@
 .tarjeta {
   background: white;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   padding: 16px 20px;
   margin-bottom: 12px;
   transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
@@ -141,7 +141,7 @@
   flex-wrap: wrap;
   margin-bottom: 8px;
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .tarjeta-fecha {

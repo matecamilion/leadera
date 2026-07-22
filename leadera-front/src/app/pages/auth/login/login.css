@@ -15,7 +15,7 @@
   max-width: 400px; /* Aquí le ponemos el límite para que no sea infinita */
   padding: 48px 40px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
   box-sizing: border-box;
 }
@@ -32,7 +32,7 @@
 
 .auth-header p {
   text-align: center;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 14px;
   margin-bottom: 32px;
   line-height: 1.5;
@@ -97,7 +97,7 @@
   margin-top: 32px;
   text-align: center;
   font-size: 14px;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .auth-footer a {

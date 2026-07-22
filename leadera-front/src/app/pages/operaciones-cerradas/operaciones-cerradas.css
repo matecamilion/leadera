@@ -41,7 +41,7 @@
 
 .subtitulo {
   margin: 4px 0 0;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.92rem;
 }
 
@@ -52,7 +52,7 @@
 
 .metrica {
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 12px 18px;
   text-align: center;
@@ -73,7 +73,7 @@
   display: block;
   font-size: 0.72rem;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -92,7 +92,7 @@
 
 .select-filtro {
   padding: 9px 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.92rem;
   background: white;
@@ -116,10 +116,10 @@
 .estado-vacio {
   text-align: center;
   padding: 40px 20px;
-  background: #f8fafc;
+  background: var(--surface-2);
   border: 1px dashed #cbd5e1;
   border-radius: 16px;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .estado-vacio .material-symbols-outlined {
@@ -135,7 +135,7 @@
 
 .tabla-wrapper {
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
   overflow-x: auto;
@@ -149,7 +149,7 @@
 }
 
 .tabla thead {
-  background: #f8fafc;
+  background: var(--surface-2);
 }
 
 .tabla th {
@@ -160,12 +160,12 @@
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .tabla td {
   padding: 14px 16px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-2);
   color: #1e293b;
   vertical-align: middle;
 }
@@ -175,7 +175,7 @@
 }
 
 .tabla tbody tr:hover {
-  background: #f8fafc;
+  background: var(--surface-2);
 }
 
 .celda-titulo {
@@ -212,7 +212,7 @@
 }
 
 .fecha {
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.88rem;
 }
 

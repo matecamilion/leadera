@@ -25,7 +25,7 @@
 
 .subtitulo {
   margin: 0;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
 }
 
@@ -52,7 +52,7 @@
   display: flex;
   gap: 4px;
   margin-bottom: 16px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .tabs-equipo button {
@@ -60,7 +60,7 @@
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -74,13 +74,13 @@
 /* Tarjetas y estados */
 .tarjeta-blanca {
   background: #fff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.estado { color: #64748b; text-align: center; padding: 24px; }
+.estado { color: var(--color-text-muted); text-align: center; padding: 24px; }
 .estado.error { color: #b91c1c; }
 
 .estado-vacio {
@@ -107,17 +107,17 @@
 
 .estado-vacio-sub {
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--color-text-muted);
   max-width: 420px;
 }
 
 .nota-readonly {
   margin: 0 0 14px;
   padding: 8px 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--surface-2);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.8rem;
 }
 
@@ -140,28 +140,28 @@
 .tabla-equipo th {
   text-align: left;
   padding: 10px 12px;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-weight: 600;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .tabla-equipo td {
   padding: 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-2);
   color: #334155;
   vertical-align: middle;
 }
 
 .tabla-equipo .num { text-align: right; }
 .celda-nombre { font-weight: 600; color: #0f172a; }
-.celda-email { color: #64748b; }
+.celda-email { color: var(--color-text-muted); }
 .fila-inactiva td { opacity: 0.55; }
 
 .fila-clickeable { cursor: pointer; }
-.fila-clickeable:hover td { background: #f8fafc; }
+.fila-clickeable:hover td { background: var(--surface-2); }
 
 /* Badges */
 .badge-rol {
@@ -169,7 +169,7 @@
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 700;
-  background: #f1f5f9;
+  background: var(--surface-2);
   color: #475569;
 }
 
@@ -244,7 +244,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .selector-asistente select {
@@ -293,13 +293,13 @@
 
 .cuota-detalle {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .barra-progreso {
   width: 100%;
   height: 8px;
-  background: #f1f5f9;
+  background: var(--surface-2);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -325,7 +325,7 @@
 
 .badge-estado.completada { background: var(--brand-softer); color: var(--color-primary-dark); }
 .badge-estado.en-progreso { background: #fffbeb; color: #d97706; }
-.badge-estado.pendiente { background: #f1f5f9; color: #64748b; }
+.badge-estado.pendiente { background: var(--surface-2); color: var(--color-text-muted); }
 
 /* Checklist */
 .lista-checklist {
@@ -341,7 +341,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-2);
   color: #334155;
   font-size: 0.9rem;
 }
@@ -407,7 +407,7 @@
   padding: 9px 18px;
   border: none;
   background: #fff;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -422,7 +422,7 @@
   display: block;
   margin-top: 6px;
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .acciones-form {
@@ -470,7 +470,7 @@
 
 .modal-sub {
   margin: 0 0 18px;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.85rem;
 }
 
@@ -488,7 +488,7 @@
   padding: 0 12px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   color: #334155;
   font-size: 0.8rem;
   font-weight: 600;
@@ -496,7 +496,7 @@
   white-space: nowrap;
 }
 
-.btn-generar:hover { background: #f1f5f9; }
+.btn-generar:hover { background: var(--surface-2); }
 
 .btn-generar .material-symbols-outlined { font-size: 1rem; }
 

@@ -2,28 +2,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --color-bg:           #FBF8F4;
+  --color-bg:           #F7F8FA;
   --color-card:         #FFFFFF;
   --color-text:         #16213B;
-  --color-text-muted:   #7C7568;
-  --color-border:       #EAE3D8;
+  --color-text-muted:   #5A6779;
+  --color-border:       #E5E7EB;
   --color-primary:      #0F6E5C;
   --color-primary-dark: #0B5246;
   --color-caliente:     #D85A30;
   --color-tibio:        #EF9F27;
   --color-frio:         #378ADD;
-  --color-inactivo:     #888780;
+  --color-inactivo:     #64748B;
   --font-display:       'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-ui:            'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* ── Tinta secundaria (promovido desde perfil.css) ── */
-  --ink-2:        #2D3A35;                    /* texto secundario fuerte */
+  --ink-2:        #334155;                    /* texto secundario fuerte */
   --ink-3:        var(--color-text-muted);
-  --ink-4:        #AAA49C;                    /* solo decorativo, nunca texto chico */
+  --ink-4:        #9CA3AF;                    /* solo decorativo, nunca texto chico */
 
-  /* ── Superficies soft ── */
-  --brand-soft:   #E6F0EE;
-  --brand-softer: #EDF6F3;
+  /* ── Superficies ── */
+  --surface-2:    #F3F4F6;                    /* fondo de fila/pill gris, un paso más oscuro que --color-bg */
+  --brand-soft:   #E3EFEB;
+  --brand-softer: #F0F7F5;
   --hot-soft:     #FDEEE8;
   --warm-soft:    #FEF5E0;
   --cool-soft:    #E8F1FC;
@@ -116,7 +117,7 @@ main {
 .badge-estado.caliente { background: #fde8e0; color: var(--color-caliente); }
 .badge-estado.tibio    { background: #fef3c7; color: #92400e; }
 .badge-estado.frio     { background: #dbeafe; color: var(--color-frio); }
-.badge-estado.inactivo { background: #f1f5f9; color: var(--color-inactivo); }
+.badge-estado.inactivo { background: var(--surface-2); color: var(--color-inactivo); }
 .badge-estado.ganado   { background: #d1fae5; color: var(--color-primary-dark); }
 
 /* Operación — tipo */
@@ -125,7 +126,7 @@ main {
 .badge-tipo-operacion.alquiler, .badge-tipo.alquiler { background: #fef3c7; color: #92400e; }
 
 /* Operación — estado */
-.badge-estado-operacion.abierta,        .badge-estado.abierta        { background: #f1f5f9; color: #334155; }
+.badge-estado-operacion.abierta,        .badge-estado.abierta        { background: var(--surface-2); color: #334155; }
 .badge-estado-operacion.publicada,      .badge-estado.publicada      { background: #d1fae5; color: var(--color-primary); }
 .badge-estado-operacion.reservada,      .badge-estado.reservada      { background: #fef3c7; color: #92400e; }
 .badge-estado-operacion.en_negociacion, .badge-estado.en_negociacion { background: #fef3c7; color: #92400e; }
@@ -134,7 +135,7 @@ main {
 
 /* Propiedad — estado (.reservada ya cubierta arriba, mismo token tibio) */
 .badge-estado.disponible { background: #d1fae5; color: var(--color-primary); }
-.badge-estado.vendida    { background: #f1f5f9; color: var(--color-inactivo); }
+.badge-estado.vendida    { background: var(--surface-2); color: var(--color-inactivo); }
 
 /* Print: sidebar y elementos de chrome fuera del PDF */
 @media print {

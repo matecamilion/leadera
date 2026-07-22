@@ -117,7 +117,7 @@
   transition: opacity 0.15s;
 }
 
-.pe-btn-cancelar { background: #f1f5f9; color: #334155; }
+.pe-btn-cancelar { background: var(--surface-2); color: #334155; }
 .pe-btn-guardar  { background: var(--color-primary); color: white; }
 
 .pe-btn-cancelar:disabled,

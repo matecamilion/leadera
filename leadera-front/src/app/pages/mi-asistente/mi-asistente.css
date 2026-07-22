@@ -23,7 +23,7 @@
 
 .subtitulo {
   margin: 0;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
 }
 
@@ -39,7 +39,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .selector-asistente select {
@@ -62,7 +62,7 @@
 /* Tarjetas y estados */
 .tarjeta-blanca {
   background: #fff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -73,7 +73,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  color: #64748b;
+  color: var(--color-text-muted);
   text-align: center;
   padding: 24px;
 }
@@ -104,17 +104,17 @@
 
 .estado-vacio-sub {
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--color-text-muted);
   max-width: 420px;
 }
 
 .nota-readonly {
   margin: 0 0 16px;
   padding: 8px 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--surface-2);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.8rem;
 }
 
@@ -157,13 +157,13 @@
 
 .cuota-detalle {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .barra-progreso {
   width: 100%;
   height: 8px;
-  background: #f1f5f9;
+  background: var(--surface-2);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -190,7 +190,7 @@
 
 .badge-estado.completada { background: var(--brand-softer); color: var(--color-primary-dark); }
 .badge-estado.en-progreso { background: #fffbeb; color: #d97706; }
-.badge-estado.pendiente { background: #f1f5f9; color: #64748b; }
+.badge-estado.pendiente { background: var(--surface-2); color: var(--color-text-muted); }
 
 /* Checklist (discretas) */
 .lista-checklist {
@@ -206,7 +206,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-2);
   color: #334155;
   font-size: 0.9rem;
 }

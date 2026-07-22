@@ -70,13 +70,13 @@
 .estado-caliente { background: #fde8e0; color: var(--color-caliente); }
 .estado-tibio    { background: #fef3c7; color: #92400e; }
 .estado-frio     { background: #dbeafe; color: var(--color-frio); }
-.estado-inactivo { background: #f1f5f9; color: var(--color-inactivo); }
+.estado-inactivo { background: var(--surface-2); color: var(--color-inactivo); }
 
 .tiempo-contacto {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 0.88rem;
   font-weight: 500;
 }
@@ -126,7 +126,7 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: #f1f5f9;
+  background: var(--surface-2);
   color: #334155;
 }
 
