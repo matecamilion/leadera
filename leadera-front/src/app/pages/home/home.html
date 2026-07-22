@@ -3,18 +3,10 @@
     <div class="loader-container">Cargando jornada de LeadEra...</div>
   } @else {
 
-    <div class="home-header">
-      <h1>Hoy te quedan <span class="highlight">{{ totalPendientes() }}</span> tareas</h1>
-      <p class="subtitle">Gestioná tus contactos y hacé crecer tu cartera</p>
-    </div>
-
-    <div class="progress-card"  routerLink="/gestion-del-dia" style="cursor: pointer;">
-      <div class="progress-header">
-        <span>Progreso del día</span>
-        <span>Completaste <b>{{ completadas() }}</b> de {{ totalOriginal() }} (Ver detalle)</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" [style.width.%]="progreso()"></div>
+    <div class="home-hero">
+      <div class="home-header">
+        <h1>Hoy te quedan <span class="highlight">{{ totalPendientes() }}</span> tareas</h1>
+        <p class="subtitle">Gestioná tus contactos y hacé crecer tu cartera</p>
       </div>
     </div>
 
@@ -30,6 +22,16 @@
       <div class="resumen-card seguimientos" routerLink="/leads">
         <span class="resumen-numero">{{ totalSeguim() }}</span>
         <span class="resumen-label">SEGUIM.</span>
+      </div>
+    </div>
+
+    <div class="progress-card"  routerLink="/gestion-del-dia" style="cursor: pointer;">
+      <div class="progress-header">
+        <span>Progreso del día</span>
+        <span>Completaste <b>{{ completadas() }}</b> de {{ totalOriginal() }} (Ver detalle)</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progreso()"></div>
       </div>
     </div>
 

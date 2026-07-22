@@ -4,8 +4,7 @@
   left: 0;
   width: 220px;
   height: 100vh;
-  background: white;
-  border-right: 1px solid var(--color-border);
+  background: var(--sidebar-bg);
   display: flex;
   flex-direction: column;
   padding: 20px 12px;
@@ -21,7 +20,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--sidebar-muted);
 }
 
 .nav-section-label:first-child {
@@ -29,13 +28,28 @@
 }
 
 .sidebar-header {
-  padding: 0 8px 20px 8px;
+  padding: 4px 8px 20px 8px;
 }
 
-.sidebar-logo {
-  width: 130px;
-  height: auto;
-  object-fit: contain;
+/* Wordmark tipográfico interim: el logo.png tiene fondo blanco horneado (RGB
+   sin alfa) y no funciona sobre oscuro. Cuando exista la variante clara del
+   asset, volver al <img>. */
+.sidebar-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  text-decoration: none;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  line-height: 1;
+}
+
+.sidebar-wordmark .material-symbols-outlined {
+  font-size: 20px;
+  color: var(--brand-mint);
+  font-variation-settings: 'FILL' 1;
 }
 
 .sidebar-nav {
@@ -52,7 +66,7 @@
   gap: 12px;
   padding: 10px 12px;
   border-radius: 8px;
-  color: var(--ink-2);
+  color: var(--sidebar-text);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.92rem;
@@ -60,13 +74,13 @@
 }
 
 .nav-item:hover {
-  background: var(--brand-softer);
-  color: var(--color-text);
+  background: var(--sidebar-hover);
+  color: #fff;
 }
 
 .nav-item.active {
-  background: var(--brand-soft);
-  color: var(--color-primary);
+  background: var(--sidebar-active);
+  color: #fff;
   font-weight: 600;
 }
 
@@ -74,28 +88,26 @@
   font-size: 22px;
 }
 
-/* Ítems destacados: Home y Gestión del día */
+/* Ítems destacados (Home, Gestión del día, Dashboard): sobre oscuro la
+   jerarquía la da el texto pleno + peso, no un fondo permanente. */
 .nav-item-primary {
-  background: var(--brand-soft);
-  color: var(--color-primary);
+  color: #fff;
   font-weight: 600;
-  border: 1px solid var(--color-border);
 }
 
 .nav-item-primary:hover {
-  background: #d8e8e4;
-  color: var(--color-primary-dark);
+  background: var(--sidebar-hover);
+  color: #fff;
 }
 
 .nav-item-primary.active {
-  background: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
+  background: var(--sidebar-active);
+  color: #fff;
 }
 
 /* Sección de usuario al pie */
 .sidebar-user {
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--sidebar-border);
   padding-top: 12px;
   position: relative;
 }
@@ -114,13 +126,13 @@
 }
 
 .user-toggle:hover {
-  background: var(--brand-softer);
+  background: var(--sidebar-hover);
 }
 
 .user-avatar {
   width: 36px;
   height: 36px;
-  background: var(--color-text);
+  background: var(--sidebar-active);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -133,7 +145,7 @@
 
 .user-name {
   font-size: 0.85rem;
-  color: var(--color-text);
+  color: #fff;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -143,7 +155,7 @@
 
 .chevron {
   font-size: 18px !important;
-  color: var(--ink-4);
+  color: var(--sidebar-muted);
 }
 
 .user-menu {

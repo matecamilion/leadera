@@ -11,25 +11,34 @@
 /* HEADER PRINCIPAL */
 /* ========================= */
 
+/* Banda hero: teal de marca, las cards resumen la pisan (overlap) */
+.home-hero {
+  background: var(--hero-grad);
+  border-radius: 16px;
+  padding: 32px 28px 64px; /* padding inferior extra = zona que pisan las cards */
+  margin-bottom: 0;
+}
+
 .home-header {
-  margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
 .home-header h1 {
   font-size: 2rem;
   font-family: var(--font-display);
   font-weight: 600;
-  margin-bottom: 8px;
-  color: var(--color-text);
+  margin: 0 0 8px;
+  color: var(--hero-text);
   line-height: 1.1;
+  text-wrap: balance;
 }
 
 .highlight {
-  color: var(--color-primary);
+  color: var(--hero-accent);
 }
 
 .subtitle {
-  color: var(--color-text-muted);
+  color: var(--hero-text-soft);
   font-size: clamp(0.95rem, 2vw, 1.1rem);
   margin-bottom: 0;
 }
@@ -43,7 +52,7 @@
   border-radius: 16px;
   padding: 20px;
   box-shadow: var(--shadow-md);
-  margin: 24px 0 40px;
+  margin: 0 0 40px;
   border: 1px solid var(--color-border);
 }
 
@@ -85,6 +94,15 @@
     padding: 16px 16px 40px;
   }
 
+  .home-hero {
+    padding: 24px 18px 56px;
+  }
+
+  .resumen-cards {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
   .progress-card {
     padding: 14px;
   }
@@ -100,24 +118,25 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  margin-bottom: 28px;
+  margin: -44px 20px 28px; /* mitad adentro del hero, mitad afuera */
+  position: relative; /* sobre el fondo del hero */
 }
 
 .resumen-card {
   background: white;
-  border: 1px solid var(--color-border);
   border-radius: 14px;
   padding: 18px 20px 14px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   cursor: pointer;
+  box-shadow: var(--shadow-md);
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .resumen-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 1px 0 rgba(22, 33, 59, .04), 0 12px 32px -10px rgba(22, 33, 59, .16);
 }
 
 .resumen-numero {
