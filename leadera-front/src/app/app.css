@@ -1,12 +1,24 @@
+/* Sticky footer: main ocupa todo el ancho restante (el cap de 1200px del main
+   global se anula acá y pasa a .content-area, que sí recibe _ngcontent y por
+   lo tanto puede llevar el flex: 1 — los componentes ruteados no lo reciben,
+   por eso el viejo selector router-outlet + * nunca matcheaba). */
 main.with-sidebar {
   margin-left: 220px;
+  width: auto;
+  max-width: none;
   min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
 
-main.with-sidebar > router-outlet + * {
-  flex: 1;
+/* Mismo ancho de contenido que antes: cap 1200px alineado al sidebar */
+main.with-sidebar > .content-area {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
