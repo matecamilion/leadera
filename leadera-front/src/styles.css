@@ -56,7 +56,7 @@
   --hero-grad:      linear-gradient(150deg, #0F6E5C, #0B5246 60%, #0A3D33);
   --hero-text:      #FFFFFF;
   --hero-text-soft: rgba(255, 255, 255, 0.85);
-  --hero-accent:    #7CE3BE;                   /* número destacado del h1 — large text sobre teal */
+  --hero-accent:    var(--color-tibio);        /* número destacado del h1 — hue cálido sobre teal, peso 700 para masa */
 }
 
 * {
@@ -71,6 +71,38 @@ html, body {
   margin: 0;
   padding: 0;
   background: var(--color-bg);
+}
+
+/* =====================================================
+   SCROLLBAR CUSTOM — global, todos los contenedores scrolleables
+   WebKit/Chromium via pseudo-elementos (permite border-radius).
+   Firefox via propiedades estándar, scopeadas con @supports para
+   que Chrome 121+ no las tome y descarte los ::-webkit-scrollbar.
+   ===================================================== */
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ink-4);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6B7280;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ink-4) transparent;
+  }
 }
 
 /* El contenedor principal también debe ser respetuoso */
