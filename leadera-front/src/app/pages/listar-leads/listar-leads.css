@@ -427,11 +427,11 @@
 
 .tbl-acciones {
   display: flex;
-  gap: 8px;
   align-items: center;
-  /* Con tres botones la columna (18%) queda al límite: dejamos que caiga a
-     dos líneas en vez de desbordar la celda. */
-  flex-wrap: wrap;
+  gap: 8px;
+  /* Con el botón de eliminar reducido a ícono los tres entran en una línea
+     dentro del 18% de la columna. */
+  flex-wrap: nowrap;
 }
 
 .tbl-btn {
@@ -560,12 +560,21 @@
 /* En la tarjeta mobile va pegado al borde derecho de la fila del nombre */
 .fila-superior .btn-eliminar-lead { margin-left: auto; }
 
-/* En la tabla desktop iguala la métrica de .tbl-btn para alinear con Registrar/Ver */
-.tbl-acciones .btn-eliminar-lead {
-  padding: 6px 12px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  white-space: nowrap;
+/* En la tabla desktop los tres botones comparten alto y no se encogen.
+   Scopeado a .tabla-desktop para no tocar la versión de la tarjeta mobile. */
+.tabla-desktop .tbl-acciones .tbl-btn,
+.tabla-desktop .tbl-acciones .btn-eliminar-lead {
+  height: 32px;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+}
+
+/* Eliminar queda como botón cuadrado de ícono, sin texto */
+.tabla-desktop .tbl-acciones .btn-eliminar-lead {
+  width: 32px;
+  padding: 0;
+  gap: 0;
+  justify-content: center;
 }
 
 .modal-leadera {
