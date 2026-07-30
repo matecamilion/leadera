@@ -61,9 +61,18 @@
     <section class="kpi-row">
       <div class="kpi-card">
         <div class="kpi-head">
-          <span class="kpi-label">Leads activos</span>
-          <span class="delta" [class]="deltaClase(kpiActivos()?.direccion)">
-            {{ deltaSimbolo(kpiActivos()?.direccion) }} {{ formatDelta(kpiActivos()?.deltaPct) }}
+          <div class="kpi-head-left">
+            <span class="kpi-label">Leads activos</span>
+            @if (mostrarDelta(kpiActivos())) {
+              <span class="delta" [class]="deltaClase(kpiActivos()?.direccion)">
+                {{ deltaSimbolo(kpiActivos()?.direccion) }} {{ formatDelta(kpiActivos()?.deltaPct) }}
+              </span>
+            } @else {
+              <span class="delta-sin-base">Sin comparativo del período anterior</span>
+            }
+          </div>
+          <span class="kpi-icon kpi-icon--brand">
+            <span class="material-symbols-outlined">trending_up</span>
           </span>
         </div>
         <div class="kpi-value">{{ d.snapshot.activos }}</div>
@@ -77,9 +86,18 @@
 
       <div class="kpi-card">
         <div class="kpi-head">
-          <span class="kpi-label">Tasa de conversión</span>
-          <span class="delta" [class]="deltaClase(kpiTasa()?.direccion)">
-            {{ deltaSimbolo(kpiTasa()?.direccion) }} {{ formatDelta(kpiTasa()?.deltaPct) }}
+          <div class="kpi-head-left">
+            <span class="kpi-label">Tasa de conversión</span>
+            @if (mostrarDelta(kpiTasa())) {
+              <span class="delta" [class]="deltaClase(kpiTasa()?.direccion)">
+                {{ deltaSimbolo(kpiTasa()?.direccion) }} {{ formatDelta(kpiTasa()?.deltaPct) }}
+              </span>
+            } @else {
+              <span class="delta-sin-base">Sin comparativo del período anterior</span>
+            }
+          </div>
+          <span class="kpi-icon kpi-icon--brand">
+            <span class="material-symbols-outlined">percent</span>
           </span>
         </div>
         <div class="kpi-value">{{ kpiTasa()?.actual ?? 0 }}<span class="kpi-unit">%</span></div>
@@ -92,9 +110,18 @@
 
       <div class="kpi-card">
         <div class="kpi-head">
-          <span class="kpi-label">Tiempo de respuesta</span>
-          <span class="delta" [class]="deltaClase(kpiTiempo()?.direccion, true)">
-            {{ deltaSimbolo(kpiTiempo()?.direccion) }} {{ formatDelta(kpiTiempo()?.deltaPct) }}
+          <div class="kpi-head-left">
+            <span class="kpi-label">Tiempo de respuesta</span>
+            @if (mostrarDelta(kpiTiempo())) {
+              <span class="delta" [class]="deltaClase(kpiTiempo()?.direccion, true)">
+                {{ deltaSimbolo(kpiTiempo()?.direccion) }} {{ formatDelta(kpiTiempo()?.deltaPct) }}
+              </span>
+            } @else {
+              <span class="delta-sin-base">Sin comparativo del período anterior</span>
+            }
+          </div>
+          <span class="kpi-icon kpi-icon--warm">
+            <span class="material-symbols-outlined">schedule</span>
           </span>
         </div>
         <div class="kpi-value">{{ kpiTiempo()?.actual ?? 0 }}<span class="kpi-unit">d</span></div>
@@ -107,9 +134,18 @@
 
       <div class="kpi-card">
         <div class="kpi-head">
-          <span class="kpi-label">Ganados del período</span>
-          <span class="delta" [class]="deltaClase(kpiGanados()?.direccion)">
-            {{ deltaSimbolo(kpiGanados()?.direccion) }} {{ formatDelta(kpiGanados()?.deltaPct) }}
+          <div class="kpi-head-left">
+            <span class="kpi-label">Ganados del período</span>
+            @if (mostrarDelta(kpiGanados())) {
+              <span class="delta" [class]="deltaClase(kpiGanados()?.direccion)">
+                {{ deltaSimbolo(kpiGanados()?.direccion) }} {{ formatDelta(kpiGanados()?.deltaPct) }}
+              </span>
+            } @else {
+              <span class="delta-sin-base">Sin comparativo del período anterior</span>
+            }
+          </div>
+          <span class="kpi-icon kpi-icon--deep">
+            <span class="material-symbols-outlined">emoji_events</span>
           </span>
         </div>
         <div class="kpi-value">{{ kpiGanados()?.actual ?? 0 }}</div>

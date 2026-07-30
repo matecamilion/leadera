@@ -6,6 +6,7 @@ import {
   AgenteService,
   ActividadReciente,
   DashboardData,
+  DashboardKpi,
   DashboardPeriodo,
 } from '../../core/services/agente-service';
 import { LeadService } from '../../core/services/lead-service';
@@ -257,10 +258,7 @@ export class Perfil {
       y: this.evolY(g[serie]),
     }));
 
-    let d = `M ${puntos[0].x} ${puntos[0].y}`;
-    for (let i = 1; i < n; i++) {
-      d += ` L ${puntos[i].x} ${puntos[i].y}`;
-    }
+    let d = this.smoothPath(puntos, EVOL_TOP, EVOL_BASELINE);
 
     if (area) {
       d += ` L ${puntos[n - 1].x} ${EVOL_BASELINE} L ${puntos[0].x} ${EVOL_BASELINE} Z`;
@@ -523,6 +521,18 @@ export class Perfil {
     return dir;
   }
 
+  /**
+   * Un delta sobre base cero o sobre volúmenes mínimos no informa nada: pasar
+   * de 1 a 2 leads es "+100%". En esos casos el badge se reemplaza por una
+   * nota gris en vez de mostrar un porcentaje que exagera el movimiento.
+   */
+  mostrarDelta(kpi: DashboardKpi | undefined): boolean {
+    if (!kpi) return false;
+    if (kpi.anterior === 0) return false;
+    if (kpi.actual < 5 && kpi.anterior < 5) return false;
+    return true;
+  }
+
   formatDelta(pct: number | undefined): string {
     if (pct === undefined || pct === null) return '';
     const sign = pct > 0 ? '+' : '';
@@ -543,6 +553,38 @@ export class Perfil {
     return this.buildPath(values, w, h, max, true);
   }
 
+  /**
+   * Catmull-Rom uniforme convertido a Bézier cúbicas. Para cada tramo p1→p2
+   * los puntos de control salen de los vecinos (p0 y p3), lo que da una curva
+   * continua que pasa exactamente por todos los puntos.
+   *
+   * yMin/yMax acotan los puntos de control: Catmull-Rom sobrepasa en picos
+   * bruscos y sin el clamp el relleno del área se escapa de la baseline.
+   */
+  private smoothPath(points: { x: number; y: number }[], yMin: number, yMax: number): string {
+    const n = points.length;
+    if (n === 0) return '';
+    if (n === 1) return `M ${points[0].x} ${points[0].y}`;
+
+    const clampY = (y: number) => +Math.min(yMax, Math.max(yMin, y)).toFixed(2);
+
+    let d = `M ${points[0].x} ${points[0].y}`;
+    for (let i = 0; i < n - 1; i++) {
+      const p0 = points[i - 1] ?? points[i];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[i + 2] ?? p2;
+
+      const cp1x = +(p1.x + (p2.x - p0.x) / 6).toFixed(2);
+      const cp1y = clampY(p1.y + (p2.y - p0.y) / 6);
+      const cp2x = +(p2.x - (p3.x - p1.x) / 6).toFixed(2);
+      const cp2y = clampY(p2.y - (p3.y - p1.y) / 6);
+
+      d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+    }
+    return d;
+  }
+
   private buildPath(values: number[], w: number, h: number, max: number, fill: boolean): string {
   const n = values.length;
   if (n === 0) return '';
@@ -558,22 +600,7 @@ export class Perfil {
     y: this.scaleY(v, max, h),
   }));
 
-  // Tensión de la curva (0.3 = suave pero fiel a los datos)
-  const t = 0.3;
-
-  let d = `M ${points[0].x} ${points[0].y}`;
-
-  for (let i = 1; i < points.length; i++) {
-    const prev = points[i - 1];
-    const curr = points[i];
-
-    const cp1x = +(prev.x + (curr.x - prev.x) * t).toFixed(2);
-    const cp1y = +prev.y.toFixed(2);
-    const cp2x = +(curr.x - (curr.x - prev.x) * t).toFixed(2);
-    const cp2y = +curr.y.toFixed(2);
-
-    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`;
-  }
+  let d = this.smoothPath(points, 0, h);
 
   if (fill) {
     d += ` L ${points[n - 1].x} ${h} L ${points[0].x} ${h} Z`;
