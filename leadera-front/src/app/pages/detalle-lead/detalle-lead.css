@@ -470,17 +470,19 @@
   gap: 6px;
   padding: 7px 14px;
   background: transparent;
-  color: var(--color-caliente);
-  border: 1px solid var(--color-caliente);
+  /* Misma paleta roja que el botón de eliminar del listado. El opacity 0.65
+     que tenía antes lavaba el color, por eso queda en 1. */
+  color: #b91c1c;
+  border: 1px solid #fecaca;
   border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
-  opacity: 0.65;
+  opacity: 1;
   transition: opacity 0.15s, background 0.15s;
 }
 .btn-eliminar-lead .material-symbols-outlined { font-size: 16px; }
-.btn-eliminar-lead:hover { opacity: 1; background: rgba(216, 90, 48, 0.06); }
+.btn-eliminar-lead:hover { background: #fee2e2; }
 
 .btn-eliminar-confirmar {
   padding: 10px 16px;
