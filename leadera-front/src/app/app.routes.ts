@@ -39,7 +39,7 @@ export const routes: Routes = [
   // Obsoleta (Fase 3): la reemplaza /mi-equipo-agente; queda ruteada pero sin link.
   { path: 'mi-asistente', component: MiAsistente, canActivate: [authGuard], title: 'LeadEra - Mi Asistente' },
   { path: 'mi-equipo-agente', component: MiEquipoAgente, canActivate: [authGuard], title: 'LeadEra - Mi Equipo' },
-  { path: 'mis-tareas', component: MisTareas, canActivate: [authGuard], title: 'LeadEra - Mis Tareas' },
+  { path: 'mis-tareas', component: MisTareas, canActivate: [authGuard], title: 'LeadEra - Objetivos diarios' },
 
   { path: 'home', component: Home, canActivate: [authGuard] },
   { path: 'leads', component: ListadoLeadsComponent, canActivate: [authGuard] },

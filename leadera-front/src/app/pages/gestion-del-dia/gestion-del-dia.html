@@ -2,7 +2,7 @@
   <div class="header-navigation">
     <button class="btn-back" routerLink="/home">
       <span class="material-symbols-outlined">arrow_back</span>
-      Volver al Dashboard
+      Volver a Mi día
     </button>
   </div>
 
@@ -30,7 +30,7 @@
   <!-- ============ MIS TAREAS DEL DÍA (solo ASISTENTE) ============ -->
   @if (esAsistente) {
     <div class="tareas-dia">
-      <h2 class="tareas-titulo">Mis tareas del día</h2>
+      <h2 class="tareas-titulo">Objetivos del día</h2>
 
       @if (cargandoTareas()) {
         <div class="tareas-card tareas-estado">Cargando tareas...</div>
