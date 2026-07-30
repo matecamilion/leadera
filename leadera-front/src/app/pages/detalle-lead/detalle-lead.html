@@ -105,6 +105,24 @@
 
     <!-- Modal: Nueva Propiedad -->
     <dialog #modalNuevaPropiedad class="modal-leadera modal-wide">
+      @if (propiedadCreada(); as creada) {
+        <!-- Paso 2: fotos de la propiedad recién creada -->
+        <div class="modal-content" style="text-align: left">
+          <h3 style="text-align: center; margin-bottom: 6px">Propiedad creada</h3>
+          <p style="text-align: center; margin: 0 0 20px; color: var(--color-text-muted); font-size: 0.9rem">
+            Agregale fotos ahora o tocá "Listo" para terminar.
+          </p>
+
+          <app-fotos-propiedad
+            [propiedadId]="creada.id"
+            [readonly]="false">
+          </app-fotos-propiedad>
+
+          <div style="display: flex; margin-top: 16px">
+            <button class="btn-guardar" style="flex: 1" (click)="cerrarModalPropiedad(modalNuevaPropiedad)">Listo</button>
+          </div>
+        </div>
+      } @else {
       <div class="modal-content" style="text-align: left">
         <h3 style="text-align: center; margin-bottom: 20px">Nueva Propiedad</h3>
         <div class="campo-edicion">
@@ -153,10 +171,11 @@
           <textarea [(ngModel)]="nuevaPropiedad.observaciones" rows="3" placeholder="Pileta, parrilla..."></textarea>
         </div>
         <div style="display: flex; gap: 12px; margin-top: 16px">
-          <button class="btn-cancelar" (click)="modalNuevaPropiedad.close()">Cancelar</button>
+          <button class="btn-cancelar" (click)="cerrarModalPropiedad(modalNuevaPropiedad)">Cancelar</button>
           <button class="btn-guardar" style="flex: 1" (click)="agregarPropiedad(modalNuevaPropiedad)">Guardar</button>
         </div>
       </div>
+      }
     </dialog>
 
     <!-- Modal: Nueva Operación -->

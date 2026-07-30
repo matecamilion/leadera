@@ -429,6 +429,9 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  /* Con tres botones la columna (18%) queda al límite: dejamos que caiga a
+     dos líneas en vez de desbordar la celda. */
+  flex-wrap: wrap;
 }
 
 .tbl-btn {
@@ -530,3 +533,78 @@
   color: var(--color-text-muted);
   pointer-events: none;
 }
+
+/* ============================
+   ELIMINAR LEAD (botón + modal)
+   Mismo patrón visual que detalle-lead.
+   ============================ */
+
+.btn-eliminar-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: transparent;
+  color: var(--color-caliente);
+  border: 1px solid var(--color-caliente);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.15s, background 0.15s;
+}
+.btn-eliminar-lead .material-symbols-outlined { font-size: 16px; }
+.btn-eliminar-lead:hover { opacity: 1; background: rgba(216, 90, 48, 0.06); }
+
+/* En la tarjeta mobile va pegado al borde derecho de la fila del nombre */
+.fila-superior .btn-eliminar-lead { margin-left: auto; }
+
+/* En la tabla desktop iguala la métrica de .tbl-btn para alinear con Registrar/Ver */
+.tbl-acciones .btn-eliminar-lead {
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.modal-leadera {
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  width: 350px;
+  max-width: 95vw;
+  max-height: 90vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-shadow: var(--shadow-modal);
+}
+.modal-leadera::backdrop {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content { padding: 30px; text-align: center; box-sizing: border-box; }
+
+.btn-cancelar {
+  background-color: transparent;
+  color: var(--color-caliente);
+  border: 1px solid var(--color-caliente);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-eliminar-confirmar {
+  padding: 10px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+.btn-eliminar-confirmar:hover { background: #dc2626; }

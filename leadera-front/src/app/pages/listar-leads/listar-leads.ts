@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { LeadResumen } from '../../core/models/lead-resumen';
 import { AuthService } from '../../core/services/auth-service';
 import { ExcelService } from '../../core/services/excel-service';
+import { NotificationService } from '../../core/services/notification-service';
 
 @Component({
   selector: 'app-listado-leads',
@@ -20,8 +21,12 @@ export class ListadoLeadsComponent implements OnInit {
   private servicioLead = inject(LeadService);
   private authService = inject(AuthService);
   private excelService = inject(ExcelService);
+  private notificationService = inject(NotificationService);
 
   exportandoExcel = signal<boolean>(false);
+
+  // Lead pendiente de confirmación en el modal de eliminar
+  leadAEliminar = signal<LeadResumen | null>(null);
 
   // Signals
   leads = signal<LeadResumen[]>([]);
@@ -87,6 +92,30 @@ export class ListadoLeadsComponent implements OnInit {
   formatearSeguimiento(fecha: string | null): string {
     if (!fecha) return '—';
     return new Date(fecha).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
+  abrirModalEliminar(lead: LeadResumen, modal: HTMLDialogElement) {
+    this.leadAEliminar.set(lead);
+    modal.showModal();
+  }
+
+  eliminarLead(modal: HTMLDialogElement) {
+    const lead = this.leadAEliminar();
+    if (!lead) return;
+
+    this.servicioLead.eliminarLead(lead.id).subscribe({
+      next: () => {
+        // Sacamos el lead de la lista local: no hace falta recargar todo el listado.
+        this.leads.update((list) => list.filter((l) => l.id !== lead.id));
+        this.leadAEliminar.set(null);
+        modal.close();
+        this.notificationService.exito('Lead eliminado correctamente.');
+      },
+      error: () => {
+        this.leadAEliminar.set(null);
+        modal.close();
+      },
+    });
   }
 
   exportarExcel(): void {

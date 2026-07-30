@@ -746,6 +746,7 @@
   display: flex;
   gap: 12px;
   align-items: flex-start;
+  min-width: 0;
 }
 .activity-icon {
   width: 36px;
@@ -764,6 +765,7 @@
 
 .activity-body {
   flex: 1;
+  min-width: 0; /* sin esto el flex item no se encoge y el break-word nunca aplica */
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -773,6 +775,8 @@
   color: var(--ink-2);
   font-size: 13.5px;
   line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .activity-text b { color: var(--ink); font-weight: 600; }
 .activity-time {

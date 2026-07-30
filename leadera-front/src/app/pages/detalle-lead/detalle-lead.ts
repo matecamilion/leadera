@@ -9,11 +9,12 @@ import { Propiedad } from '../../core/models/propiedad';
 import { Busqueda } from '../../core/models/busqueda';
 import { OperacionService, Operacion, CrearOperacionRequest } from '../../core/services/operacion-service';
 import { Lead } from '../../core/models/lead';
+import { FotosPropiedadComponent } from '../../components/fotos-propiedad/fotos-propiedad';
 
 @Component({
   selector: 'app-detalle-lead',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, FotosPropiedadComponent],
   templateUrl: './detalle-lead.html',
   styleUrl: './detalle-lead.css'
 })
@@ -50,6 +51,9 @@ export class DetalleLead implements OnInit {
   // Propiedades
   propiedades = signal<Propiedad[]>([]);
   nuevaPropiedad: Partial<Propiedad> = {};
+  // Propiedad recién creada: mientras no sea null, el modal muestra el paso de fotos
+  // en vez del formulario.
+  propiedadCreada = signal<Propiedad | null>(null);
 
   ngOnInit(): void {
     const paramsId = this.route.snapshot.paramMap.get('id');
@@ -104,13 +108,20 @@ export class DetalleLead implements OnInit {
     next: (p) => {
       this.propiedades.update(list => [...list, p]);
       this.nuevaPropiedad = {};
-      modal.close();
+      // No cerramos el modal: pasamos al paso de fotos sobre la propiedad ya creada.
+      this.propiedadCreada.set(p);
     },
     error: (err) => {
       this.errorGeneral.set(err.mensajeAmigable || 'No se pudo agregar la propiedad.');
     }
   });
 }
+
+  cerrarModalPropiedad(modal: HTMLDialogElement) {
+    this.propiedadCreada.set(null);
+    this.nuevaPropiedad = {};
+    modal.close();
+  }
 
   abrirModalContacto(modal: HTMLDialogElement) {
     const actual = this.lead();
