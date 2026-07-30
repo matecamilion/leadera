@@ -560,21 +560,42 @@
 /* En la tarjeta mobile va pegado al borde derecho de la fila del nombre */
 .fila-superior .btn-eliminar-lead { margin-left: auto; }
 
-/* En la tabla desktop los tres botones comparten alto y no se encogen.
-   Scopeado a .tabla-desktop para no tocar la versión de la tarjeta mobile. */
+/* En la tabla desktop los tres botones comparten alto, centrado y no se
+   encogen. Scopeado a .tabla-desktop para no tocar la tarjeta mobile. */
 .tabla-desktop .tbl-acciones .tbl-btn,
 .tabla-desktop .tbl-acciones .btn-eliminar-lead {
   height: 32px;
   box-sizing: border-box;
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Eliminar queda como botón cuadrado de ícono, sin texto */
+/* Registrar es la acción primaria de la fila: sólido en color de marca.
+   Es el único .tbl-btn que no lleva .tbl-btn-ver, de ahí el :not(). */
+.tabla-desktop .tbl-acciones .tbl-btn:not(.tbl-btn-ver) {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+.tabla-desktop .tbl-acciones .tbl-btn:not(.tbl-btn-ver):hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+/* Eliminar: botón cuadrado de ícono, en rojo.
+   opacity: 1 pisa el 0.65 del estilo base, que lavaba el rojo. */
 .tabla-desktop .tbl-acciones .btn-eliminar-lead {
   width: 32px;
   padding: 0;
   gap: 0;
-  justify-content: center;
+  opacity: 1;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+.tabla-desktop .tbl-acciones .btn-eliminar-lead:hover {
+  background: #fee2e2;
 }
 
 .modal-leadera {
