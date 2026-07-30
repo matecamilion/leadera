@@ -317,7 +317,13 @@
 }
 
 /* Evolución */
-.evol-card { display: flex; flex-direction: column; }
+.evol-card {
+  display: flex;
+  flex-direction: column;
+  /* Sin esto el card se estira hasta el alto de .right-stack (default
+     align-items: stretch del grid) y deja un hueco debajo del eje X. */
+  align-self: start;
+}
 .evol-counters {
   display: flex;
   gap: 16px;

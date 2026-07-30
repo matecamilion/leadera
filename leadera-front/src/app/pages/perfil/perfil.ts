@@ -20,14 +20,13 @@ const EVOL_PAD_LEFT = 30; // espacio para las etiquetas del eje Y
 const EVOL_TOP = 12;
 const EVOL_BASELINE = 204;
 
-interface EvolBarra {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  color: string;
-  key: 'nuevos' | 'ganados' | 'perdidos';
+type EvolSerie = 'nuevos' | 'ganados' | 'perdidos';
+interface EvolGrupo {
+  nuevos: number;
+  ganados: number;
+  perdidos: number;
 }
+
 const ORIGEN_COLORS = [
   'var(--brand)',
   'var(--brand-deep)',
@@ -219,15 +218,16 @@ export class Perfil {
     this.totalNuevosPeriodo() + this.totalGanadosPeriodo() + this.totalPerdidosPeriodo() === 0
   );
 
-  evolBarras = computed<EvolBarra[]>(() => {
+  // Acumulado por grupo de días (suma de nuevos/ganados/perdidos según el
+  // período). Es computed para que las 4 series compartan un único cálculo.
+  private evolGrupos = computed<EvolGrupo[]>(() => {
     const ev = this.dashboard()?.evolucion;
     if (!ev || ev.fechas.length === 0) return [];
 
     const tamañoGrupo = this.getTamañoGrupo();
     const dias = ev.fechas.length;
 
-    // Acumular por grupo de días (suma de nuevos/ganados/perdidos)
-    const grupos: { nuevos: number; ganados: number; perdidos: number }[] = [];
+    const grupos: EvolGrupo[] = [];
     for (let i = 0; i < dias; i += tamañoGrupo) {
       let sN = 0, sG = 0, sP = 0;
       for (let j = i; j < Math.min(i + tamañoGrupo, dias); j++) {
@@ -237,36 +237,54 @@ export class Perfil {
       }
       grupos.push({ nuevos: sN, ganados: sG, perdidos: sP });
     }
-
-    const nGrupos = grupos.length;
-    const groupW = (EVOL_W - EVOL_PAD_LEFT) / nGrupos;
-    const barW = Math.max(6, +((groupW * 0.75) / 3).toFixed(2));
-
-    const series: { key: 'nuevos' | 'ganados' | 'perdidos'; color: string }[] = [
-      { key: 'nuevos',   color: 'var(--brand)' },
-      { key: 'ganados',  color: 'var(--brand-deep)' },
-      { key: 'perdidos', color: 'var(--ink-4)' },
-    ];
-
-    const barras: EvolBarra[] = [];
-    for (let i = 0; i < nGrupos; i++) {
-      const x0 = EVOL_PAD_LEFT + i * groupW + (groupW - barW * 3) / 2;
-      series.forEach((s, si) => {
-        const v = grupos[i][s.key];
-        if (v <= 0) return;
-        const y = this.evolY(v);
-        barras.push({
-          x: +(x0 + si * barW).toFixed(2),
-          y,
-          width: barW,
-          height: +(EVOL_BASELINE - y).toFixed(2),
-          color: s.color,
-          key: s.key,
-        });
-      });
-    }
-    return barras;
+    return grupos;
   });
+
+  // A diferencia de las barras (centradas dentro de su grupo), la línea va de
+  // punta a punta: el primer punto apoya en el eje Y y el último en el borde.
+  private evolX(i: number, nGrupos: number): number {
+    if (nGrupos <= 1) return EVOL_PAD_LEFT;
+    return +(EVOL_PAD_LEFT + i * ((EVOL_W - EVOL_PAD_LEFT) / (nGrupos - 1))).toFixed(2);
+  }
+
+  private evolLinePath(serie: EvolSerie, area: boolean): string {
+    const grupos = this.evolGrupos();
+    const n = grupos.length;
+    if (n === 0) return '';
+
+    const puntos = grupos.map((g, i) => ({
+      x: this.evolX(i, n),
+      y: this.evolY(g[serie]),
+    }));
+
+    let d = `M ${puntos[0].x} ${puntos[0].y}`;
+    for (let i = 1; i < n; i++) {
+      d += ` L ${puntos[i].x} ${puntos[i].y}`;
+    }
+
+    if (area) {
+      d += ` L ${puntos[n - 1].x} ${EVOL_BASELINE} L ${puntos[0].x} ${EVOL_BASELINE} Z`;
+    }
+    return d;
+  }
+
+  evolPathNuevos   = computed(() => this.evolLinePath('nuevos', false));
+  evolAreaNuevos   = computed(() => this.evolLinePath('nuevos', true));
+  evolPathGanados  = computed(() => this.evolLinePath('ganados', false));
+  evolPathPerdidos = computed(() => this.evolLinePath('perdidos', false));
+
+  // Punto final de cada serie, para el círculo que remata la línea.
+  private evolUltimoPunto(serie: EvolSerie): { x: number; y: number; valor: number } | null {
+    const grupos = this.evolGrupos();
+    const n = grupos.length;
+    if (n === 0) return null;
+    const valor = grupos[n - 1][serie];
+    return { x: this.evolX(n - 1, n), y: this.evolY(valor), valor };
+  }
+
+  evolUltimoNuevos   = computed(() => this.evolUltimoPunto('nuevos'));
+  evolUltimoGanados  = computed(() => this.evolUltimoPunto('ganados'));
+  evolUltimoPerdidos = computed(() => this.evolUltimoPunto('perdidos'));
 
   private evolY(valor: number): number {
     const { max } = this.evolEscala();

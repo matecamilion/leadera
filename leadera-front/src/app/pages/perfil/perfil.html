@@ -30,7 +30,7 @@
 
   <div class="export-stamp" aria-hidden="true">
     <div class="export-stamp-left">
-      <span class="export-stamp-brand">LeadEra · Dashboard</span>
+      <span class="export-stamp-brand">LeadEra · Panel</span>
       <span class="export-stamp-agent">{{ agenteNombre() }}</span>
     </div>
     <div class="export-stamp-right">
@@ -197,10 +197,27 @@
                 <text x="22" [attr.y]="t.y + 3" text-anchor="end"
                       font-size="10" fill="var(--ink-4)">{{ t.valor }}</text>
               }
-              @for (b of evolBarras(); track $index) {
-                <rect [attr.x]="b.x" [attr.y]="b.y"
-                      [attr.width]="b.width" [attr.height]="b.height"
-                      [attr.fill]="b.color" rx="2" />
+              <!-- Área bajo Nuevos -->
+              <path [attr.d]="evolAreaNuevos()" fill="var(--brand-softer)" opacity="0.5" />
+
+              <path [attr.d]="evolPathNuevos()" fill="none" stroke="var(--brand)"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    vector-effect="non-scaling-stroke" />
+              <path [attr.d]="evolPathGanados()" fill="none" stroke="var(--brand-deep)"
+                    stroke-width="2" stroke-linecap="round"
+                    vector-effect="non-scaling-stroke" />
+              <path [attr.d]="evolPathPerdidos()" fill="none" stroke="var(--ink-4)"
+                    stroke-width="2" stroke-dasharray="3 3"
+                    vector-effect="non-scaling-stroke" />
+
+              @if (evolUltimoNuevos(); as p) {
+                <circle [attr.cx]="p.x" [attr.cy]="p.y" r="4" fill="var(--brand)" />
+              }
+              @if (evolUltimoGanados(); as p) {
+                <circle [attr.cx]="p.x" [attr.cy]="p.y" r="4" fill="var(--brand-deep)" />
+              }
+              @if (evolUltimoPerdidos(); as p) {
+                <circle [attr.cx]="p.x" [attr.cy]="p.y" r="4" fill="var(--ink-4)" />
               }
             </svg>
             <div class="evol-xaxis">
