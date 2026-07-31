@@ -20,4 +20,5 @@ public class EditarPropiedadRequest {
     private TipoVivienda tipoVivienda;
     private String zona;
     private String observaciones;
+    private String linkPortal;
 }

@@ -18,5 +18,6 @@ public record CrearPropiedadRequest(
         Integer metrosCubiertos,
         TipoVivienda tipoVivienda,
         String zona,
-        String observaciones
+        String observaciones,
+        String linkPortal
 ) {}

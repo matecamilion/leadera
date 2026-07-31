@@ -43,6 +43,7 @@ export class PropiedadEditar implements OnInit {
           tipoVivienda: p.tipoVivienda,
           zona: p.zona,
           observaciones: p.observaciones,
+          linkPortal: p.linkPortal,
         };
       },
       error: () => this.error.set('No se pudo cargar la propiedad.')

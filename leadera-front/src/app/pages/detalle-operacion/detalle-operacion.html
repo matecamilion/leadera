@@ -179,6 +179,9 @@
           </div>
         </div>
         <span class="badge-estado" [ngClass]="op.propiedad.estado?.toLowerCase()">{{ op.propiedad.estado }}</span>
+        @if (op.propiedad.linkPortal) {
+          <a class="do-chip-link" [href]="op.propiedad.linkPortal" target="_blank" rel="noopener">Ver publicación ↗</a>
+        }
         <a class="do-chip-link" [routerLink]="['/propiedades', op.propiedad.id]">Ver propiedad →</a>
       </div>
     }

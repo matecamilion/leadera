@@ -75,6 +75,7 @@ public class PropiedadService {
         propiedad.setTipoVivienda(request.tipoVivienda());
         propiedad.setZona(request.zona());
         propiedad.setObservaciones(request.observaciones());
+        propiedad.setLinkPortal(request.linkPortal());
         propiedad.setLead(lead);
         propiedad.setFechaPublicacion(LocalDateTime.now(zonaHoraria));
         return PropiedadMapper.toDTO(propiedadRepository.save(propiedad));
@@ -152,6 +153,7 @@ public class PropiedadService {
         if (request.getTipoVivienda() != null) propiedad.setTipoVivienda(request.getTipoVivienda());
         if (request.getZona() != null) propiedad.setZona(request.getZona());
         if (request.getObservaciones() != null) propiedad.setObservaciones(request.getObservaciones());
+        if (request.getLinkPortal() != null) propiedad.setLinkPortal(request.getLinkPortal());
 
         return PropiedadMapper.toDTO(propiedadRepository.save(propiedad));
     }

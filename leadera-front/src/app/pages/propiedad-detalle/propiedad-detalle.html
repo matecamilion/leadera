@@ -88,6 +88,16 @@
           </div>
         }
       </div>
+      @if (p.linkPortal) {
+        <div class="pd-obs">
+          <span class="pd-label">Publicación</span>
+          <p>
+            <a class="pd-link-portal" [href]="p.linkPortal" target="_blank" rel="noopener">
+              Ver publicación ↗
+            </a>
+          </p>
+        </div>
+      }
       @if (p.observaciones) {
         <div class="pd-obs">
           <span class="pd-label">Observaciones</span>

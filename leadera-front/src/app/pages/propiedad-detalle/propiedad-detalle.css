@@ -175,6 +175,15 @@
 }
 .pd-obs p { margin: 6px 0 0; font-size: 0.88rem; color: var(--color-text-muted); line-height: 1.6; }
 
+/* El link no debe heredar el gris de .pd-obs p */
+.pd-link-portal {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-word;
+}
+.pd-link-portal:hover { text-decoration: underline; }
+
 /* ===== SECTION TITLES ===== */
 .pd-section-title {
   font-size: 0.75rem;

@@ -21,6 +21,7 @@ public class PropiedadMapper {
                 propiedad.getTipoVivienda(),
                 propiedad.getZona(),
                 propiedad.getObservaciones(),
+                propiedad.getLinkPortal(),
                 propiedad.getFechaPublicacion(),
                 propiedad.getDiasEnMercado(),
                 propiedad.getEstado(),

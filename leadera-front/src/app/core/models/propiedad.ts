@@ -8,6 +8,8 @@ export interface Propiedad {
   tipoVivienda: string;
   zona: string;
   observaciones: string;
+  /** URL de la publicación en el portal. Opcional. */
+  linkPortal?: string | null;
   fechaPublicacion: string;
   diasEnMercado: number;
   estado: 'DISPONIBLE' | 'RESERVADA' | 'VENDIDA';

@@ -21,6 +21,7 @@ public record PropiedadDTO(
         TipoVivienda tipoVivienda,
         String zona,
         String observaciones,
+        String linkPortal,
         LocalDateTime fechaPublicacion,
         long diasEnMercado,
         EstadoPropiedad estado,

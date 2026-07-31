@@ -38,6 +38,13 @@ public class Propiedad {
 
     private String zona;
     private String observaciones;
+
+    // URL de la publicación en el portal (ZonaProp, ML, etc). Opcional.
+    // length explícito para que coincida con el VARCHAR(500) de la migración:
+    // en prod corre ddl-auto=validate y el default de Hibernate sería 255.
+    @Column(length = 500)
+    private String linkPortal;
+
     private LocalDateTime fechaPublicacion;
 
     @ManyToOne
