@@ -30,6 +30,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -42,6 +43,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -405,15 +407,24 @@ public class LeadService {
                 ? pageable
                 : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                                  Sort.by(Sort.Direction.DESC, "fechaEntrada"));
-        Page<Lead> page = leadRepository.findByInmobiliariaConInteraccionesPaginado(inmobiliariaId, efectivo);
-        Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(
-                page.getContent().stream().map(Lead::getId).toList());
-        return page.map(lead -> new LeadEquipoDTO(
-                toResumenDTO(lead, conteos),
-                lead.getAgente().getId(),
-                lead.getAgente().getNombre(),
-                lead.getAgente().getApellido()
-        ));
+        Page<Long> paginaIds = leadRepository.findIdsByInmobiliariaId(inmobiliariaId, efectivo);
+        if (paginaIds.isEmpty()) {
+            return new PageImpl<>(List.of(), efectivo, paginaIds.getTotalElements());
+        }
+
+        List<Long> ids = paginaIds.getContent();
+        List<Lead> leads = ordenarSegunIds(ids, leadRepository.findByIdsConInteraccionesYAgente(ids));
+        Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(ids);
+
+        List<LeadEquipoDTO> dtos = leads.stream()
+                .map(lead -> new LeadEquipoDTO(
+                        toResumenDTO(lead, conteos),
+                        lead.getAgente().getId(),
+                        lead.getAgente().getNombre(),
+                        lead.getAgente().getApellido()
+                ))
+                .toList();
+        return new PageImpl<>(dtos, efectivo, paginaIds.getTotalElements());
     }
 
     public Page<LeadResumenDTO> obtenerResumenLeadsPorAgente(String email, Pageable pageable) {
@@ -421,10 +432,33 @@ public class LeadService {
                 ? pageable
                 : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                                  Sort.by(Sort.Direction.DESC, "fechaEntrada"));
-        Page<Lead> page = leadRepository.findByAgenteEmailConInteraccionesPaginado(emailPropietario(email), efectivo);
-        Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(
-                page.getContent().stream().map(Lead::getId).toList());
-        return page.map(lead -> toResumenDTO(lead, conteos));
+        Page<Long> paginaIds = leadRepository.findIdsByAgenteEmail(emailPropietario(email), efectivo);
+        if (paginaIds.isEmpty()) {
+            return new PageImpl<>(List.of(), efectivo, paginaIds.getTotalElements());
+        }
+
+        List<Long> ids = paginaIds.getContent();
+        List<Lead> leads = ordenarSegunIds(ids, leadRepository.findByIdsConInteracciones(ids));
+        Map<Long, Map<TipoOperacion, Long>> conteos = cargarConteosOperaciones(ids);
+
+        List<LeadResumenDTO> dtos = leads.stream()
+                .map(lead -> toResumenDTO(lead, conteos))
+                .toList();
+        return new PageImpl<>(dtos, efectivo, paginaIds.getTotalElements());
+    }
+
+    // El IN de la query de detalle no preserva el orden de la página de IDs (ni
+    // el ORDER BY sobrevive al DISTINCT + fetch de colección de forma confiable),
+    // así que reordenamos en memoria siguiendo exactamente la página original.
+    private List<Lead> ordenarSegunIds(List<Long> idsEnOrden, List<Lead> leads) {
+        Map<Long, Lead> porId = new HashMap<>();
+        for (Lead lead : leads) {
+            porId.put(lead.getId(), lead);
+        }
+        return idsEnOrden.stream()
+                .map(porId::get)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     // Pre-carga los conteos de operaciones por tipo de todos los leads en una sola query.

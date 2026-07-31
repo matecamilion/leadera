@@ -37,15 +37,25 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
     """)
     List<Lead> findByAgenteEmailConInteracciones(@Param("email") String email);
 
+    // Paginación en dos pasos. Combinar Pageable con JOIN FETCH de una colección
+    // obliga a Hibernate a traer todas las filas y paginar en memoria (warning
+    // HHH90003004). Paso 1: la página de IDs, sin fetch de colección, para que
+    // el LIMIT/OFFSET lo aplique la base.
+    //
+    // Sin ORDER BY fijo a propósito: el orden lo define el Sort del Pageable
+    // (el service le pone fechaEntrada DESC cuando viene sin ordenar). Hardcodearlo
+    // acá ganaría siempre sobre el Sort del caller y rompería cualquier otro orden.
     @Query(
-        value = """
-            SELECT DISTINCT l FROM Lead l
-            LEFT JOIN FETCH l.interacciones
-            WHERE l.agente.email = :email
-        """,
+        value = "SELECT l.id FROM Lead l WHERE l.agente.email = :email",
         countQuery = "SELECT COUNT(l) FROM Lead l WHERE l.agente.email = :email"
     )
-    Page<Lead> findByAgenteEmailConInteraccionesPaginado(@Param("email") String email, Pageable pageable);
+    Page<Long> findIdsByAgenteEmail(@Param("email") String email, Pageable pageable);
+
+    // Paso 2: el detalle de esos IDs con la colección fetcheada, ya sin Pageable.
+    // Sin ORDER BY: el IN no garantiza orden y el service reordena en memoria
+    // siguiendo la página de IDs.
+    @Query("SELECT DISTINCT l FROM Lead l LEFT JOIN FETCH l.interacciones WHERE l.id IN :ids")
+    List<Lead> findByIdsConInteracciones(@Param("ids") List<Long> ids);
 
     long countByAgenteIdAndEstadoNot(Long agenteId, EstadoLead estado);
 
@@ -98,18 +108,24 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
 
     // ---- Vista de equipo del dueño ----
 
-    // Misma técnica que findByAgenteEmailConInteraccionesPaginado pero a nivel
-    // inmobiliaria, con el agente fetcheado para la columna "Agente" del listado.
+    // Mismo patrón de dos pasos que findIdsByAgenteEmail, pero a nivel inmobiliaria.
     @Query(
-        value = """
-            SELECT DISTINCT l FROM Lead l
-            LEFT JOIN FETCH l.interacciones
-            JOIN FETCH l.agente
-            WHERE l.agente.inmobiliaria.id = :inmobiliariaId
-        """,
+        value = "SELECT l.id FROM Lead l WHERE l.agente.inmobiliaria.id = :inmobiliariaId",
         countQuery = "SELECT COUNT(l) FROM Lead l WHERE l.agente.inmobiliaria.id = :inmobiliariaId"
     )
-    Page<Lead> findByInmobiliariaConInteraccionesPaginado(@Param("inmobiliariaId") Long inmobiliariaId, Pageable pageable);
+    Page<Long> findIdsByInmobiliariaId(@Param("inmobiliariaId") Long inmobiliariaId, Pageable pageable);
+
+    // Variante del paso 2 con el agente fetcheado, para la columna "Agente" del
+    // listado de equipo. No reutiliza findByIdsConInteracciones: sin el JOIN FETCH
+    // de agente, leer lead.getAgente() al armar el LeadEquipoDTO dispara un N+1
+    // (una query por lead), que es justo lo que este cambio viene a sacar.
+    @Query("""
+        SELECT DISTINCT l FROM Lead l
+        LEFT JOIN FETCH l.interacciones
+        JOIN FETCH l.agente
+        WHERE l.id IN :ids
+    """)
+    List<Lead> findByIdsConInteraccionesYAgente(@Param("ids") List<Long> ids);
 
     // Conteo de leads activos por agente del equipo en una sola query (evita N+1).
     // Devuelve filas [agenteId (Long), count (Long)].
