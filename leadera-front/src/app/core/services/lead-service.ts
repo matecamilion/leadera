@@ -32,8 +32,11 @@ export class LeadService {
     return this.http.get<Lead>(`${this.apiUrl}/${id}`);
   }
 
-  editarContacto(id: number, nuevoTelefono: string, nuevoEmail: string): Observable<Lead> {
+  editarContacto(id: number, nuevoNombre: string, nuevoApellido: string,
+                 nuevoTelefono: string, nuevoEmail: string): Observable<Lead> {
     return this.http.put<Lead>(`${this.apiUrl}/${id}/editar-contacto`, {
+      nombre: nuevoNombre,
+      apellido: nuevoApellido,
       telefono: nuevoTelefono,
       email: nuevoEmail
     });

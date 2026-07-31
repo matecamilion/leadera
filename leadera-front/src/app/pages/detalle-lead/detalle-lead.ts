@@ -44,6 +44,8 @@ export class DetalleLead implements OnInit {
   });
 
   // Contacto
+  nuevoNombre: string = '';
+  nuevoApellido: string = '';
   nuevoTelefono: string = '';
   nuevoEmail: string = '';
   errorContacto: string = '';
@@ -126,6 +128,8 @@ export class DetalleLead implements OnInit {
   abrirModalContacto(modal: HTMLDialogElement) {
     const actual = this.lead();
     if (!actual) return;
+    this.nuevoNombre = actual.nombre ?? '';
+    this.nuevoApellido = actual.apellido ?? '';
     this.nuevoTelefono = actual.telefono ?? '';
     this.nuevoEmail = actual.email ?? '';
     this.errorContacto = '';
@@ -134,17 +138,28 @@ export class DetalleLead implements OnInit {
 
   guardarContacto(modal: HTMLDialogElement) {
     this.errorContacto = '';
+    if (!this.nuevoNombre?.trim()) {
+      this.errorContacto = 'El nombre es obligatorio.';
+      return;
+    }
+    if (!this.nuevoApellido?.trim()) {
+      this.errorContacto = 'El apellido es obligatorio.';
+      return;
+    }
     if (!this.nuevoTelefono?.trim()) {
       this.errorContacto = 'El teléfono es obligatorio.';
       return;
     }
-    this.leadService.editarContacto(this.lead()!.id, this.nuevoTelefono, this.nuevoEmail).subscribe({
+    this.leadService.editarContacto(
+      this.lead()!.id, this.nuevoNombre, this.nuevoApellido,
+      this.nuevoTelefono, this.nuevoEmail
+    ).subscribe({
       next: (leadActualizado) => {
         this.lead.set(leadActualizado);
         modal.close();
       },
       error: (err) => {
-        this.errorContacto = err.error || 'Ya existe un lead con ese teléfono o email.';
+        this.errorContacto = err.error?.message || 'Ya existe un lead con ese teléfono o email.';
       }
     });
   }

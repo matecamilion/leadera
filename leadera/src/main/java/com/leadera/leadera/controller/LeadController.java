@@ -142,7 +142,10 @@ public class LeadController {
     public ResponseEntity<LeadResponseDTO> editarContacto(@PathVariable Long id,
                                                           @RequestBody EditarContactoRequest request,
                                                           Authentication authentication) {
-        Lead leadActualizado = leadService.editarInfoContacto(id, request.telefono(), request.email(), authentication.getName());
+        Lead leadActualizado = leadService.editarInfoContacto(
+                id, request.nombre(), request.apellido(),
+                request.telefono(), request.email(), authentication.getName()
+        );
         return ResponseEntity.ok(LeadMapper.toDTO(leadActualizado));
     }
 

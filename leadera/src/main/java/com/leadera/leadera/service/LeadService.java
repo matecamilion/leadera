@@ -333,7 +333,8 @@ public class LeadService {
                 tasaConversion, tiempoRespuestaDias);
     }
 
-    public Lead editarInfoContacto(Long leadId, String nuevoTelefono, String nuevoEmail, String emailAgente) {
+    public Lead editarInfoContacto(Long leadId, String nuevoNombre, String nuevoApellido,
+                                   String nuevoTelefono, String nuevoEmail, String emailAgente) {
         Lead lead = leadRepository.findById(leadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead no encontrado"));
 
@@ -341,9 +342,18 @@ public class LeadService {
             throw new UnauthorizedActionException("No tenés permiso para editar este lead.");
         }
 
+        if (nuevoNombre == null || nuevoNombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre es obligatorio.");
+        }
+        if (nuevoApellido == null || nuevoApellido.isBlank()) {
+            throw new IllegalArgumentException("El apellido es obligatorio.");
+        }
+
         // El ownership ya está validado: lead.getAgente() es el propietario efectivo.
         validarDuplicadosEnInmobiliaria(lead.getAgente(), nuevoTelefono, nuevoEmail, leadId);
 
+        lead.setNombre(nuevoNombre.trim());
+        lead.setApellido(nuevoApellido.trim());
         lead.setTelefono(nuevoTelefono);
         lead.setEmail(nuevoEmail);
 

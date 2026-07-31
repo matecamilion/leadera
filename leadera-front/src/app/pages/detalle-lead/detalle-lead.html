@@ -86,6 +86,14 @@
       <div class="modal-content">
         <h3>Editar contacto</h3>
         <div class="campo-edicion">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="nuevoNombre" placeholder="Nombre" />
+        </div>
+        <div class="campo-edicion">
+          <label>Apellido</label>
+          <input type="text" [(ngModel)]="nuevoApellido" placeholder="Apellido" />
+        </div>
+        <div class="campo-edicion">
           <label>Teléfono</label>
           <input type="text" [(ngModel)]="nuevoTelefono" placeholder="Ej: 11 4444-5555" />
         </div>
