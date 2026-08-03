@@ -2,11 +2,10 @@ import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth-service';
 import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -23,6 +22,24 @@ export class Login {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+  }
+
+  formHovering = signal(false);
+
+  onFormMouseMove(event: MouseEvent) {
+    const el = event.currentTarget as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    const x = event.clientX - rect.left - 250;
+    const y = event.clientY - rect.top - 250;
+    el.style.setProperty('--ax', `${x}px`);
+    el.style.setProperty('--ay', `${y}px`);
+  }
+
+  onInputGlow(event: MouseEvent) {
+    const el = event.currentTarget as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    el.style.setProperty('--mx', `${x}px`);
   }
 
   onSubmit(){

@@ -1,32 +1,61 @@
 <div class="auth-container">
-  <div class="auth-card">
-    <div class="auth-header">
-      <h1>LeadEra</h1>
-      <p>Bienvenido, Agente. Iniciá sesión para continuar.</p>
+  <!-- Panel de marca -->
+  <div class="auth-panel-brand">
+    <img
+      src="/images/login-hero.jpg"
+      alt=""
+      class="brand-photo"
+    >
+    <div class="brand-scrim"></div>
+
+    <div class="brand-content">
+      <span class="brand-mark">LeadEra</span>
+      <p class="brand-tagline">Cerrá más, perdé menos.</p>
     </div>
+  </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="input-group">
-        <label>Email</label>
-        <input type="email" formControlName="email" placeholder="ejemplo@leadera.com">
+  <!-- Panel de formulario -->
+  <div
+    class="auth-panel-form"
+    [class.is-hovering]="formHovering()"
+    (mousemove)="onFormMouseMove($event)"
+    (mouseenter)="formHovering.set(true)"
+    (mouseleave)="formHovering.set(false)"
+  >
+    <div class="cursor-aura" aria-hidden="true"></div>
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Bienvenido</h1>
+        <p>Iniciá sesión para ver tu día.</p>
       </div>
 
-      <div class="input-group">
-        <label>Contraseña</label>
-        <input type="password" formControlName="password" placeholder="••••••••">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="input-group">
+          <label>Email</label>
+          <div class="input-glow-wrap" (mousemove)="onInputGlow($event)">
+            <input type="email" formControlName="email" placeholder="ejemplo@leadera.com" autocomplete="email">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Contraseña</label>
+          <div class="input-glow-wrap" (mousemove)="onInputGlow($event)">
+            <input type="password" formControlName="password" placeholder="••••••••" autocomplete="current-password">
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="loginForm.invalid" class="btn-primary">
+          Entrar a Mi día
+        </button>
+      </form>
+
+      @if (errorLogin()) {
+        <p class="error-login">{{ errorLogin() }}</p>
+      }
+
+      <div class="auth-footer">
+        <p>¿Problemas para entrar? Consultá con el dueño de tu cuenta.</p>
       </div>
-
-      <button type="submit" [disabled]="loginForm.invalid" class="btn-primary">
-        Entrar a Mi día
-      </button>
-    </form>
-
-    @if (errorLogin()) {
-      <p class="error-login">{{ errorLogin() }}</p>
-    }
-
-    <div class="auth-footer">
-      <p>¿No tenés cuenta? <a routerLink="/register">Registrate acá</a></p>
     </div>
   </div>
 </div>

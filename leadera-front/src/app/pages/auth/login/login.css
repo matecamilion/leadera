@@ -1,44 +1,101 @@
-/* Contenedor principal que centra la tarjeta */
+/* ===== Layout general ===== */
 .auth-container {
-   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background-color: var(--color-bg);
 }
 
-/* La tarjeta blanca (Card) */
-.auth-card {
-  background: #ffffff;
+/* ===== Panel de marca (izquierda): foto real ===== */
+.auth-panel-brand {
+  flex: 1 1 45%;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+.brand-photo {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  max-width: 400px; /* Aquí le ponemos el límite para que no sea infinita */
-  padding: 48px 40px;
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
+  height: 100%;
+  object-fit: cover;
+  /* La foto ya viene recortada 3:4, casi la proporción del panel: el cover
+     apenas recorta y el encuadre (notebook + mate) se mantiene centrado. */
+  object-position: center;
+}
+
+/* Degradé para que el texto se lea sobre la foto */
+.brand-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 74, 61, 0.82) 0%,
+    rgba(10, 74, 61, 0.35) 32%,
+    rgba(10, 74, 61, 0.05) 55%,
+    rgba(10, 74, 61, 0.55) 100%
+  );
+}
+
+.brand-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 40px 48px;
   box-sizing: border-box;
 }
 
-/* Cabecera */
+.brand-mark {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.brand-tagline {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin: 0;
+  max-width: 320px;
+}
+
+/* ===== Panel de formulario (derecha) ===== */
+.auth-panel-form {
+  flex: 1 1 55%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F7F8FA;
+  padding: 48px 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  box-sizing: border-box;
+}
+
 .auth-header h1 {
-  text-align: center;
-  color: #0f172a;
+  color: #0F172A;
   font-size: 28px;
   font-weight: 700;
-  margin-bottom: 8px;
-  letter-spacing: -1px;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
 }
 
 .auth-header p {
-  text-align: center;
-  color: var(--color-text-muted);
+  color: #64748B;
   font-size: 14px;
-  margin-bottom: 32px;
-  line-height: 1.5;
+  margin: 0 0 32px;
 }
 
-/* Campos de entrada */
+/* Campos */
 .input-group {
   margin-bottom: 20px;
 }
@@ -55,57 +112,160 @@
   width: 100%;
   height: 44px;
   padding: 0 14px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #CBD5E1;
   border-radius: 8px;
   font-size: 15px;
-  box-sizing: border-box; /* Esto evita que el padding ensanche el input */
-  transition: all 0.2s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: var(--focus-ring);
+  border-color: #0F6E5C;
+  box-shadow: 0 0 0 3px rgba(15, 110, 92, 0.12);
 }
 
-/* Botón Primary - Estilo LeadEra */
+/* Botón */
 .btn-primary {
   width: 100%;
   height: 46px;
-  background-color: var(--color-primary);
-  color: white;
+  background-color: #0F6E5C;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background-color 0.2s ease;
   margin-top: 12px;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
+  background-color: #0B5A4A;
 }
 
 .btn-primary:disabled {
-  background-color: #94a3b8;
+  background-color: #94A3B8;
   cursor: not-allowed;
 }
 
-/* Link de registro */
+.error-login {
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #B91C1C;
+  font-size: 13px;
+}
+
+/* Footer sin link de registro */
 .auth-footer {
-  margin-top: 32px;
+  margin-top: 28px;
   text-align: center;
-  font-size: 14px;
-  color: var(--color-text-muted);
+  font-size: 13px;
+  color: #94A3B8;
 }
 
-.auth-footer a {
-  color: var(--color-primary);
-  text-decoration: none;
-  font-weight: 600;
+/* ===== Glow que sigue el cursor en los inputs ===== */
+.input-glow-wrap {
+  position: relative;
+  border-radius: 8px;
 }
 
-.auth-footer a:hover {
-  text-decoration: underline;
+.input-glow-wrap::before,
+.input-glow-wrap::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.input-glow-wrap::before {
+  top: -1px;
+  border-radius: 8px 8px 0 0;
+  background: radial-gradient(30px circle at var(--mx, 50%) 0px, #0F6E5C 0%, transparent 70%);
+}
+
+.input-glow-wrap::after {
+  bottom: -1px;
+  border-radius: 0 0 8px 8px;
+  background: radial-gradient(30px circle at var(--mx, 50%) 2px, #0F6E5C 0%, transparent 70%);
+}
+
+.input-glow-wrap:hover::before,
+.input-glow-wrap:hover::after,
+.input-glow-wrap:focus-within::before,
+.input-glow-wrap:focus-within::after {
+  opacity: 1;
+}
+
+/* El input ya no necesita margen propio, lo maneja el wrapper */
+.input-glow-wrap input {
+  margin: 0;
+}
+
+/* ===== Aura que sigue el cursor en el panel del form ===== */
+.auth-panel-form {
+  position: relative;
+  overflow: hidden;
+}
+
+.cursor-aura {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(15, 110, 92, 0.34) 0%, rgba(15, 110, 92, 0) 72%);
+  filter: blur(50px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transform: translate(var(--ax, 0px), var(--ay, 0px));
+  will-change: transform;
+  z-index: 0;
+}
+
+.auth-panel-form.is-hovering .cursor-aura {
+  opacity: 1;
+}
+
+/* La card queda por encima del aura */
+.auth-card {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .auth-container {
+    flex-direction: column;
+  }
+
+  .auth-panel-brand {
+    min-height: 260px;
+    flex: 0 0 260px;
+  }
+
+  .brand-content {
+    padding: 24px 24px 28px;
+  }
+
+  .brand-tagline {
+    font-size: 21px;
+  }
+
+  .auth-panel-form {
+    padding: 40px 24px;
+  }
 }
